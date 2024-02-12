@@ -25,24 +25,25 @@ struct TabbedView: View {
     TabView(selection: $selectedTab) {
       TabFind(doc: doc, requiresFullCalc: $requiresFullCalc, showGradient: $showGradient)
         .tabItem {
-          Label("1.Find", systemImage: "aspectratio")
+          Label("1. Find", systemImage: "aspectratio")
         }.tag(0)
 
       TabColor(doc: doc, popupManager: popupManager, requiresFullCalc: $requiresFullCalc, showGradient: $showGradient)
         .tabItem {
-          Label("2.Color", systemImage: "paintbrush")
+          Label("2. Color", systemImage: "paintbrush")
         }.tag(1)
 
       TabTune(doc: doc, requiresFullCalc: $requiresFullCalc, showGradient: $showGradient)
         .tabItem {
-          Label("3.Tune", systemImage: "paintpalette")
+          Label("3. Tune", systemImage: "paintpalette")
         }.tag(2)
 
       TabSave(doc: doc, popupManager: popupManager, requiresFullCalc: $requiresFullCalc, showGradient: $showGradient)
         .tabItem {
-          Label("4.Save", systemImage: "circle")
+          Label("4. Save", systemImage: "circle")
         }.tag(3)
     } // end tabview
+    
     .padding(2)
   }
 }

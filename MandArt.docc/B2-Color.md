@@ -4,7 +4,7 @@ Choose a small, ordered, set of colors to work with
 
 ## Overview
 
-In section 2.Color you get to pick the the colors to be used in the picture and see if the gradient between adjoining colors looks good to you.
+In Tab "2. Color" you get to pick the the colors to be used in the picture and see if the gradient between adjoining colors looks good to you.
 
 ## Discussion
 

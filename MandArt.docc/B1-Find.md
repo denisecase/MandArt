@@ -10,7 +10,7 @@ This article discusses all the inputs we need to set the stage for coloring.
 
 ![Whole Picture Again](WholePicture1.png)
 
-We’ll use this picture to explain each of the inputs available in the section 1.Find, which comes up when the app gets started.
+We’ll use this picture to explain each of the inputs available in the Tab "1. Find", which comes up when the app gets started.
 
 ### Picture Size
 

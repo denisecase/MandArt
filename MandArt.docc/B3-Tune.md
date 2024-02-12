@@ -10,7 +10,7 @@ More ways to adjust the coloring of your picture.
 
 ### Using the color tuning sliders.
 
-Once you've selected the colors to be used in your picture, you might think you've run out of options, but the five sliders in section 3.Tune can greatly change the coloring of your picture.
+Once you've selected the colors to be used in your picture, you might think you've run out of options, but the five sliders in Tab "3. Tune" can greatly change the coloring of your picture.
 
 ![Example](mandart2.jpg)
 

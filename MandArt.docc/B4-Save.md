@@ -10,7 +10,7 @@ This article covers how to save the picture and the inputs required to generate 
 
 ### Saving the inputs necessary to generate your picture.
 
-In section 4.Save, you can save the picture inputs by clicking on that button.
+In Tab "4. Save", you can save the picture inputs by clicking on that button.
 A popup window allows you to name the picture and choose where it will be saved.
 The file gets a .mandart file extension.
 

@@ -39,7 +39,7 @@ For more information about each input field, see <doc:A02-SettingInputs>.
 ### Save MandArt
 
 To save your MandArt inputs, 
-use File / Save on the menu or click on Tab 4. Save and then on the **Save Image Inputs** button.
+use File / Save on the menu or click on Tab "4. Save" and then on the **Save Image Inputs** button.
 
 The data is stored in a document with a .mandart extension.
 Inputs are stored in JSON format (a simple and common data format). 
@@ -51,7 +51,7 @@ So, we have to work around the problem. When the file is originally saved, you g
 
 ### Save a Picture
 
-To save your generated picture as a .png file, click Tab 4.Save and then on the **Save Picture** button.
+To save your generated picture as a .png file, click Tab "4. Save" and then on the **Save Picture** button.
 
 ### Open Saved MandArt
 
