@@ -54,7 +54,7 @@ enum MAFormatters {
     formatter.maximum = 99.9999
     return formatter
     
-    
+   // This one doesn't work, so leave it out. 
     
     
   }*/

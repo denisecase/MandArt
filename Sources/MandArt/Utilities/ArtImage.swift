@@ -96,15 +96,22 @@ struct ArtImage {
     var dIter = 0.0
     var gGML = 0.0
     var gGL = 0.0
+    
     var fIter = [[Double]](repeating: [Double](repeating: 0.0, count: imageHeight), count: imageWidth)
+    
+    var fIterLeft = [Double](repeating: 0.0, count: imageHeight)
+    var fIterRight = [Double](repeating: 0.0, count: imageHeight)
     var fIterMinLeft = 0.0
     var fIterMinRight = 0.0
+    
     var fIterBottom = [Double](repeating: 0.0, count: imageWidth)
     var fIterTop = [Double](repeating: 0.0, count: imageWidth)
     var fIterMinBottom = 0.0
     var fIterMinTop = 0.0
+    
     var fIterMins = [Double](repeating: 0.0, count: 4)
     var fIterMin = 0.0
+    
     var p = 0.0
     var test1 = 0.0
     var test2 = 0.0
@@ -168,13 +175,27 @@ struct ArtImage {
       fIterBottom[u] = fIter[u][0]
       fIterTop[u] = fIter[u][imageHeight - 1]
     } // end second for u
+    
+    for v in 0 ... imageHeight - 1 {
+      fIterLeft[v] = fIter[0][v]
+      fIterRight[v] = fIter[imageWidth - 1][v]
+    } // end second for v
 
-    fIterMinLeft = fIter[0].min()!
-    fIterMinRight = fIter[imageWidth - 1].min()!
+    fIterMinLeft = fIterLeft.min()!
+    fIterMinRight = fIterRight.min()!
     fIterMinBottom = fIterBottom.min()!
     fIterMinTop = fIterTop.min()!
+    
     fIterMins = [fIterMinLeft, fIterMinRight, fIterMinBottom, fIterMinTop]
     fIterMin = fIterMins.min()!
+    
+    print("fIterMinLeft", fIterMinLeft)
+    print("fIterMinRight", fIterMinRight)
+    print("fIterMinBottom", fIterMinBottom)
+    print("fIterMinTop", fIterMinTop)
+    print("")
+    print("fIterMin", fIterMin)
+    
 
     fIterMin = fIterMin - shapeInputs.dFIterMin
 
