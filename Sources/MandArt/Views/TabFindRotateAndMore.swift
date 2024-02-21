@@ -54,7 +54,7 @@ struct TabFindRotateAndMore: View {
       DelayedTextFieldDouble(
         placeholder: "400",
         value: $doc.picdef.rSqLimit,
-        formatter: MAFormatters.fmtSmootingRSqLimit
+        formatter: MAFormatters.fmtSmoothingRSqLimit
       )
       .textFieldStyle(.roundedBorder)
       .multilineTextAlignment(.trailing)

@@ -13,7 +13,7 @@ struct TabTune: View {
         VStack(spacing: 10) {
           Text("Color spacing far from Mini-Mand (near to edge)")
           SliderTextView(
-            range: 1 ... 20,
+            range: 0 ... 20,
             step: 1,
             placeholder: "5",
             formatter: MAFormatters.fmtSpacingNearEdge,

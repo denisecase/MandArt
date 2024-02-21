@@ -70,7 +70,7 @@ enum MAFormatters {
     return formatter
   }
 
-  static var fmtSmootingRSqLimit: NumberFormatter {
+  static var fmtSmoothingRSqLimit: NumberFormatter {
     let formatter = NumberFormatter()
     formatter.numberStyle = .decimal
     formatter.maximumFractionDigits = 0
@@ -102,7 +102,7 @@ enum MAFormatters {
     let formatter = NumberFormatter()
     formatter.numberStyle = .decimal
     formatter.maximumFractionDigits = 0
-    formatter.minimum = 1
+    formatter.minimum = 0
     formatter.maximum = 100_000_000
     return formatter
   }
