@@ -24,6 +24,6 @@ extension PictureDefinition: Equatable {
       lhs.dFIterMin == rhs.dFIterMin &&
       lhs.leftNumber == rhs.leftNumber &&
       lhs.hues == rhs.hues &&
-      lhs.miniMandColor == rhs.miniMandColor
+      lhs.mandColor == rhs.mandColor
   }
 }

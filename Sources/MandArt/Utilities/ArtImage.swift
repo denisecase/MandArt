@@ -51,7 +51,7 @@ struct ArtImage {
       spacingColorFar: picdef.spacingColorFar,
       spacingColorNear: picdef.spacingColorNear,
       yY_input: picdef.yY,
-      mandColor: picdef.miniMandColor
+      mandColor: picdef.mandColor
     )
   }
 

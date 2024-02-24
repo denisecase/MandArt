@@ -9,11 +9,11 @@ struct TabColor: View {
   @Binding var showGradient: Bool
   @State private var didChange = false
 
-  private var miniMandColorBinding: Binding<Color> {
+  private var mandColorBinding: Binding<Color> {
     Binding<Color>(
       get: {
         // Convert Hue to Color
-        Color(red: doc.picdef.miniMandColor.r / 255, green: doc.picdef.miniMandColor.g / 255, blue: doc.picdef.miniMandColor.b / 255)
+        Color(red: doc.picdef.mandColor.r / 255, green: doc.picdef.mandColor.g / 255, blue: doc.picdef.mandColor.b / 255)
       },
       set: {
         // Convert Color to Hue.
@@ -21,7 +21,7 @@ struct TabColor: View {
         let red = (components?[0] ?? 0) * 255
         let green = (components?[1] ?? 0) * 255
         let blue = (components?[2] ?? 0) * 255
-        doc.picdef.miniMandColor = Hue(num: doc.picdef.miniMandColor.num, r: red, g: green, b: blue)
+        doc.picdef.mandColor = Hue(num: doc.picdef.mandColor.num, r: red, g: green, b: blue)
       }
     )
   }
@@ -53,8 +53,8 @@ struct TabColor: View {
         ) {
 
           HStack {
-            Text("Choose Color for MiniMands")
-            ColorPicker("", selection: miniMandColorBinding, supportsOpacity: false)
+            Text("Choose Color for Mandelbrot Set:")
+            ColorPicker("", selection: mandColorBinding, supportsOpacity: false)
           }
 
           HStack {

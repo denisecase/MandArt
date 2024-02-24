@@ -111,9 +111,12 @@ extension MandArtDocument {
     "-----------\n" +
     "leftNumber is \(String(picdef.leftNumber)) \n"
 
+    comment += "mandColor: R=\(picdef.mandColor.r), G=\(picdef.mandColor.g), B=\(picdef.mandColor.b)\n"
+
     for hue in picdef.hues {
       comment += "\(hue.num): R=\(hue.r), G=\(hue.g), B=\(hue.b)\n"
     }
+
     return comment
   }
 

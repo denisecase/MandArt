@@ -53,9 +53,10 @@ final class MandArtDocument: ReferenceFileDocument, ObservableObject {
   /// Initializer to read a document from disk
   init(configuration: ReadConfiguration) throws {
     guard let data = configuration.file.regularFileContents else {
+      print("error on onfiguration.file.regularFileContents")
       throw CocoaError(.fileReadCorruptFile)
     }
-    docName = configuration.file.filename ?? "unknown"
+    docName = configuration.file.filename ?? "unknown"    
     picdef = try JSONDecoder().decode(PictureDefinition.self, from: data)
     print("Opening data file = ", docName)
   }

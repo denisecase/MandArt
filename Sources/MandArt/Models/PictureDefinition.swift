@@ -53,7 +53,7 @@ struct PictureDefinition: Codable, Identifiable {
   ]
   var huesEstimatedPrintPreview: [Hue] = []
   var huesOptimizedForPrinter: [Hue] = []
-  var miniMandColor: Hue = Hue(num: 0, r:0.0, g: 0.0, b: 0.0)
+  var mandColor: Hue = Hue(num: 0, r:0.0, g: 0.0, b: 0.0)
 
   /**
     Initialize with an array of Hues (sorted rgbs)
@@ -61,6 +61,7 @@ struct PictureDefinition: Codable, Identifiable {
     */
   init(hues: [Hue]) {
     self.hues = hues
+    self.mandColor = Hue(num: 0, r: 0.0, g: 0.0, b: 0.0)
   }
 
   init(
@@ -80,7 +81,7 @@ struct PictureDefinition: Codable, Identifiable {
     dFIterMin: Double,
     leftNumber: Int,
     hues: [Hue],
-    miniMandColor: Hue
+    mandColor: Hue = Hue(num: 0, r: 0.0, g: 0.0, b: 0.0)
   ) {
     self.xCenter = xCenter
     self.yCenter = yCenter
@@ -98,7 +99,7 @@ struct PictureDefinition: Codable, Identifiable {
     self.dFIterMin = dFIterMin
     self.leftNumber = leftNumber
     self.hues = hues
-    self.miniMandColor = miniMandColor
+    self.mandColor = mandColor
   }
 
   // Get a color [Double] based on a number starting at one
