@@ -21,6 +21,7 @@ struct ArtImageColorInputs {
   let spacingColorFar: Double
   let spacingColorNear: Double
   let yY_input: Double
+  let mandColor: Hue
 }
 
 /// Global array to hold iteration values for Mandelbrot calculations.
@@ -49,9 +50,20 @@ struct ArtImage {
       nColors: picdef.hues.count,
       spacingColorFar: picdef.spacingColorFar,
       spacingColorNear: picdef.spacingColorNear,
-      yY_input: picdef.yY
+      yY_input: picdef.yY,
+      mandColor: picdef.miniMandColor
     )
   }
+
+
+  /** Function to set a pixel to the color of the Mandelbrot set. */
+  func setPixelToMandColor(pixelAddress: UnsafeMutablePointer<UInt8>) {
+    pixelAddress.pointee = UInt8(colorInputs.mandColor.r) // red
+    (pixelAddress + 1).pointee = UInt8(colorInputs.mandColor.g) // green
+    (pixelAddress + 2).pointee = UInt8(colorInputs.mandColor.b) // blue
+    (pixelAddress + 3).pointee = UInt8(255) // alpha
+  }
+
 
   /**
    Function to create and return a user-created MandArt bitmap
@@ -295,10 +307,12 @@ struct ArtImage {
         let pixelAddress: UnsafeMutablePointer<UInt8> = rasterBufferPtr + pixel_offset
 
         if fIter[u][v] >= iterationsMax { // black
-          pixelAddress.pointee = UInt8(0) // red
-          (pixelAddress + 1).pointee = UInt8(0) // green
-          (pixelAddress + 2).pointee = UInt8(0) // blue
-          (pixelAddress + 3).pointee = UInt8(255) // alpha
+          // set color to mandColor
+          setPixelToMandColor(pixelAddress: pixelAddress)
+          // pixelAddress.pointee = UInt8(0) // red
+          // (pixelAddress + 1).pointee = UInt8(0) // green
+          // (pixelAddress + 2).pointee = UInt8(0) // blue
+          // (pixelAddress + 3).pointee = UInt8(255) // alpha
         } // end if
 
         else {
@@ -654,10 +668,12 @@ print(sortedArrayDescending)
         let pixelAddress: UnsafeMutablePointer<UInt8> = rasterBufferPtr + pixel_offset
 
         if fIterGlobal[u][v] >= iterationsMax { // black
-          pixelAddress.pointee = UInt8(0) // red
-          (pixelAddress + 1).pointee = UInt8(0) // green
-          (pixelAddress + 2).pointee = UInt8(0) // blue
-          (pixelAddress + 3).pointee = UInt8(255) // alpha
+          // set color to mandColor
+          setPixelToMandColor(pixelAddress: pixelAddress)
+          // pixelAddress.pointee = UInt8(0) // red
+          // (pixelAddress + 1).pointee = UInt8(0) // green
+          // (pixelAddress + 2).pointee = UInt8(0) // blue
+          // (pixelAddress + 3).pointee = UInt8(255) // alpha
         } else {
           h = fIterGlobal[u][v] - fIterMin
 
