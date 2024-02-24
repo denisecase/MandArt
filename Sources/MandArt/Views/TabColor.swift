@@ -9,6 +9,23 @@ struct TabColor: View {
   @Binding var showGradient: Bool
   @State private var didChange = false
 
+  private var miniMandColorBinding: Binding<Color> {
+    Binding<Color>(
+      get: {
+        // Convert Hue to Color
+        Color(red: doc.picdef.miniMandColor.r / 255, green: doc.picdef.miniMandColor.g / 255, blue: doc.picdef.miniMandColor.b / 255)
+      },
+      set: {
+        // Convert Color to Hue.
+        let components = $0.cgColor?.components
+        let red = (components?[0] ?? 0) * 255
+        let green = (components?[1] ?? 0) * 255
+        let blue = (components?[2] ?? 0) * 255
+        doc.picdef.miniMandColor = Hue(num: doc.picdef.miniMandColor.num, r: red, g: green, b: blue)
+      }
+    )
+  }
+
   func updateArt() {
     for (index, _) in doc.picdef.hues.enumerated() {
       doc.picdef.hues[index].num = index + 1
@@ -34,6 +51,12 @@ struct TabColor: View {
             .frame(maxWidth: .infinity, alignment: .center)
 
         ) {
+
+          HStack {
+            Text("Choose Color for MiniMands")
+            ColorPicker("", selection: miniMandColorBinding, supportsOpacity: false)
+          }
+
           HStack {
             Button("Add New Color") {
               doc.addHue()
