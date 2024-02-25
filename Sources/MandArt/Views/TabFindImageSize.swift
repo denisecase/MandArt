@@ -54,7 +54,7 @@ struct TabFindImageSize: View {
 
         VStack {
           Text("Aspect Ratio:")
-          Text(String(format: "%.1f", aspectRatio()))
+          Text(String(format: "%.2f", aspectRatio()))
             .padding(10)
             .help("Calculated value of picture width over picture height.")
         }
