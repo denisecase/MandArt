@@ -10,13 +10,18 @@ struct TabFind: View {
   var body: some View {
     ScrollView {
       VStack {
+
+        TabFindDefaultButtons(doc: doc, requiresFullCalc: $requiresFullCalc)
+
         TabFindImageSize(doc: doc, requiresFullCalc: $requiresFullCalc)
 
         TabFindImageCenter(doc: doc, requiresFullCalc: $requiresFullCalc)
 
+        TabFindImagePower(doc: doc, requiresFullCalc: $requiresFullCalc)
+
         TabFindScale(doc: doc, requiresFullCalc: $requiresFullCalc)
 
-        TabFindRotateAndMore(doc: doc, requiresFullCalc: $requiresFullCalc)
+        TabFindRotateAndSmoothing(doc: doc, requiresFullCalc: $requiresFullCalc)
 
         Spacer()
       } //  vstack

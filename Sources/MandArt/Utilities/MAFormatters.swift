@@ -35,6 +35,24 @@ enum MAFormatters {
     return formatter
   }
 
+  static var fmtPowerReal: NumberFormatter {
+    let formatter = NumberFormatter()
+    formatter.numberStyle = .decimal
+    formatter.maximumFractionDigits = 1
+    formatter.minimum = 2
+    formatter.maximum = 12
+    return formatter
+  }
+
+  static var fmtPowerImaginary: NumberFormatter {
+    let formatter = NumberFormatter()
+    formatter.numberStyle = .decimal
+    formatter.maximumFractionDigits = 1
+    formatter.minimum = 0
+    formatter.maximum = 12
+    return formatter
+  }
+
   static var fmtRotationTheta: NumberFormatter {
     let formatter = NumberFormatter()
     formatter.maximumFractionDigits = 1

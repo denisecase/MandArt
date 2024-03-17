@@ -12,6 +12,8 @@ struct TabFindImageCenter: View {
       Text("Set Picture Center")
         .font(.headline)
         .fontWeight(.medium)
+        .padding(.vertical)
+
     ) {
       HStack {
         VStack { // vertical container
@@ -25,13 +27,12 @@ struct TabFindImageCenter: View {
           .textFieldStyle(.roundedBorder)
           .multilineTextAlignment(.trailing)
           .frame(maxWidth: 170)
-          .help(
-            "Enter a value for the horizontal center of the picture."
-          )
+          .help("Enter horizontal center of the picture. Recommended: If you plan to use a power > 2, you might change to 0.0 to start.")
           .onChange(of: doc.picdef.xCenter) { _ in
             requiresFullCalc = true
           }
         } // end vstack
+
 
         VStack { //  vertical container
           Text("Enter vertical center")
@@ -44,14 +45,13 @@ struct TabFindImageCenter: View {
           .textFieldStyle(.roundedBorder)
           .multilineTextAlignment(.trailing)
           .frame(maxWidth: 170)
-          .help(
-            "Enter a value for the vertical center of the picture."
-          )
+          .help("Enter vertical center of the picture.")
           .onChange(of: doc.picdef.yCenter) { _ in
             requiresFullCalc = true
           }
         }
       } // end HStack for XY
+      //.padding(.bottom, 20)
     }
     Divider()
   }

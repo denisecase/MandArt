@@ -20,7 +20,7 @@ class ImageViewModel: ObservableObject {
         var colors: [[Double]] = doc.picdef.hues.map { [$0.r, $0.g, $0.b] }
         let art = ArtImage(picdef: doc.picdef)
         _cachedArtImage = requiresFullCalc ?
-          art.getMandArtFullPictureImage(colors: &colors) :
+          art.getGrandArtFullPictureImage(colors: &colors) :
           art.getNewlyColoredImage(colors: &colors)
       }
       return _cachedArtImage

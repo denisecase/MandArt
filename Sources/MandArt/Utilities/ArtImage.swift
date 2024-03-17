@@ -1,7 +1,7 @@
 import CoreGraphics
 import Foundation
 
-/// Structure containing the inputs for shaping the Mandelbrot art image.
+/// Structure containing the inputs that require recalcuating each block
 struct ArtImageShapeInputs {
   let imageHeight: Int
   let imageWidth: Int
@@ -14,14 +14,18 @@ struct ArtImageShapeInputs {
   let rSqLimit: Double
 }
 
-/// Structure containing the inputs for coloring the Mandelbrot art image.
+/// Structure containing the inputs that require (only) recoloring
 struct ArtImageColorInputs {
   let nBlocks: Int
   let nColors: Int
   let spacingColorFar: Double
   let spacingColorNear: Double
   let yY_input: Double
-  let mandColor: Hue
+}
+
+struct ArtImagePowerInputs {
+  let mandPowerReal: Double
+  let mandPowerImaginary: Double
 }
 
 /// Global array to hold iteration values for Mandelbrot calculations.
@@ -30,8 +34,12 @@ var fIterGlobal = [[Double]]()
 /// `ArtImage` is a struct responsible for generating the Mandelbrot art images.
 @available(macOS 12.0, *)
 struct ArtImage {
+
+  // In all
   let shapeInputs: ArtImageShapeInputs
   let colorInputs: ArtImageColorInputs
+  let powerInputs: ArtImagePowerInputs
+
 
   init(picdef: PictureDefinition) {
     shapeInputs = ArtImageShapeInputs(
@@ -50,30 +58,69 @@ struct ArtImage {
       nColors: picdef.hues.count,
       spacingColorFar: picdef.spacingColorFar,
       spacingColorNear: picdef.spacingColorNear,
-      yY_input: picdef.yY,
-      mandColor: picdef.mandColor
+      yY_input: picdef.yY
+    )
+    powerInputs = ArtImagePowerInputs(
+      mandPowerReal: picdef.mandPowerReal,
+      mandPowerImaginary: picdef.mandPowerImaginary
     )
   }
 
-
-  /** Function to set a pixel to the color of the Mandelbrot set. */
-  func setPixelToMandColor(pixelAddress: UnsafeMutablePointer<UInt8>) {
-    pixelAddress.pointee = UInt8(colorInputs.mandColor.r) // red
-    (pixelAddress + 1).pointee = UInt8(colorInputs.mandColor.g) // green
-    (pixelAddress + 2).pointee = UInt8(colorInputs.mandColor.b) // blue
-    (pixelAddress + 3).pointee = UInt8(255) // alpha
+  func isMandArt() -> Bool {
+    return powerInputs.mandPowerImaginary == 0.0 && powerInputs.mandPowerReal == 2.0
   }
 
+  func isMandArt3() -> Bool {
+    return powerInputs.mandPowerImaginary == 0 && powerInputs.mandPowerReal == 3.0
+  }
+
+  // only in GrandArt
+  func complexPow(baseX: Double, baseY: Double, powerReal: Double, powerImaginary: Double = 0.0) -> (Double, Double) {
+    if isMandArt() {
+      // Special case for Mandelbrot set (power of 2)
+      let xTemp = baseX * baseX - baseY * baseY
+      let newY = 2.0 * baseX * baseY
+      return (xTemp, newY)
+    } else if isMandArt3() {
+      // Special case for power of 3
+      let xSquared = baseX * baseX
+      let ySquared = baseY * baseY
+
+      let xTemp = (xSquared - 3.0 * ySquared) * baseX
+      let newY = (3.0 * xSquared - ySquared) * baseY
+      return (xTemp, newY)
+    } else if powerInputs.mandPowerImaginary == 0.0 {
+      // Case for real powers
+      let r = sqrt(baseX * baseX + baseY * baseY)
+      let theta = atan2(baseY, baseX)
+      let newR = pow(r, Double(powerReal))
+      let newTheta = Double(powerReal) * theta
+
+      let newX = newR * cos(newTheta)
+      let newY = newR * sin(newTheta)
+      return (newX, newY)
+    } else {
+      // General case for complex powers (real + imaginary)
+      let r = sqrt(baseX * baseX + baseY * baseY)
+      let theta = atan2(baseY, baseX)
+      let newR = pow(r, Double(powerReal)) * exp(-Double(powerImaginary) * theta)
+      let newTheta = Double(powerReal) * theta + Double(powerImaginary) * log(r)
+
+      let newX = newR * cos(newTheta)
+      let newY = newR * sin(newTheta)
+      return (newX, newY)
+    }
+  }
 
   /**
-   Function to create and return a user-created MandArt bitmap
+   Function to create and return a user-created GrandArt bitmap
 
    - Parameters:
    - colors: array of colors
 
    - Returns: optional CGImage with the bitmap or nil
    */
-  func getMandArtFullPictureImage(colors: inout [[Double]]) -> CGImage? {
+  func getGrandArtFullPictureImage(colors: inout [[Double]]) -> CGImage? {
     let imageWidth = shapeInputs.imageWidth
     let imageHeight = shapeInputs.imageHeight
 
@@ -108,22 +155,15 @@ struct ArtImage {
     var dIter = 0.0
     var gGML = 0.0
     var gGL = 0.0
-    
     var fIter = [[Double]](repeating: [Double](repeating: 0.0, count: imageHeight), count: imageWidth)
-    
-    var fIterLeft = [Double](repeating: 0.0, count: imageHeight)
-    var fIterRight = [Double](repeating: 0.0, count: imageHeight)
     var fIterMinLeft = 0.0
     var fIterMinRight = 0.0
-    
     var fIterBottom = [Double](repeating: 0.0, count: imageWidth)
     var fIterTop = [Double](repeating: 0.0, count: imageWidth)
     var fIterMinBottom = 0.0
     var fIterMinTop = 0.0
-    
     var fIterMins = [Double](repeating: 0.0, count: 4)
     var fIterMin = 0.0
-    
     var p = 0.0
     var test1 = 0.0
     var test2 = 0.0
@@ -146,28 +186,58 @@ struct ArtImage {
         rSq = xx * xx + yy * yy
         iter = 0.0
 
-        p = sqrt((xx - 0.25) * (xx - 0.25) + yy * yy)
-        test1 = p - 2.0 * p * p + 0.25
-        test2 = (xx + 1.0) * (xx + 1.0) + yy * yy
+        if isMandArt() {
+          p = sqrt((xx - 0.25) * (xx - 0.25) + yy * yy)
+          test1 = p - 2.0 * p * p + 0.25
+          test2 = (xx + 1.0) * (xx + 1.0) + yy * yy
 
-        if xx < test1 || test2 < 0.0625 {
-          fIter[u][v] = iterationsMax // black
-          iter = iterationsMax // black
-        } // end if
+          if xx < test1 || test2 < 0.0625 {
+            fIter[u][v] = iterationsMax // black
+            iter = iterationsMax // black
+          } else {
+            for i in 1 ... Int(iterationsMax) {
+              if rSq >= rSqLimit {
+                break
+              }
 
-        else {
+              xTemp = xx * xx - yy * yy + x0
+              yy = 2 * xx * yy + y0
+              xx = xTemp
+              rSq = xx * xx + yy * yy
+              iter = Double(i)
+            }
+          } // end else
+        } else if isMandArt3() {
           for i in 1 ... Int(iterationsMax) {
             if rSq >= rSqLimit {
               break
             }
 
-            xTemp = xx * xx - yy * yy + x0
-            yy = 2 * xx * yy + y0
+            xTemp = xx * xx * xx - 3 * xx * yy * yy + x0
+            yy = 3 * xx * xx * yy - yy * yy * yy + y0
             xx = xTemp
+
+            rSq = pow(xx, 2) + pow(yy, 2)
+            iter = Double(i)
+          }
+        } else {
+          for i in 1 ... Int(iterationsMax) {
+            if rSq >= rSqLimit {
+              break
+            }
+            // New grandPower exponent code .....
+            let (newX, newY) = complexPow(
+              baseX: xx,
+              baseY: yy,
+              powerReal: powerInputs.mandPowerReal,
+              powerImaginary: powerInputs.mandPowerImaginary
+            )
+            xx = newX + x0
+            yy = newY + y0
             rSq = xx * xx + yy * yy
             iter = Double(i)
           }
-        } // end else
+        } // end exponent differences
 
         if iter < iterationsMax {
           dIter = Double(-(log(log(rSq)) - gGL) / gGML)
@@ -187,27 +257,13 @@ struct ArtImage {
       fIterBottom[u] = fIter[u][0]
       fIterTop[u] = fIter[u][imageHeight - 1]
     } // end second for u
-    
-    for v in 0 ... imageHeight - 1 {
-      fIterLeft[v] = fIter[0][v]
-      fIterRight[v] = fIter[imageWidth - 1][v]
-    } // end second for v
 
-    fIterMinLeft = fIterLeft.min()!
-    fIterMinRight = fIterRight.min()!
+    fIterMinLeft = fIter[0].min()!
+    fIterMinRight = fIter[imageWidth - 1].min()!
     fIterMinBottom = fIterBottom.min()!
     fIterMinTop = fIterTop.min()!
-    
     fIterMins = [fIterMinLeft, fIterMinRight, fIterMinBottom, fIterMinTop]
     fIterMin = fIterMins.min()!
-    
-    print("fIterMinLeft", fIterMinLeft)
-    print("fIterMinRight", fIterMinRight)
-    print("fIterMinBottom", fIterMinBottom)
-    print("fIterMinTop", fIterMinTop)
-    print("")
-    print("fIterMin", fIterMin)
-    
 
     fIterMin = fIterMin - shapeInputs.dFIterMin
 
@@ -256,15 +312,15 @@ struct ArtImage {
 
     // Create CGBitmapContext for drawing and converting into image for display
     let context =
-      CGContext(
-        data: rasterBufferPtr,
-        width: imageWidth,
-        height: imageHeight,
-        bitsPerComponent: bitsPerComponent,
-        bytesPerRow: bytesPerRow,
-        space: CGColorSpace(name: CGColorSpace.sRGB)!,
-        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
-      )!
+    CGContext(
+      data: rasterBufferPtr,
+      width: imageWidth,
+      height: imageHeight,
+      bitsPerComponent: bitsPerComponent,
+      bytesPerRow: bytesPerRow,
+      space: CGColorSpace(name: CGColorSpace.sRGB)!,
+      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+    )!
 
     // use CG to draw into the context
     // you can use any of the CG drawing routines for drawing into this context
@@ -307,12 +363,10 @@ struct ArtImage {
         let pixelAddress: UnsafeMutablePointer<UInt8> = rasterBufferPtr + pixel_offset
 
         if fIter[u][v] >= iterationsMax { // black
-          // set color to mandColor
-          setPixelToMandColor(pixelAddress: pixelAddress)
-          // pixelAddress.pointee = UInt8(0) // red
-          // (pixelAddress + 1).pointee = UInt8(0) // green
-          // (pixelAddress + 2).pointee = UInt8(0) // blue
-          // (pixelAddress + 3).pointee = UInt8(255) // alpha
+          pixelAddress.pointee = UInt8(0) // red
+          (pixelAddress + 1).pointee = UInt8(0) // green
+          (pixelAddress + 2).pointee = UInt8(0) // blue
+          (pixelAddress + 3).pointee = UInt8(255) // alpha
         } // end if
 
         else {
@@ -326,8 +380,8 @@ struct ArtImage {
                 h = blockBound[block]
               } else {
                 h = blockBound[block] +
-                  ((h - blockBound[block]) - yY * (blockBound[block + 1] - blockBound[block])) /
-                  (1 - yY)
+                ((h - blockBound[block]) - yY * (blockBound[block + 1] - blockBound[block])) /
+                (1 - yY)
               }
 
               xX = (h - blockBound[block]) / (blockBound[block + 1] - blockBound[block])
@@ -371,7 +425,7 @@ struct ArtImage {
   }
 
   /**
-   Function to create and return a user-colored MandArt bitmap
+   Function to create and return a user-colored GrandArt bitmap
 
    - Parameters:
    - colors: array of colors
@@ -468,15 +522,15 @@ struct ArtImage {
 
     // Create CGBitmapContext for drawing and converting into image for display
     let context =
-      CGContext(
-        data: rasterBufferPtr,
-        width: imageWidth,
-        height: imageHeight,
-        bitsPerComponent: bitsPerComponent,
-        bytesPerRow: bytesPerRow,
-        space: CGColorSpace(name: CGColorSpace.sRGB)!,
-        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
-      )!
+    CGContext(
+      data: rasterBufferPtr,
+      width: imageWidth,
+      height: imageHeight,
+      bitsPerComponent: bitsPerComponent,
+      bytesPerRow: bytesPerRow,
+      space: CGColorSpace(name: CGColorSpace.sRGB)!,
+      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+    )!
 
     // use CG to draw into the context
     // use any CG drawing routines for drawing into this context
@@ -493,159 +547,6 @@ struct ArtImage {
     let yStarting = 0
     let width: Int = imageWidth
     let height: Int = imageHeight
- /*   
-//  zzzzzzzzzzzzzzzzzzzzzzzz  Our code for finding max slope   
-
-    var fIterGlobalCenter = [Double]()
-    var fIterGlobalNeighbors = [[Double]]()
-    var fIterGlobalNeighborsSorted = [[Double]]()
-    var fIterGlobalNeighborsMax = [Double]()
-    var dFIterGlobal = 0.0
-    var dFIterGlobalMax = 0.0
-    var u = 0
-    var v = 0
-        
-        
- //       print()
- //      print("fIterGlobalCenter", fIterGlobalCenter)
-        
-        for v in 1...(imageHeight - 1)  {
-          for u in 1...(imageHeight - 1) {
-        
-        fIterGlobalCenter = [Double(u), Double(v), fIterGlobal[u][v]]
-
-        fIterGlobalNeighbors = [
-        [Double(u), Double(v+1), fIterGlobal[u][v+1]], 
-        [Double(u), Double(v-1), fIterGlobal[u][v-1]], 
-        [Double(u+1), Double(v), fIterGlobal[u+1][v]], 
-        [Double(u-1), Double(v), fIterGlobal[u-1][v]], 
-        ]
-        
-        fIterGlobalNeighborsSorted = fIterGlobalNeighbors.sorted(){ $0[2] > $1[2] }
-        
-        if (fIterGlobalCenter[2] == iterationsMax) || (fIterGlobalNeighborsSorted[0][2] == iterationsMax){
-          break
-        }
-                
-        fIterGlobalNeighborsMax = fIterGlobalNeighborsSorted[0]
-        
-        if fIterGlobalNeighborsMax[2] > fIterGlobalCenter[2] {
-          dFIterGlobal = fIterGlobalNeighborsMax[2] - fIterGlobalCenter[2]
-          if dFIterGlobal > dFIterGlobalMax {
-            dFIterGlobalMax = dFIterGlobal
-          }
-          } 
-        
-  //      print()
-   //     print("fIterGlobalCenter", fIterGlobalCenter)
-  //      print("dFIterGlobal", dFIterGlobal)
-//        print(fIterGlobalNeighbors)
-//        print()
-//        print(fIterGlobalNeighborsSorted)
-//        print("fIterGlobalNeighborsSorted[0][2]", fIterGlobalNeighborsSorted[0][2])
- //       print("fIterGlobalNeighborsMax", fIterGlobalNeighborsMax)
-        
-        } // end u
-        } // end v
-        
-        print()
-        print("dFIterGlobalMax", dFIterGlobalMax)
-        
-
-
-
-//  zzzzzzzzzzzzzzzzzzzzzzzz  Our code for finding max slope
-*/
-/*    
- // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx   Our code for finding flow path.
-
-    var fIterGlobalPresent = [Double]()
-    var fIterGlobalNeighborsMax = [Double]()
-    var fIterGlobalNeighbors = [[Double]]()
-    var fIterGlobalNeighborsSorted = [[Double]]()
-    var dFIterGlobal = 0.0
-    var u = 417
-    var v = 997
-    var distance = 0.0
-        
-        fIterGlobalPresent = [distance, Double(u), Double(v), fIterGlobal[u][v]]
-        print()
-        print("fIterGlobalPresent", fIterGlobalPresent)
-        
-        repeat  {
-        
-        // Find the location of the neighbor with the max value of fIterGlobal.
-
-        fIterGlobalNeighbors = [
-        [distance, Double(u), Double(v+1), fIterGlobal[u][v+1]], 
-        [distance, Double(u), Double(v-1), fIterGlobal[u][v-1]], 
-        [distance, Double(u+1), Double(v), fIterGlobal[u+1][v]], 
-        [distance, Double(u-1), Double(v), fIterGlobal[u-1][v]], 
-        
-        [distance, Double(u+1), Double(v+2), fIterGlobal[u+1][v+2]], 
-        [distance, Double(u+1), Double(v-2), fIterGlobal[u+1][v-2]],
-        [distance, Double(u-1), Double(v+2), fIterGlobal[u-1][v+2]], 
-        [distance, Double(u-1), Double(v-2), fIterGlobal[u-1][v-2]], 
-        [distance, Double(u+2), Double(v+1), fIterGlobal[u+2][v+1]], 
-        [distance, Double(u+2), Double(v-1), fIterGlobal[u+2][v-1]],
-        [distance, Double(u-2), Double(v+1), fIterGlobal[u-2][v+1]], 
-        [distance, Double(u-2), Double(v-1), fIterGlobal[u-2][v-1]]
-        ]
-        
-        fIterGlobalNeighborsSorted = fIterGlobalNeighbors.sorted { $0[3] > $1[3] }
-        
-        fIterGlobalNeighborsMax = fIterGlobalNeighborsSorted[0]
-        
-        if fIterGlobalNeighborsMax[3] > fIterGlobalPresent[3] {
-          dFIterGlobal = fIterGlobalNeighborsMax[3] - fIterGlobalPresent[3]
-          distance = distance + 2
-          u = Int(fIterGlobalNeighborsMax[1])
-          v = Int(fIterGlobalNeighborsMax[2])
-          fIterGlobalPresent = fIterGlobalNeighborsMax 
-          } else {
-            break
-          }
-        
-        print()
-        print("fIterGlobalPresent", fIterGlobalPresent)
-        print("dFIterGlobal", dFIterGlobal)
-//        print(fIterGlobalNeighbors)
-//        print()
-//        print(fIterGlobalNeighborsSorted)
-//        print("fIterGlobalNeighborsSorted[0][2]", fIterGlobalNeighborsSorted[0][2])
- //       print("fIterGlobalNeighborsMax", fIterGlobalNeighborsMax)
-        
-        } while dFIterGlobal > 0.0
-   
-   
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  Our code for finding flow path
-*/
-      
-    // yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy ChatGPT
-      
- /*     From ChatGPT:
-   let array1 = [1, 2, 2.7]
-let array2 = [3, 7, 42.1]
-let array3 = [5, 1, 21.2]
-let array4 = [3, 2, 18.6]
-
-// Create an array of arrays
-let arrayOfArrays = [array1, array2, array3, array4]
-
-// Sort the array of arrays in descending order based on the third element (index 2)
-let sortedArrayDescending = arrayOfArrays.sorted { $0[2] > $1[2] }
-
-// Print the sorted array in descending order
-print(sortedArrayDescending)
-
-
-// yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy  ChatGPT
-
-*/
-
-
- 
- 
 
     // iterate over all rows for the entire height of the square
     for v in 0 ... (height - 1) {
@@ -668,12 +569,10 @@ print(sortedArrayDescending)
         let pixelAddress: UnsafeMutablePointer<UInt8> = rasterBufferPtr + pixel_offset
 
         if fIterGlobal[u][v] >= iterationsMax { // black
-          // set color to mandColor
-          setPixelToMandColor(pixelAddress: pixelAddress)
-          // pixelAddress.pointee = UInt8(0) // red
-          // (pixelAddress + 1).pointee = UInt8(0) // green
-          // (pixelAddress + 2).pointee = UInt8(0) // blue
-          // (pixelAddress + 3).pointee = UInt8(255) // alpha
+          pixelAddress.pointee = UInt8(0) // red
+          (pixelAddress + 1).pointee = UInt8(0) // green
+          (pixelAddress + 2).pointee = UInt8(0) // blue
+          (pixelAddress + 3).pointee = UInt8(255) // alpha
         } else {
           h = fIterGlobal[u][v] - fIterMin
 
@@ -685,8 +584,8 @@ print(sortedArrayDescending)
                 h = blockBound[block]
               } else {
                 h = blockBound[block] +
-                  ((h - blockBound[block]) - yY * (blockBound[block + 1] - blockBound[block])) /
-                  (1 - yY)
+                ((h - blockBound[block]) - yY * (blockBound[block + 1] - blockBound[block])) /
+                (1 - yY)
               }
 
               xX = (h - blockBound[block]) / (blockBound[block + 1] - blockBound[block])

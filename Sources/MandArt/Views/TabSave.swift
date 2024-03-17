@@ -16,7 +16,7 @@ struct TabSave: View {
           Text("Save Your Art")
             .font(.headline)
             .fontWeight(.medium)
-            .padding(.bottom)
+            .padding(.vertical)
         ) {
           
           Button("Save Picture Inputs (as data file)") {

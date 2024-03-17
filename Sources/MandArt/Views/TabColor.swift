@@ -79,6 +79,8 @@ struct TabColor: View {
             .font(.headline)
             .fontWeight(.medium)
             .frame(maxWidth: .infinity, alignment: .center)
+            .padding(.vertical)
+
         ) {
           HStack {
             Text("From:")
@@ -119,6 +121,7 @@ struct TabColor: View {
             .font(.headline)
             .fontWeight(.medium)
             .frame(maxWidth: .infinity)
+
         ) {
           VStack(alignment: .leading) {
             Text("Click and drag a color number to reorder.")

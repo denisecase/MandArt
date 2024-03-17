@@ -3,6 +3,7 @@
  PictureDefinition
 
  This class is used to manage the user inputs needed to create a MandArt project.
+ It includes default values used to make the opening image.
 
  Overview
 
@@ -28,7 +29,7 @@ import SwiftUI
 @available(macOS 12.0, *)
 struct PictureDefinition: Codable, Identifiable {
   var id = UUID()
-  var xCenter: Double = -0.75
+  var xCenter: Double =  -0.75  // good for opening power 2 only
   var yCenter: Double = 0.0
   var scale: Double = 430.0
   var iterationsMax: Double = 10000.0
@@ -54,14 +55,19 @@ struct PictureDefinition: Codable, Identifiable {
   var huesEstimatedPrintPreview: [Hue] = []
   var huesOptimizedForPrinter: [Hue] = []
   var mandColor: Hue = Hue(num: 0, r:0.0, g: 0.0, b: 0.0)
+  var mandPowerReal: Double = 2.0  // default to MandArt (2)
+  var mandPowerImaginary: Double = 0.0 // default to 0
+
 
   /**
-    Initialize with an array of Hues (sorted rgbs)
+   Initialize with an array of Hues (sorted rgbs)
    - Parameter hues: an array of hues
-    */
+   */
   init(hues: [Hue]) {
     self.hues = hues
     self.mandColor = Hue(num: 0, r: 0.0, g: 0.0, b: 0.0)
+    self.mandPowerReal = 2.0
+    self.mandPowerImaginary = 0.0
   }
 
   init(
@@ -81,7 +87,9 @@ struct PictureDefinition: Codable, Identifiable {
     dFIterMin: Double,
     leftNumber: Int,
     hues: [Hue],
-    mandColor: Hue = Hue(num: 0, r: 0.0, g: 0.0, b: 0.0)
+    mandColor: Hue = Hue(num: 0, r: 0.0, g: 0.0, b: 0.0),
+    mandPowerReal: Double = 2.0,
+    mandPowerImaginary: Double = 2.0
   ) {
     self.xCenter = xCenter
     self.yCenter = yCenter
@@ -100,6 +108,8 @@ struct PictureDefinition: Codable, Identifiable {
     self.leftNumber = leftNumber
     self.hues = hues
     self.mandColor = mandColor
+    self.mandPowerReal = mandPowerReal
+    self.mandPowerImaginary = mandPowerImaginary
   }
 
   // Get a color [Double] based on a number starting at one

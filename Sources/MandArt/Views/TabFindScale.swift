@@ -77,6 +77,8 @@ struct TabFindScale: View {
       Text("Set Magnification")
         .font(.headline)
         .fontWeight(.medium)
+        .padding(.vertical)
+
     ) {
       HStack {
       //  Text("Magnification")
@@ -93,9 +95,7 @@ struct TabFindScale: View {
         .help("Enter the magnification (may take a while).")
         .onAppear {
           scaleString = doc.picdef.scale.customFormattedString()
-
         }
-  
         .onChange(of: doc.picdef.scale) { _ in
           // Update scaleString whenever doc changes
           let newScaleString = doc.picdef.scale.customFormattedString()

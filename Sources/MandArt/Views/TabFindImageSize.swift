@@ -18,10 +18,12 @@ struct TabFindImageSize: View {
       Text("Set Picture Size")
         .font(.headline)
         .fontWeight(.medium)
+        .padding(.vertical)
+
     ) {
       HStack {
         VStack {
-          Text("Width, px:")
+          Text("Width, px")
           DelayedTextFieldInt(
             placeholder: "1100",
             value: $doc.picdef.imageWidth,
@@ -53,7 +55,7 @@ struct TabFindImageSize: View {
         } // end vstack
 
         VStack {
-          Text("Aspect Ratio:")
+          Text("Aspect Ratio")
           Text(String(format: "%.2f", aspectRatio()))
             .padding(10)
             .help("Calculated value of picture width over picture height.")

@@ -98,6 +98,9 @@ extension MandArtDocument {
     "iterationsMax_tries is \(String(picdef.iterationsMax)) \n" +
     "rotation_theta is \(String(picdef.theta)) \n" +
     "smoothing_rSqLimit is \(String(picdef.rSqLimit)) \n" +
+    "mandPowerReal is \(String(picdef.mandPowerReal)) \n" +
+    "mandPowerImaginary is \(String(picdef.mandPowerImaginary)) \n" +
+
     "-----------\n" +
     "TUNE TAB\n" +
     "-----------\n" +
