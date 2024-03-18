@@ -224,20 +224,21 @@ struct ArtImage {
           test1 = 108.0 * an * an * an * an * yy * yy - (xx * xx + yy * yy - 4 * an * an) *
             (xx * xx + yy * yy - 4 * an * an) * (xx * xx + yy * yy - 4 * an * an)
 
-          test2 = (rSq2up + 2 * ac * xx) * (rSq2up + 2 * ac * xx) - 4 * ac * ac * rSq2up
+    //      test2 = (rSq2up + 2 * ac * xx) * (rSq2up + 2 * ac * xx) - 4 * ac * ac * rSq2up
+          test2 = (rSq2up + 2*ac*(yy-cup))*(rSq2up + 2*ac*(yy-cup)) - 4*ac*ac*rSq2up
 
           if test1 > 0 {
-            //  fIter[u][v] = iterationsMax // black
-            //  iter = iterationsMax // black
-            fIter[u][v] = 0.0 // white
-            iter = 0.0 // white
+              fIter[u][v] = iterationsMax // black
+              iter = iterationsMax // black
+       //     fIter[u][v] = 0.0 // white
+       //     iter = 0.0 // white
           } // end if
 
           else if test2 < 0 {
-            // fIter[u][v] = iterationsMax // black
-            // iter = iterationsMax // black
-            fIter[u][v] = 0.0 // white
-            iter = 0.0 // white
+             fIter[u][v] = iterationsMax // black
+             iter = iterationsMax // black
+       //     fIter[u][v] = 0.0 // white
+       //     iter = 0.0 // white
           } // end if
 
           else {
