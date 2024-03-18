@@ -11,7 +11,8 @@ import SwiftUI
 @available(macOS 12.0, *)
 extension PictureDefinition {
   enum CodingKeys: String, CodingKey {
-    case id, xCenter, yCenter, scale, iterationsMax, rSqLimit, imageWidth, imageHeight, nBlocks, spacingColorFar, spacingColorNear, yY, theta, nImage, dFIterMin, leftNumber, hues, huesEstimatedPrintPreview, huesOptimizedForPrinter, mandColor, mandPowerReal, mandPowerImaginary
+    case id, xCenter, yCenter, scale, iterationsMax, rSqLimit, imageWidth, imageHeight, nBlocks, spacingColorFar, spacingColorNear, yY, theta, nImage, dFIterMin, leftNumber, hues,
+         mandColor, mandPowerReal, mandPowerImaginary
   }
 
   init(from decoder: Decoder) throws {
@@ -33,16 +34,18 @@ extension PictureDefinition {
     dFIterMin = try container.decode(Double.self, forKey: .dFIterMin)
     leftNumber = try container.decode(Int.self, forKey: .leftNumber)
     hues = try container.decode([Hue].self, forKey: .hues)
-    huesEstimatedPrintPreview = try container.decodeIfPresent([Hue].self, forKey: .huesEstimatedPrintPreview) ?? []
-    huesOptimizedForPrinter = try container.decodeIfPresent([Hue].self, forKey: .huesOptimizedForPrinter) ?? []
 
     // Decoding mandColor with a default value if not present
     let defaultMandColor = Hue(num: 0, r: 0.0, g: 0.0, b: 0.0) // Default black color
     mandColor = try container.decodeIfPresent(Hue.self, forKey: .mandColor) ?? defaultMandColor
 
-    mandPowerReal = try container.decode(Double.self, forKey: .mandPowerReal)
+    // Decoding mandPowerReal with a default value if not present
+    let defaultMandPowerReal: Double = 2.0
+    mandPowerReal = try container.decodeIfPresent(Double.self, forKey: .mandPowerReal) ?? defaultMandPowerReal
 
-    mandPowerImaginary = try container.decode(Double.self, forKey: .mandPowerImaginary)
+    // Decoding mandPowerImaginary with a default value if not present
+    let defaultMandPowerImaginary: Double = 0.0
+    mandPowerImaginary = try container.decodeIfPresent(Double.self, forKey: .mandPowerImaginary) ?? defaultMandPowerImaginary
 
   }
 }

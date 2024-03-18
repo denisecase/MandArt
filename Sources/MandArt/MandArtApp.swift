@@ -100,9 +100,9 @@ struct MandArtApp: App {
       if shouldShowWelcomeWhenStartingUp {
         WelcomeView()
           .environmentObject(appState)
-          .onAppear {
-            NSWindow.allowsAutomaticWindowTabbing = false
-          }
+//          .onAppear {
+//            NSWindow.allowsAutomaticWindowTabbing = false
+//          }
       } else {
         ContentView(doc: defaultDocument)
           .background(WindowAccessor { window in

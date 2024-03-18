@@ -52,8 +52,6 @@ struct PictureDefinition: Codable, Identifiable {
     Hue(num: 5, r: 0.0, g: 0.0, b: 255.0),
     Hue(num: 6, r: 0.0, g: 255.0, b: 255.0),
   ]
-  var huesEstimatedPrintPreview: [Hue] = []
-  var huesOptimizedForPrinter: [Hue] = []
   var mandColor: Hue = Hue(num: 0, r:0.0, g: 0.0, b: 0.0)
   var mandPowerReal: Double = 2.0  // default to MandArt (2)
   var mandPowerImaginary: Double = 0.0 // default to 0
