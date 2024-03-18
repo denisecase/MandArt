@@ -143,6 +143,7 @@ struct ArtImage {
     let pi = 3.14159
     let thetaR: Double = pi * shapeInputs.theta / 180.0 // R for Radians
     var rSq = 0.0
+    var rSq2up = 0.0 // mandArt3
     var rSqMax = 0.0
     var x0 = 0.0
     var y0 = 0.0
@@ -164,12 +165,16 @@ struct ArtImage {
     var fIterMinTop = 0.0
     var fIterMins = [Double](repeating: 0.0, count: 4)
     var fIterMin = 0.0
+    let an = 0.192450148 // mandart3
+    let ac = 0.079717468 // mandart3
+    let cup = 4*an + 4*ac // mandart3
     var p = 0.0
     var test1 = 0.0
     var test2 = 0.0
 
     let rSqLimit = shapeInputs.rSqLimit
-    rSqMax = 1.01 * (rSqLimit + 2) * (rSqLimit + 2)
+    rSqMax = (rSqLimit + 2) * (rSqLimit + 2) * (rSqLimit + 2) // mandart3
+    // rSqMax = 1.01 * (rSqLimit + 2) * (rSqLimit + 2)
     gGML = log(log(rSqMax)) - log(log(rSqLimit))
     gGL = log(log(rSqLimit))
 
@@ -187,6 +192,8 @@ struct ArtImage {
         iter = 0.0
 
         if isMandArt() {
+        
+          // if mandart (2).......
           p = sqrt((xx - 0.25) * (xx - 0.25) + yy * yy)
           test1 = p - 2.0 * p * p + 0.25
           test2 = (xx + 1.0) * (xx + 1.0) + yy * yy
@@ -207,7 +214,39 @@ struct ArtImage {
               iter = Double(i)
             }
           } // end else
+          
+          // end mandart (2).....
+          
         } else if isMandArt3() {
+        
+           // if mandart 3..............
+           
+           // BHJ shortcut mandart 3 logic here....
+           
+          rSq2up = xx * xx + (yy - cup) * (yy - cup)
+
+          test1 = 108.0*an*an*an*an*yy*yy - (xx*xx + yy*yy - 4*an*an)*(xx*xx + yy*yy - 4*an*an)*(xx*xx + yy*yy - 4*an*an)
+
+          test2 = (rSq2up + 2*ac*xx)*(rSq2up + 2*ac*xx) - 4*ac*ac*rSq2up
+
+          if test1 > 0 {
+              //  fIter[u][v] = iterationsMax // black
+              //  iter = iterationsMax // black
+              fIter[u][v] = 0.0 // white
+              iter = 0.0 // white
+          } // end if
+              
+          else if test2 < 0 {
+              // fIter[u][v] = iterationsMax // black
+              // iter = iterationsMax // black
+              fIter[u][v] = 0.0 // white
+              iter = 0.0 // white
+          } // end if
+          
+          else {
+          
+              // continue with drawing mandart3 .......
+           
           for i in 1 ... Int(iterationsMax) {
             if rSq >= rSqLimit {
               break
@@ -220,7 +259,15 @@ struct ArtImage {
             rSq = pow(xx, 2) + pow(yy, 2)
             iter = Double(i)
           }
+          
+          }  // end else continue with drawing mandart 3
+          
+          // end logic for mandart 3........
+          
         } else {
+        
+          // if grandart .....
+          
           for i in 1 ... Int(iterationsMax) {
             if rSq >= rSqLimit {
               break
@@ -237,7 +284,9 @@ struct ArtImage {
             rSq = xx * xx + yy * yy
             iter = Double(i)
           }
-        } // end exponent differences
+          
+          
+        } // end logic for grandart.... and end exponent differences
 
         if iter < iterationsMax {
           dIter = Double(-(log(log(rSq)) - gGL) / gGML)
