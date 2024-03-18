@@ -9,13 +9,12 @@ struct TabFindImagePower: View {
   var body: some View {
     Section(
       header:
-        Text("Set Max Tries and Power")
+      Text("Set Max Tries and Power")
         .font(.headline)
         .fontWeight(.medium)
         .padding(.vertical)
 
     ) {
-
       HStack {
         Text("Maximum number of tries")
 
@@ -36,7 +35,6 @@ struct TabFindImagePower: View {
       } // end hstack sharpening
       .padding(.horizontal)
 
-      
       HStack {
         VStack {
           Text("Real Power")

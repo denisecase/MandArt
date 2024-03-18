@@ -43,7 +43,7 @@ struct TabbedView: View {
           Label("4. Save", systemImage: "circle")
         }.tag(3)
     } // end tabview
-    
+
     .padding(2)
   }
 }

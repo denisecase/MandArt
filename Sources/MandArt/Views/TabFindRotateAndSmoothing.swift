@@ -7,10 +7,9 @@ struct TabFindRotateAndSmoothing: View {
   @Binding var requiresFullCalc: Bool
 
   var body: some View {
-
     Section(
       header:
-        Text("Set Rotation and Smoothing")
+      Text("Set Rotation and Smoothing")
         .font(.headline)
         .fontWeight(.medium)
         .padding(.vertical)
@@ -33,8 +32,6 @@ struct TabFindRotateAndSmoothing: View {
           requiresFullCalc = true
         }
       } // end hstack theta
-
-
 
       HStack {
         Text("Color smoothing limit:")

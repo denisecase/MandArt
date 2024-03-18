@@ -3,7 +3,6 @@ import Foundation
 enum MAFormatters {
   // USER INPUT CUSTOM FORMATTERS - BASIC  .........................
 
-
   static var fmtImageWidthHeight: NumberFormatter {
     let formatter = NumberFormatter()
     formatter.numberStyle = .decimal
@@ -13,18 +12,17 @@ enum MAFormatters {
     formatter.maximum = 100_000
     return formatter
   }
-  
-    static var fmtScale: NumberFormatter {
+
+  static var fmtScale: NumberFormatter {
     let formatter = NumberFormatter()
     formatter.numberStyle = .decimal
-    //formatter.isPartialStringValidationEnabled = true
+    // formatter.isPartialStringValidationEnabled = true
     formatter.minimumFractionDigits = 0
     formatter.maximumFractionDigits = 15
     formatter.minimum = 1
     formatter.maximum = 100_000_000_000_000_000
     return formatter
   }
-
 
   static var fmtXY: NumberFormatter {
     let formatter = NumberFormatter()
@@ -61,21 +59,20 @@ enum MAFormatters {
     return formatter
   }
 
-/*  static var fmtScaleMultiplier: NumberFormatter {
-    let formatter = NumberFormatter()
-    formatter.numberStyle = .decimal
-    formatter.isPartialStringValidationEnabled = true
-    formatter.maximumFractionDigits = 4
-    formatter.minimumFractionDigits = 0
-    formatter.roundingMode = .halfUp
-    formatter.minimum = 0.0001
-    formatter.maximum = 99.9999
-    return formatter
-    
-   // This one doesn't work, so leave it out. 
-    
-    
-  }*/
+  /*  static var fmtScaleMultiplier: NumberFormatter {
+     let formatter = NumberFormatter()
+     formatter.numberStyle = .decimal
+     formatter.isPartialStringValidationEnabled = true
+     formatter.maximumFractionDigits = 4
+     formatter.minimumFractionDigits = 0
+     formatter.roundingMode = .halfUp
+     formatter.minimum = 0.0001
+     formatter.maximum = 99.9999
+     return formatter
+
+    // This one doesn't work, so leave it out.
+
+   }*/
 
   // USER INPUT CUSTOM FORMATTERS - GRADIENT  ....................
 

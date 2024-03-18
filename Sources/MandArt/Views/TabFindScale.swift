@@ -17,9 +17,9 @@ struct TabFindScale: View {
   @State private var scaleString: String = ""
   @State private var editedMultiplier: Double = 5.0 {
     didSet {
-  /*    if editedMultiplier < 1 {
-        editedMultiplier = 1
-      }*/
+      /*    if editedMultiplier < 1 {
+         editedMultiplier = 1
+       }*/
       scaleMultiplier = editedMultiplier
       didChange.toggle()
     }
@@ -35,7 +35,6 @@ struct TabFindScale: View {
     _requiresFullCalc = requiresFullCalc
     _scale = State(initialValue: doc.picdef.scale)
     _scaleString = State(initialValue: doc.picdef.scale.customFormattedString())
-
   }
 
   /// Updates the scale value and synchronizes it across the document, the scale state, and the text field.
@@ -81,14 +80,16 @@ struct TabFindScale: View {
 
     ) {
       HStack {
-      //  Text("Magnification")
-        TextField("",
-                  text: $scaleString,
-                  onCommit: {
-          if let newScale = Double(scaleString) {
-            updateScale(newScale: newScale)
+        //  Text("Magnification")
+        TextField(
+          "",
+          text: $scaleString,
+          onCommit: {
+            if let newScale = Double(scaleString) {
+              updateScale(newScale: newScale)
+            }
           }
-        })
+        )
         .textFieldStyle(.roundedBorder)
         .multilineTextAlignment(.trailing)
         .frame(maxWidth: 180)
@@ -140,9 +141,9 @@ struct TabFindScale: View {
                 }
               }),
               onCommit: {
-        /*        if editedMultiplier < 1 {
-                  editedMultiplier = 1
-                }*/
+                /*        if editedMultiplier < 1 {
+                   editedMultiplier = 1
+                 }*/
                 scaleMultiplier = editedMultiplier
                 didChange.toggle()
               }

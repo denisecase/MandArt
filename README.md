@@ -35,5 +35,5 @@ SwiftUI macOS app to create custom art using the Mandelbrot set.
 - 2020-07-15. Started Mand4 using Storyboard. 
 - 2020-08-14. Started Mand5 using SwiftUI.
 - 2023-03-04. MandArt beta release.
-- 2024-01.    GrandArt
-- 2024-01.    MandArt3
+- 2024-01.    GrandArt: any exponent
+- 2024-01.    MandArt3: efficient calculation with exponent 3

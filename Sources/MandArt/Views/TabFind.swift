@@ -10,7 +10,6 @@ struct TabFind: View {
   var body: some View {
     ScrollView {
       VStack {
-
         TabFindDefaultButtons(doc: doc, requiresFullCalc: $requiresFullCalc)
 
         TabFindImageSize(doc: doc, requiresFullCalc: $requiresFullCalc)

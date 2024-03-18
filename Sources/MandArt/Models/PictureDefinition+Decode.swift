@@ -11,7 +11,8 @@ import SwiftUI
 @available(macOS 12.0, *)
 extension PictureDefinition {
   enum CodingKeys: String, CodingKey {
-    case id, xCenter, yCenter, scale, iterationsMax, rSqLimit, imageWidth, imageHeight, nBlocks, spacingColorFar, spacingColorNear, yY, theta, nImage, dFIterMin, leftNumber, hues,
+    case id, xCenter, yCenter, scale, iterationsMax, rSqLimit, imageWidth, imageHeight, nBlocks, spacingColorFar,
+         spacingColorNear, yY, theta, nImage, dFIterMin, leftNumber, hues,
          mandColor, mandPowerReal, mandPowerImaginary
   }
 
@@ -40,12 +41,12 @@ extension PictureDefinition {
     mandColor = try container.decodeIfPresent(Hue.self, forKey: .mandColor) ?? defaultMandColor
 
     // Decoding mandPowerReal with a default value if not present
-    let defaultMandPowerReal: Double = 2.0
+    let defaultMandPowerReal = 2.0
     mandPowerReal = try container.decodeIfPresent(Double.self, forKey: .mandPowerReal) ?? defaultMandPowerReal
 
     // Decoding mandPowerImaginary with a default value if not present
-    let defaultMandPowerImaginary: Double = 0.0
-    mandPowerImaginary = try container.decodeIfPresent(Double.self, forKey: .mandPowerImaginary) ?? defaultMandPowerImaginary
-
+    let defaultMandPowerImaginary = 0.0
+    mandPowerImaginary = try container
+      .decodeIfPresent(Double.self, forKey: .mandPowerImaginary) ?? defaultMandPowerImaginary
   }
 }

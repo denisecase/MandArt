@@ -13,7 +13,11 @@ struct TabColor: View {
     Binding<Color>(
       get: {
         // Convert Hue to Color
-        Color(red: doc.picdef.mandColor.r / 255, green: doc.picdef.mandColor.g / 255, blue: doc.picdef.mandColor.b / 255)
+        Color(
+          red: doc.picdef.mandColor.r / 255,
+          green: doc.picdef.mandColor.g / 255,
+          blue: doc.picdef.mandColor.b / 255
+        )
       },
       set: {
         // Convert Color to Hue.
@@ -30,7 +34,7 @@ struct TabColor: View {
     for (index, _) in doc.picdef.hues.enumerated() {
       doc.picdef.hues[index].num = index + 1
     }
-    self.didChange.toggle()
+    didChange.toggle()
   }
 
   var calculatedRightNumber: Int {
@@ -51,7 +55,6 @@ struct TabColor: View {
             .frame(maxWidth: .infinity, alignment: .center)
 
         ) {
-
           HStack {
             Text("Choose Color for Mandelbrot Set:")
             ColorPicker("", selection: mandColorBinding, supportsOpacity: false)
@@ -61,11 +64,9 @@ struct TabColor: View {
             Button("Add New Color") {
               doc.addHue()
               self.updateArt()
-
-
             }
-              .help("Add a new color.")
-              .padding([.bottom], 2)
+            .help("Add a new color.")
+            .padding([.bottom], 2)
           }
 
           TabColorList(doc: doc, requiresFullCalc: $requiresFullCalc, showGradient: $showGradient)

@@ -18,6 +18,14 @@ struct WindowAccessor: NSViewRepresentable {
     let view = NSView()
     DispatchQueue.main.async {
       self.callback(view.window)
+      if let window = view.window {
+        let screenSize = NSScreen.main?.frame.size ?? CGSize(width: 800, height: 600)
+        let width = screenSize.width * MandArtApp.AppConstants.defaultPercentWidth
+        let height = screenSize.height * MandArtApp.AppConstants.defaultPercentHeight
+        let x = (screenSize.width - width) / 2
+        let y = (screenSize.height - height) / 2
+        window.setFrame(NSRect(x: x, y: y, width: width, height: height), display: true)
+      }
     }
     return view
   }

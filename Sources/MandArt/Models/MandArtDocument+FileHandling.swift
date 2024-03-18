@@ -76,7 +76,7 @@ extension MandArtDocument {
   }
 
   func getDefaultImageFileName() -> String {
-    let winTitle = self.getCurrentWindowTitle()
+    let winTitle = getCurrentWindowTitle()
     var justname = winTitle.replacingOccurrences(of: ".mandart", with: "")
     if justname.isEmpty {
       justname = "MyArt"
@@ -87,32 +87,32 @@ extension MandArtDocument {
 
   func getImageComment() -> String {
     var comment =
-    "-----------\n" +
-    "FIND TAB\n" +
-    "-----------\n" +
-    "width is \(String(picdef.imageWidth)) \n" +
-    "height is \(String(picdef.imageHeight)) \n" +
-    "horizontal_xCenter is \(String(picdef.xCenter)) \n" +
-    "vertical_yCenter is \(String(picdef.yCenter)) \n" +
-    "magnification_scale is \(String(picdef.scale)) \n" +
-    "iterationsMax_tries is \(String(picdef.iterationsMax)) \n" +
-    "rotation_theta is \(String(picdef.theta)) \n" +
-    "smoothing_rSqLimit is \(String(picdef.rSqLimit)) \n" +
-    "mandPowerReal is \(String(picdef.mandPowerReal)) \n" +
-    "mandPowerImaginary is \(String(picdef.mandPowerImaginary)) \n" +
+      "-----------\n" +
+      "FIND TAB\n" +
+      "-----------\n" +
+      "width is \(String(picdef.imageWidth)) \n" +
+      "height is \(String(picdef.imageHeight)) \n" +
+      "horizontal_xCenter is \(String(picdef.xCenter)) \n" +
+      "vertical_yCenter is \(String(picdef.yCenter)) \n" +
+      "magnification_scale is \(String(picdef.scale)) \n" +
+      "iterationsMax_tries is \(String(picdef.iterationsMax)) \n" +
+      "rotation_theta is \(String(picdef.theta)) \n" +
+      "smoothing_rSqLimit is \(String(picdef.rSqLimit)) \n" +
+      "mandPowerReal is \(String(picdef.mandPowerReal)) \n" +
+      "mandPowerImaginary is \(String(picdef.mandPowerImaginary)) \n" +
 
-    "-----------\n" +
-    "TUNE TAB\n" +
-    "-----------\n" +
-    "spacingColorFar_fromMand is \(String(picdef.spacingColorFar)) \n" +
-    "spacingColorNear_toMand is \(String(picdef.spacingColorNear)) \n" +
-    "min_tries_dFIterMin is \(String(picdef.dFIterMin)) \n" +
-    "nBlocks is \(String(picdef.nBlocks)) \n" +
-    "hold_fraction_yY is \(String(picdef.yY)) \n" +
-    "-----------\n" +
-    "COLOR TAB\n" +
-    "-----------\n" +
-    "leftNumber is \(String(picdef.leftNumber)) \n"
+      "-----------\n" +
+      "TUNE TAB\n" +
+      "-----------\n" +
+      "spacingColorFar_fromMand is \(String(picdef.spacingColorFar)) \n" +
+      "spacingColorNear_toMand is \(String(picdef.spacingColorNear)) \n" +
+      "min_tries_dFIterMin is \(String(picdef.dFIterMin)) \n" +
+      "nBlocks is \(String(picdef.nBlocks)) \n" +
+      "hold_fraction_yY is \(String(picdef.yY)) \n" +
+      "-----------\n" +
+      "COLOR TAB\n" +
+      "-----------\n" +
+      "leftNumber is \(String(picdef.leftNumber)) \n"
 
     comment += "mandColor: R=\(picdef.mandColor.r), G=\(picdef.mandColor.g), B=\(picdef.mandColor.b)\n"
 
@@ -126,7 +126,7 @@ extension MandArtDocument {
   func beforeSaveImage() {
     var data: Data
     do {
-      data = try JSONEncoder().encode(self.picdef)
+      data = try JSONEncoder().encode(picdef)
     } catch {
       print("Error encoding picdef.")
       print("Closing all windows and exiting with error code 98.")
@@ -142,8 +142,8 @@ extension MandArtDocument {
       exit(99)
     }
     // trigger state change to force a current image
-    self.picdef.imageHeight += 1
-    self.picdef.imageHeight -= 1
+    picdef.imageHeight += 1
+    picdef.imageHeight -= 1
   }
 
   // requires Cocoa
@@ -151,22 +151,38 @@ extension MandArtDocument {
   func setPNGDescription(imageURL: URL, description: String) throws {
     // Get the image data
     guard let imageData = try? Data(contentsOf: imageURL) else {
-      throw NSError(domain: "com.bhj.mandart", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to read image data"])
+      throw NSError(
+        domain: "com.bhj.mandart",
+        code: 0,
+        userInfo: [NSLocalizedDescriptionKey: "Failed to read image data"]
+      )
     }
 
     // Create a CGImageSource from the image data
     guard let imageSource = CGImageSourceCreateWithData(imageData as CFData, nil) else {
-      throw NSError(domain: "com.bhj.mandart", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to create image source"])
+      throw NSError(
+        domain: "com.bhj.mandart",
+        code: 0,
+        userInfo: [NSLocalizedDescriptionKey: "Failed to create image source"]
+      )
     }
 
     // Create a CGImageDestination to write the image with metadata
     guard let destination = CGImageDestinationCreateWithURL(imageURL as CFURL, kUTTypePNG, 1, nil) else {
-      throw NSError(domain: "com.bhj.mandart", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to create image destination"])
+      throw NSError(
+        domain: "com.bhj.mandart",
+        code: 0,
+        userInfo: [NSLocalizedDescriptionKey: "Failed to create image destination"]
+      )
     }
 
     // Get the image properties dictionary
     guard let properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as? [CFString: Any] else {
-      throw NSError(domain: "com.bhj.mandart", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to get image properties"])
+      throw NSError(
+        domain: "com.bhj.mandart",
+        code: 0,
+        userInfo: [NSLocalizedDescriptionKey: "Failed to get image properties"]
+      )
     }
 
     // Create a mutable copy of the properties dictionary
@@ -182,7 +198,11 @@ extension MandArtDocument {
 
     // Finalize the destination to write the image with metadata to disk
     guard CGImageDestinationFinalize(destination) else {
-      throw NSError(domain: "com.bhj.mandart", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to write image with metadata to disk"])
+      throw NSError(
+        domain: "com.bhj.mandart",
+        code: 0,
+        userInfo: [NSLocalizedDescriptionKey: "Failed to write image with metadata to disk"]
+      )
     }
   }
 
@@ -198,7 +218,7 @@ extension MandArtDocument {
 
     // Set the description attribute in the PNG metadata
     let pngMetadata: [String: Any] = [
-      kCGImagePropertyPNGDescription as String: comment
+      kCGImagePropertyPNGDescription as String: comment,
     ]
 
     savePanel.begin { result in
@@ -207,7 +227,8 @@ extension MandArtDocument {
         let ciImage = CIImage(data: imageData, options: [.properties: pngMetadata])
         let context = CIContext(options: nil)
 
-        guard let pngData = context.pngRepresentation(of: ciImage!, format: .RGBA8, colorSpace: ciImage!.colorSpace!) else {
+        guard let pngData = context.pngRepresentation(of: ciImage!, format: .RGBA8, colorSpace: ciImage!.colorSpace!)
+        else {
           print("Error: Failed to generate PNG data.")
           return
         }
@@ -220,11 +241,10 @@ extension MandArtDocument {
           let imageURL = url
           let description = comment
           try self.setPNGDescription(imageURL: imageURL, description: description)
-        } catch let error {
+        } catch {
           print("Error saving image: \(error)")
         }
       }
     }
   }
-
 }
