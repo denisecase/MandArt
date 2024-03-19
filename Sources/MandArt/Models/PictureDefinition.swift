@@ -54,7 +54,7 @@ struct PictureDefinition: Codable, Identifiable {
   ]
   var mandColor: Hue = .init(num: 0, r: 0.0, g: 0.0, b: 0.0)
   var mandPowerReal: Double = 2.0 // default to MandArt (2)
-  var mandPowerImaginary: Double = 0.0 // default to 0
+ // var mandPowerImaginary: Double = 0.0 // default to 0
 
   /**
    Initialize with an array of Hues (sorted rgbs)
@@ -64,7 +64,7 @@ struct PictureDefinition: Codable, Identifiable {
     self.hues = hues
     mandColor = Hue(num: 0, r: 0.0, g: 0.0, b: 0.0)
     mandPowerReal = 2.0
-    mandPowerImaginary = 0.0
+ //   mandPowerImaginary = 0.0
   }
 
   init(
@@ -85,8 +85,8 @@ struct PictureDefinition: Codable, Identifiable {
     leftNumber: Int,
     hues: [Hue],
     mandColor: Hue = Hue(num: 0, r: 0.0, g: 0.0, b: 0.0),
-    mandPowerReal: Double = 2.0,
-    mandPowerImaginary: Double = 2.0
+    mandPowerReal: Double = 2.0//,
+  //  mandPowerImaginary: Double = 2.0
   ) {
     self.xCenter = xCenter
     self.yCenter = yCenter
@@ -106,7 +106,7 @@ struct PictureDefinition: Codable, Identifiable {
     self.hues = hues
     self.mandColor = mandColor
     self.mandPowerReal = mandPowerReal
-    self.mandPowerImaginary = mandPowerImaginary
+  //  self.mandPowerImaginary = mandPowerImaginary
   }
 
   // Get a color [Double] based on a number starting at one

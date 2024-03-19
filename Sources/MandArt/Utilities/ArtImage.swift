@@ -25,7 +25,7 @@ struct ArtImageColorInputs {
 
 struct ArtImagePowerInputs {
   let mandPowerReal: Double
-  let mandPowerImaginary: Double
+//  let mandPowerImaginary: Double
 }
 
 /// Global array to hold iteration values for Mandelbrot calculations.
@@ -59,21 +59,21 @@ struct ArtImage {
       yY_input: picdef.yY
     )
     powerInputs = ArtImagePowerInputs(
-      mandPowerReal: picdef.mandPowerReal,
-      mandPowerImaginary: picdef.mandPowerImaginary
+      mandPowerReal: picdef.mandPowerReal//,
+   //   mandPowerImaginary: picdef.mandPowerImaginary
     )
   }
 
   func isMandArt() -> Bool {
-    return powerInputs.mandPowerImaginary == 0.0 && powerInputs.mandPowerReal == 2.0
+    return/* powerInputs.mandPowerImaginary == 0.0 &&*/ powerInputs.mandPowerReal == 2.0
   }
 
   func isMandArt3() -> Bool {
-    return powerInputs.mandPowerImaginary == 0 && powerInputs.mandPowerReal == 3.0
+    return /*powerInputs.mandPowerImaginary == 0 && */powerInputs.mandPowerReal == 3.0
   }
 
   // only in GrandArt
-  func complexPow(baseX: Double, baseY: Double, powerReal: Double, powerImaginary: Double = 0.0) -> (Double, Double) {
+  func complexPow(baseX: Double, baseY: Double, powerReal: Double/*, powerImaginary: Double = 0.0*/) -> (Double, Double) {
     if isMandArt() {
       // Special case for Mandelbrot set (power of 2)
       let xTemp = baseX * baseX - baseY * baseY
@@ -87,7 +87,8 @@ struct ArtImage {
       let xTemp = (xSquared - 3.0 * ySquared) * baseX
       let newY = (3.0 * xSquared - ySquared) * baseY
       return (xTemp, newY)
-    } else if powerInputs.mandPowerImaginary == 0.0 {
+    }
+     else /*if powerInputs.mandPowerImaginary == 0.0 */{
       // Case for real powers
       let r = sqrt(baseX * baseX + baseY * baseY)
       let theta = atan2(baseY, baseX)
@@ -97,8 +98,8 @@ struct ArtImage {
       let newX = newR * cos(newTheta)
       let newY = newR * sin(newTheta)
       return (newX, newY)
-    } else {
-      // General case for complex powers (real + imaginary)
+    }/* else {
+      // General case for complex powers (real/* + imaginary*/)
       let r = sqrt(baseX * baseX + baseY * baseY)
       let theta = atan2(baseY, baseX)
       let newR = pow(r, Double(powerReal)) * exp(-Double(powerImaginary) * theta)
@@ -107,7 +108,7 @@ struct ArtImage {
       let newX = newR * cos(newTheta)
       let newY = newR * sin(newTheta)
       return (newX, newY)
-    }
+    }*/
   }
 
   /**
@@ -281,8 +282,8 @@ struct ArtImage {
             let (newX, newY) = complexPow(
               baseX: xx,
               baseY: yy,
-              powerReal: powerInputs.mandPowerReal,
-              powerImaginary: powerInputs.mandPowerImaginary
+              powerReal: powerInputs.mandPowerReal//,
+      //        powerImaginary: powerInputs.mandPowerImaginary
             )
             xx = newX + x0
             yy = newY + y0

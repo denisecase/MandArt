@@ -99,7 +99,7 @@ extension MandArtDocument {
       "rotation_theta is \(String(picdef.theta)) \n" +
       "smoothing_rSqLimit is \(String(picdef.rSqLimit)) \n" +
       "mandPowerReal is \(String(picdef.mandPowerReal)) \n" +
-      "mandPowerImaginary is \(String(picdef.mandPowerImaginary)) \n" +
+  //    "mandPowerImaginary is \(String(picdef.mandPowerImaginary)) \n" +
 
       "-----------\n" +
       "TUNE TAB\n" +

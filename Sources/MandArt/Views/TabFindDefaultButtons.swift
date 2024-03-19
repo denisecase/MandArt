@@ -34,7 +34,7 @@ struct TabFindDefaultButtons: View {
       doc.picdef.iterationsMax = 1000.0
     }
     doc.picdef.mandPowerReal = mandPowerReal
-    doc.picdef.mandPowerImaginary = 0.0
+  //  doc.picdef.mandPowerImaginary = 0.0
     didChange = !didChange // Force redraw if needed
     requiresFullCalc = true
   }

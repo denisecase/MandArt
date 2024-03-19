@@ -13,7 +13,7 @@ extension PictureDefinition {
   enum CodingKeys: String, CodingKey {
     case id, xCenter, yCenter, scale, iterationsMax, rSqLimit, imageWidth, imageHeight, nBlocks, spacingColorFar,
          spacingColorNear, yY, theta, nImage, dFIterMin, leftNumber, hues,
-         mandColor, mandPowerReal, mandPowerImaginary
+         mandColor, mandPowerReal/*, mandPowerImaginary*/
   }
 
   init(from decoder: Decoder) throws {
@@ -45,8 +45,8 @@ extension PictureDefinition {
     mandPowerReal = try container.decodeIfPresent(Double.self, forKey: .mandPowerReal) ?? defaultMandPowerReal
 
     // Decoding mandPowerImaginary with a default value if not present
-    let defaultMandPowerImaginary = 0.0
-    mandPowerImaginary = try container
-      .decodeIfPresent(Double.self, forKey: .mandPowerImaginary) ?? defaultMandPowerImaginary
+ //   let defaultMandPowerImaginary = 0.0
+ //   mandPowerImaginary = try container
+  //    .decodeIfPresent(Double.self, forKey: .mandPowerImaginary) ?? defaultMandPowerImaginary
   }
 }

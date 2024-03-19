@@ -56,7 +56,7 @@ struct TabFindImagePower: View {
         } // end vstack
         .padding(.trailing)
 
-        VStack {
+    /*    VStack {
           Text("Imaginary Power")
           Text("Between 0 and 12")
           DelayedTextFieldDouble(
@@ -69,7 +69,7 @@ struct TabFindImagePower: View {
           .onChange(of: doc.picdef.mandPowerImaginary) { _ in
             requiresFullCalc = true
           }
-        } // end vstack
+        } // end vstack*/
       }
     }
     Divider()
