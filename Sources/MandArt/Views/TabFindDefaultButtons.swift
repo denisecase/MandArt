@@ -21,7 +21,15 @@ struct TabFindDefaultButtons: View {
     if mandPowerReal == 2.0 {
       doc.picdef.xCenter = -0.75
       doc.picdef.iterationsMax = 10000.0
-    } else {
+      print(doc.picdef.xCenter)
+    } else if mandPowerReal == 3.0 {
+      doc.picdef.xCenter = 0.0
+      doc.picdef.iterationsMax = 10000.0
+      doc.picdef.scale = 360.0
+      print(doc.picdef.scale)
+    }
+    
+    else {
       doc.picdef.xCenter = 0.0
       doc.picdef.iterationsMax = 1000.0
     }

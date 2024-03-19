@@ -142,6 +142,7 @@ struct ArtImage {
     let thetaR: Double = pi * shapeInputs.theta / 180.0 // R for Radians
     var rSq = 0.0
     var rSq2up = 0.0 // mandArt3
+    var rSq2down = 0.0 // mandArt3
     var rSqMax = 0.0
     var x0 = 0.0
     var y0 = 0.0
@@ -169,6 +170,7 @@ struct ArtImage {
     var p = 0.0
     var test1 = 0.0
     var test2 = 0.0
+    var test3 = 0.0
 
     let rSqLimit = shapeInputs.rSqLimit
     rSqMax = (rSqLimit + 2) * (rSqLimit + 2) * (rSqLimit + 2) // mandart3
@@ -220,25 +222,33 @@ struct ArtImage {
           // BHJ shortcut mandart 3 logic here....
 
           rSq2up = xx * xx + (yy - cup) * (yy - cup)
+          rSq2down = xx * xx + (yy + cup) * (yy + cup)
 
           test1 = 108.0 * an * an * an * an * yy * yy - (xx * xx + yy * yy - 4 * an * an) *
             (xx * xx + yy * yy - 4 * an * an) * (xx * xx + yy * yy - 4 * an * an)
 
-    //      test2 = (rSq2up + 2 * ac * xx) * (rSq2up + 2 * ac * xx) - 4 * ac * ac * rSq2up
           test2 = (rSq2up + 2*ac*(yy-cup))*(rSq2up + 2*ac*(yy-cup)) - 4*ac*ac*rSq2up
+          test3 = (rSq2down - 2*ac*(yy+cup))*(rSq2down - 2*ac*(yy+cup)) - 4*ac*ac*rSq2down
 
-          if test1 > 0 {
+          if test1 > 0 {  // nephroid
               fIter[u][v] = iterationsMax // black
               iter = iterationsMax // black
        //     fIter[u][v] = 0.0 // white
        //     iter = 0.0 // white
           } // end if
 
-          else if test2 < 0 {
+          else if test2 < 0 { // upper cardioid
              fIter[u][v] = iterationsMax // black
-             iter = iterationsMax // black
+            iter = iterationsMax // black
        //     fIter[u][v] = 0.0 // white
        //     iter = 0.0 // white
+          } // end if
+          
+          else if test3 < 0 { // lower cardioid
+             fIter[u][v] = iterationsMax // black
+            iter = iterationsMax // black
+      //      fIter[u][v] = 0.0 // white
+      //      iter = 0.0 // white
           } // end if
 
           else {
