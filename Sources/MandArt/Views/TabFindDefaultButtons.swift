@@ -19,19 +19,34 @@ struct TabFindDefaultButtons: View {
 
   func showDefaultMandArt(mandPowerReal: Int) {
     if mandPowerReal == 2 {
+      doc.picdef.imageWidth = 1100
+      doc.picdef.imageHeight = 1000
       doc.picdef.xCenter = -0.75
+      doc.picdef.yCenter = 0.0
+      doc.picdef.theta = 0.0
+      doc.picdef.scale = 430.0
       doc.picdef.iterationsMax = 10000.0
-      print(doc.picdef.xCenter)
+      doc.picdef.rSqLimit = 400.0
     } else if mandPowerReal == 3 {
+      doc.picdef.imageWidth = 1100
+      doc.picdef.imageHeight = 1000
       doc.picdef.xCenter = 0.0
+      doc.picdef.yCenter = 0.0
+      doc.picdef.theta = 0.0
       doc.picdef.iterationsMax = 10000.0
       doc.picdef.scale = 360.0
-      print(doc.picdef.scale)
+      doc.picdef.rSqLimit = 400.0
     }
     
     else {
+      doc.picdef.imageWidth = 1100
+      doc.picdef.imageHeight = 1000
       doc.picdef.xCenter = 0.0
+      doc.picdef.yCenter = 0
+      doc.picdef.theta = 0.0
       doc.picdef.iterationsMax = 1000.0
+      doc.picdef.scale = 430.0
+      doc.picdef.rSqLimit = 400.0
     }
     doc.picdef.mandPowerReal = mandPowerReal
   //  doc.picdef.mandPowerImaginary = 0.0
