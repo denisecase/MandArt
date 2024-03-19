@@ -17,12 +17,12 @@ struct TabFindDefaultButtons: View {
     _requiresFullCalc = requiresFullCalc
   }
 
-  func showDefaultMandArt(mandPowerReal: Double) {
-    if mandPowerReal == 2.0 {
+  func showDefaultMandArt(mandPowerReal: Int) {
+    if mandPowerReal == 2 {
       doc.picdef.xCenter = -0.75
       doc.picdef.iterationsMax = 10000.0
       print(doc.picdef.xCenter)
-    } else if mandPowerReal == 3.0 {
+    } else if mandPowerReal == 3 {
       doc.picdef.xCenter = 0.0
       doc.picdef.iterationsMax = 10000.0
       doc.picdef.scale = 360.0

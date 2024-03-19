@@ -41,8 +41,8 @@ extension PictureDefinition {
     mandColor = try container.decodeIfPresent(Hue.self, forKey: .mandColor) ?? defaultMandColor
 
     // Decoding mandPowerReal with a default value if not present
-    let defaultMandPowerReal = 2.0
-    mandPowerReal = try container.decodeIfPresent(Double.self, forKey: .mandPowerReal) ?? defaultMandPowerReal
+    let defaultMandPowerReal = 2
+    mandPowerReal = try container.decodeIfPresent(Int.self, forKey: .mandPowerReal) ?? defaultMandPowerReal
 
     // Decoding mandPowerImaginary with a default value if not present
  //   let defaultMandPowerImaginary = 0.0

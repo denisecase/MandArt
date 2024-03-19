@@ -24,7 +24,7 @@ struct ArtImageColorInputs {
 }
 
 struct ArtImagePowerInputs {
-  let mandPowerReal: Double
+  let mandPowerReal: Int
 //  let mandPowerImaginary: Double
 }
 
@@ -65,15 +65,15 @@ struct ArtImage {
   }
 
   func isMandArt() -> Bool {
-    return/* powerInputs.mandPowerImaginary == 0.0 &&*/ powerInputs.mandPowerReal == 2.0
+    return/* powerInputs.mandPowerImaginary == 0.0 &&*/ powerInputs.mandPowerReal == 2
   }
 
   func isMandArt3() -> Bool {
-    return /*powerInputs.mandPowerImaginary == 0 && */powerInputs.mandPowerReal == 3.0
+    return /*powerInputs.mandPowerImaginary == 0 && */powerInputs.mandPowerReal == 3
   }
 
   // only in GrandArt
-  func complexPow(baseX: Double, baseY: Double, powerReal: Double/*, powerImaginary: Double = 0.0*/) -> (Double, Double) {
+  func complexPow(baseX: Double, baseY: Double, powerReal: Int/*, powerImaginary: Double = 0.0*/) -> (Double, Double) {
     if isMandArt() {
       // Special case for Mandelbrot set (power of 2)
       let xTemp = baseX * baseX - baseY * baseY

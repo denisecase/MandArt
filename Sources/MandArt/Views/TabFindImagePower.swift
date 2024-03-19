@@ -39,8 +39,8 @@ struct TabFindImagePower: View {
         VStack {
           Text("Real Power")
           Text("Between 2 and 12")
-          DelayedTextFieldDouble(
-            placeholder: "2.0",
+          DelayedTextFieldInt(
+            placeholder: "2",
             value: $doc.picdef.mandPowerReal,
             formatter: MAFormatters.fmtPowerReal
           )
@@ -48,7 +48,7 @@ struct TabFindImagePower: View {
           .multilineTextAlignment(.trailing)
           .frame(maxWidth: 40)
           .help(
-            "The default is 2.0 for regular MandArt. Choose a number from 2 to 12. Recommended: If > 2, consider seting Max Iterations to 1000 for quicker response and change xCenter to 0.0."
+            "The default is 2 for regular MandArt. Choose a number from 2 to 12. Recommended: If > 2, consider seting Max Iterations to 1000 for quicker response and change xCenter to 0.0."
           )
           .onChange(of: doc.picdef.mandPowerReal) { _ in
             requiresFullCalc = true

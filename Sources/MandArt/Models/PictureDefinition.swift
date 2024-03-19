@@ -53,7 +53,7 @@ struct PictureDefinition: Codable, Identifiable {
     Hue(num: 6, r: 0.0, g: 255.0, b: 255.0),
   ]
   var mandColor: Hue = .init(num: 0, r: 0.0, g: 0.0, b: 0.0)
-  var mandPowerReal: Double = 2.0 // default to MandArt (2)
+  var mandPowerReal: Int = 2 // default to MandArt (2)
  // var mandPowerImaginary: Double = 0.0 // default to 0
 
   /**
@@ -63,7 +63,7 @@ struct PictureDefinition: Codable, Identifiable {
   init(hues: [Hue]) {
     self.hues = hues
     mandColor = Hue(num: 0, r: 0.0, g: 0.0, b: 0.0)
-    mandPowerReal = 2.0
+    mandPowerReal = 2
  //   mandPowerImaginary = 0.0
   }
 
@@ -85,7 +85,7 @@ struct PictureDefinition: Codable, Identifiable {
     leftNumber: Int,
     hues: [Hue],
     mandColor: Hue = Hue(num: 0, r: 0.0, g: 0.0, b: 0.0),
-    mandPowerReal: Double = 2.0//,
+    mandPowerReal: Int = 2//,
   //  mandPowerImaginary: Double = 2.0
   ) {
     self.xCenter = xCenter
