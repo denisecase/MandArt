@@ -172,9 +172,17 @@ struct ArtImage {
     var test1 = 0.0
     var test2 = 0.0
     var test3 = 0.0
+    
+    var N = 2
+    N = powerInputs.mandPowerReal
+ //   print(N)
+ 
 
     let rSqLimit = shapeInputs.rSqLimit
-    rSqMax = (rSqLimit + 2) * (rSqLimit + 2) * (rSqLimit + 2) // mandart3
+ //   print(sqrt(rSqLimit))
+ //   rSqMax = (rSqLimit + 2) * (rSqLimit + 2) * (rSqLimit + 2) // mandart3
+    rSqMax = (pow(sqrt(rSqLimit),Double(N)) + 2)*(pow(sqrt(rSqLimit),Double(N)) + 2)
+    print(rSqMax)
     // rSqMax = 1.01 * (rSqLimit + 2) * (rSqLimit + 2)
     gGML = log(log(rSqMax)) - log(log(rSqLimit))
     gGL = log(log(rSqLimit))

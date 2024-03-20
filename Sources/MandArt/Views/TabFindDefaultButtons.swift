@@ -26,7 +26,8 @@ struct TabFindDefaultButtons: View {
       doc.picdef.theta = 0.0
       doc.picdef.scale = 430.0
       doc.picdef.iterationsMax = 10000.0
-      doc.picdef.rSqLimit = 400.0
+      doc.picdef.rSqLimit = 500.0
+      
     } else if mandPowerReal == 3 {
       doc.picdef.imageWidth = 1100
       doc.picdef.imageHeight = 1000
@@ -35,7 +36,7 @@ struct TabFindDefaultButtons: View {
       doc.picdef.theta = 0.0
       doc.picdef.iterationsMax = 10000.0
       doc.picdef.scale = 360.0
-      doc.picdef.rSqLimit = 400.0
+      doc.picdef.rSqLimit = 64.0
     }
     
     else {
@@ -46,7 +47,7 @@ struct TabFindDefaultButtons: View {
       doc.picdef.theta = 0.0
       doc.picdef.iterationsMax = 50.0
       doc.picdef.scale = 430.0
-      doc.picdef.rSqLimit = 400.0
+      doc.picdef.rSqLimit = 25.0
     }
     doc.picdef.mandPowerReal = mandPowerReal
   //  doc.picdef.mandPowerImaginary = 0.0
