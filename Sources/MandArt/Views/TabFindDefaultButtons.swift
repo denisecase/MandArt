@@ -44,7 +44,7 @@ struct TabFindDefaultButtons: View {
       doc.picdef.xCenter = 0.0
       doc.picdef.yCenter = 0
       doc.picdef.theta = 0.0
-      doc.picdef.iterationsMax = 1000.0
+      doc.picdef.iterationsMax = 50.0
       doc.picdef.scale = 430.0
       doc.picdef.rSqLimit = 400.0
     }
