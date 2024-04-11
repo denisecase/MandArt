@@ -25,7 +25,6 @@ extension PictureDefinition: Equatable {
       lhs.leftNumber == rhs.leftNumber &&
       lhs.hues == rhs.hues &&
       lhs.mandColor == rhs.mandColor &&
-      lhs.mandPowerReal == rhs.mandPowerReal //&&
-   //   lhs.mandPowerImaginary == rhs.mandPowerImaginary
+      lhs.mandPowerReal == rhs.mandPowerReal 
   }
 }

@@ -21,11 +21,11 @@ struct ArtImageColorInputs {
   let spacingColorFar: Double
   let spacingColorNear: Double
   let yY_input: Double
+  let mandColor: Hue
 }
 
 struct ArtImagePowerInputs {
   let mandPowerReal: Int
-//  let mandPowerImaginary: Double
 }
 
 /// Global array to hold iteration values for Mandelbrot calculations.
@@ -56,24 +56,32 @@ struct ArtImage {
       nColors: picdef.hues.count,
       spacingColorFar: picdef.spacingColorFar,
       spacingColorNear: picdef.spacingColorNear,
-      yY_input: picdef.yY
+      yY_input: picdef.yY,
+      mandColor: picdef.mandColor
     )
     powerInputs = ArtImagePowerInputs(
-      mandPowerReal: picdef.mandPowerReal//,
-   //   mandPowerImaginary: picdef.mandPowerImaginary
+      mandPowerReal: picdef.mandPowerReal
     )
+  }
+
+  /** Function to set a pixel to the color of the Mandelbrot set. */
+  func setPixelToMandColor(pixelAddress: UnsafeMutablePointer<UInt8>) {
+    pixelAddress.pointee = UInt8(colorInputs.mandColor.r) // red
+    (pixelAddress + 1).pointee = UInt8(colorInputs.mandColor.g) // green
+    (pixelAddress + 2).pointee = UInt8(colorInputs.mandColor.b) // blue
+    (pixelAddress + 3).pointee = UInt8(255) // alpha
   }
 
   func isMandArt() -> Bool {
-    return/* powerInputs.mandPowerImaginary == 0.0 &&*/ powerInputs.mandPowerReal == 2
+    return powerInputs.mandPowerReal == 2
   }
 
   func isMandArt3() -> Bool {
-    return /*powerInputs.mandPowerImaginary == 0 && */powerInputs.mandPowerReal == 3
+    return powerInputs.mandPowerReal == 3
   }
 
   // only in GrandArt
-  func complexPow(baseX: Double, baseY: Double, powerReal: Int/*, powerImaginary: Double = 0.0*/) -> (Double, Double) {
+  func complexPow(baseX: Double, baseY: Double, powerReal: Int) -> (Double, Double) {
     if isMandArt() {
       // Special case for Mandelbrot set (power of 2)
       let xTemp = baseX * baseX - baseY * baseY
@@ -88,7 +96,7 @@ struct ArtImage {
       let newY = (3.0 * xSquared - ySquared) * baseY
       return (xTemp, newY)
     }
-     else /*if powerInputs.mandPowerImaginary == 0.0 */{
+     else {
       // Case for real powers
       let r = sqrt(baseX * baseX + baseY * baseY)
       let theta = atan2(baseY, baseX)
@@ -98,17 +106,7 @@ struct ArtImage {
       let newX = newR * cos(newTheta)
       let newY = newR * sin(newTheta)
       return (newX, newY)
-    }/* else {
-      // General case for complex powers (real/* + imaginary*/)
-      let r = sqrt(baseX * baseX + baseY * baseY)
-      let theta = atan2(baseY, baseX)
-      let newR = pow(r, Double(powerReal)) * exp(-Double(powerImaginary) * theta)
-      let newTheta = Double(powerReal) * theta + Double(powerImaginary) * log(r)
-
-      let newX = newR * cos(newTheta)
-      let newY = newR * sin(newTheta)
-      return (newX, newY)
-    }*/
+    }
   }
 
   /**
@@ -423,11 +421,14 @@ struct ArtImage {
         // calculate the offset of the pixel
         let pixelAddress: UnsafeMutablePointer<UInt8> = rasterBufferPtr + pixel_offset
 
-        if fIter[u][v] >= iterationsMax { // black
-          pixelAddress.pointee = UInt8(0) // red
-          (pixelAddress + 1).pointee = UInt8(0) // green
-          (pixelAddress + 2).pointee = UInt8(0) // blue
-          (pixelAddress + 3).pointee = UInt8(255) // alpha
+        if fIter[u][v] >= iterationsMax {
+          // set color to mandColor (was black)
+          setPixelToMandColor(pixelAddress: pixelAddress)
+
+//          pixelAddress.pointee = UInt8(0) // red
+//          (pixelAddress + 1).pointee = UInt8(0) // green
+//          (pixelAddress + 2).pointee = UInt8(0) // blue
+//          (pixelAddress + 3).pointee = UInt8(255) // alpha
         } // end if
 
         else {
@@ -629,11 +630,14 @@ struct ArtImage {
         // calculate the offset of the pixel
         let pixelAddress: UnsafeMutablePointer<UInt8> = rasterBufferPtr + pixel_offset
 
-        if fIterGlobal[u][v] >= iterationsMax { // black
-          pixelAddress.pointee = UInt8(0) // red
-          (pixelAddress + 1).pointee = UInt8(0) // green
-          (pixelAddress + 2).pointee = UInt8(0) // blue
-          (pixelAddress + 3).pointee = UInt8(255) // alpha
+        if fIterGlobal[u][v] >= iterationsMax {
+          // set color to mandColor (was black)
+          setPixelToMandColor(pixelAddress: pixelAddress)
+
+//          pixelAddress.pointee = UInt8(0) // red
+//          (pixelAddress + 1).pointee = UInt8(0) // green
+//          (pixelAddress + 2).pointee = UInt8(0) // blue
+//          (pixelAddress + 3).pointee = UInt8(255) // alpha
         } else {
           h = fIterGlobal[u][v] - fIterMin
 
