@@ -20,12 +20,16 @@ extension MandArtApp {
       CommandGroup(replacing: CommandGroupPlacement.pasteboard) {}
 
       // Help has "Search" & "MandArt Help" by default
-      // let's replace the MandArt help option with a Link
+      // let's replace the MandArt help option with links
       // to our hosted documentation on GitHub Pages
-      let displayText: String = "MandArt Help"
-      let url: URL = .init(string: "https://denisecase.github.io/MandArt-Docs/documentation/mandart/")!
       CommandGroup(replacing: CommandGroupPlacement.help) {
+        let displayText: String = "MandArt Help"
+        let url: URL = URL(string: "https://denisecase.github.io/MandArt-Docs/documentation/mandart/")!
         Link(displayText, destination: url)
+
+        let displayText2: String = "MandArt Discoveries"
+        let url2: URL = URL(string: "https://denisecase.github.io/MandArt-Discoveries/")!
+        Link(displayText2, destination: url2)
       }
     }
   }
