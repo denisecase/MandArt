@@ -1,43 +1,14 @@
-# VS Code
-.vscode/
+######################
+# macOS Specific Files
+######################
 
-# Documentation
-docs/
-Examples/
-
-# Derived Data
-DerivedData/
-
-# macOS files
-.DS_Store
-
-# Xcode user settings
-xcuserdata/
-xcuserdata/*
-
-# Build products
-build/
-DerivedData/
-
-# Obj-C/Swift specific
-*.hmap
-
-# App packaging
-*.ipa
-*.dSYM.zip
-*.dSYM
-
-# Playgrounds
-timeline.xctimeline
-playground.xcworkspace
-
-# Swift Package Manager
-.build/
-
-# macOS-specific
+# General macOS system files
 .DS_Store
 .AppleDouble
 .LSOverride
+
+# Icon must end with two \r
+Icon
 
 # Thumbnails
 ._*
@@ -49,6 +20,7 @@ playground.xcworkspace
 .TemporaryItems
 .Trashes
 .VolumeIcon.icns
+.com.apple.timemachine.donotpresent
 
 # Directories potentially created on remote AFP share
 .AppleDB
@@ -57,12 +29,21 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# Xcode
-## Build generated
+######################
+# Xcode Specific Files
+######################
+
+## User settings
+xcuserdata/
+
+## Compatibility with Xcode 8 and earlier
+*.xcscmblueprint
+*.xccheckout
+
+## Compatibility with Xcode 3 and earlier
 build/
 DerivedData/
-
-## Various settings
+*.moved-aside
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -71,28 +52,78 @@ DerivedData/
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
-xcuserdata/
 
-## Other
-*.moved-aside
-*.xccheckout
-*.xcscmblueprint
+## Obj-C/Swift specific
+*.hmap
 
+## App packaging
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+## Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+##############################
+# Swift Package Manager (SPM)
+##############################
+
+.build/
+.swiftpm/
+
+# If you prefer to avoid checking in source code from SPM dependencies:
+# Packages/
+# Package.pins
+# Package.resolved
+
+######################
 # CocoaPods
-Pods/
+######################
 
+# We recommend against adding the Pods directory to your .gitignore. However,
+# you should judge for yourself. The pros and cons are mentioned at:
+# https://guides.cocoapods.org/using/using-cocoapods.html#should-i-check-the-pods-directory-into-source-control
+# Pods/
+
+# Add this line if you want to avoid checking in source code from the Xcode workspace
+# *.xcworkspace
+
+######################
 # Carthage
-Carthage/Build
+######################
 
+# Add this line if you want to avoid checking in source code from Carthage dependencies.
+# Carthage/Checkouts
+Carthage/Build/
+
+######################
 # Fastlane
+######################
+
+# It is recommended to not store the screenshots in the git repo.
+# Instead, use fastlane to re-generate the screenshots whenever they are needed.
+# For more information about the recommended setup visit:
+# https://docs.fastlane.tools/best-practices/source-control/#source-control
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
+fastlane/signing/
 
-# Swift Package Manager
-.build/
+######################
+# Visual Studio Code
+######################
+
+.vscode/
+
+######################
+# Project-Specific Files
+######################
+
+# Documentation
+docs/
+Examples/
 
 # Saved Application State
 */Library/Saved Application State/*
-

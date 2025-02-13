@@ -1,0 +1,22 @@
+#
+name: CI (Continuous Integration)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Xcode
+        run: sudo xcode-select -s /Applications/Xcode_12.5.app/Contents/Developer
+
+      - name: Build and test
+        run: xcodebuild -scheme MandArt -configuration Debug -sdk macosx clean test
