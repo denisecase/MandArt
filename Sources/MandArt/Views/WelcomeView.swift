@@ -9,18 +9,56 @@ enum Constants {
   static let descriptionHeightFactor: CGFloat = 0.3
 }
 
-/// View for the welcome screen.
-@available(macOS 11.0, *)
 struct WelcomeView: View {
   @EnvironmentObject var appState: AppState
+    @State private var scale: CGFloat = 1
+    @State private var angle: Double = 0
+  let picdef: PictureDefinition
 
   var body: some View {
     VStack(spacing: 0) {
-      WelcomeHeaderView()
-      WelcomeMainView()
-      // Spacer()
-    }
-    // .frame(maxWidth: .infinity) // horizontal centering
+        VStack(spacing: 10) {
+            Text("Welcome to MandArt")
+                .font(.title)
+                .fontWeight(.bold)
+            Spacer().frame(height: 10)
+        }
+        .padding()
+        GeometryReader { geometry in
+            VStack(spacing: 0) {
+                Image("Welcome")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: Constants.windowHeight / 2)
+                    .cornerRadius(20)
+                    .scaleEffect(scale)
+                    .rotationEffect(.degrees(angle))
+                    .onAppear {
+                        angle = -10
+                        withAnimation(Animation.interpolatingSpring(mass: 1, stiffness: 50, damping: 5, initialVelocity: 0)) {
+                            angle = 10
+                            scale = 1.1
+                        }
+                        withAnimation(Animation.interpolatingSpring(mass: 1, stiffness: 50, damping: 10, initialVelocity: 0)) {
+                            angle = -5
+                            scale = 0.9
+                        }
+                        
+                        withAnimation(Animation.interpolatingSpring(mass: 1, stiffness: 50, damping: 10, initialVelocity: 0)) {
+                            angle = 0
+                            scale = 1.0
+                        }
+                    }
+                    .frame(height: geometry.size.height * Constants.imageHeightFactor)
+                
+                WelcomeMainInformationView(
+                    showWelcomeScreen: appState.shouldShowWelcomeWhenStartingUp,
+                    picdef: picdef
+                )
+                    .frame(maxHeight: .infinity) // all  vertical space
+                    .padding()
+            }
+        }    }
     .padding()
     .frame(minWidth: Constants.windowWidth, minHeight: Constants.windowHeight)
     .ignoresSafeArea()

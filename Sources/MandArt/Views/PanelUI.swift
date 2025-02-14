@@ -11,7 +11,7 @@ struct PanelUI: View {
     @State private var selectedTab = 0
     
     var body: some View {
-        VStack {
+        VStack() { // Explicit alignment & spacing
             Text("MandArt Inputs")
                 .font(.title)
                 .padding(.top)
@@ -20,16 +20,20 @@ struct PanelUI: View {
                 .font(.system(size: 14))
                 .padding(.top, 1)
             
-            
-            TabbedView(
-                picdef: $picdef,
-                popupManager: popupManager,
-                requiresFullCalc: $requiresFullCalc,
-                showGradient: $showGradient
-            )
-            
+            Divider()
+
+                TabbedView(
+                    picdef: $picdef,
+                    popupManager: popupManager,
+                    requiresFullCalc: $requiresFullCalc,
+                    showGradient: $showGradient
+                )
+
             Spacer()
         }
+        .frame(maxWidth: .infinity, alignment: .topLeading) // Ensure correct positioning
+        .padding()
+
     }
     
     /// Updates an existing `PictureDefinition`

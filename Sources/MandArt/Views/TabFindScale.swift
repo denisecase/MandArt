@@ -1,111 +1,68 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-/// A view for adjusting and managing the scale of an image in the MandArt project.
-///
-/// This view provides a user interface for changing the image scale either through
-/// direct input, standard zooming (by a factor of 2), or custom zooming based on a multiplier.
-///
-/// - Requires: macOS 12.0 or later
 @available(macOS 12.0, *)
 struct TabFindScale: View {
     @Binding var picdef: PictureDefinition
     @Binding var requiresFullCalc: Bool
-    @State private var scale: Double
-    @State private var scaleMultiplier: Double = 5.0000
-    @State private var didChange: Bool = false
-    @State private var scaleString: String = ""
-    @State private var editedMultiplier: Double = 5.0 {
-        didSet {
-            /*    if editedMultiplier < 1 {
-             editedMultiplier = 1
-             }*/
-            scaleMultiplier = editedMultiplier
-            didChange.toggle()
-        }
-    }
     
-    /// Initializes the view with a document and a binding to determine if a full calculation is required.
-    ///
-    /// - Parameters:
-    ///   - picdef: A binding to the PictureDefinition containing scale information
-    ///   - requiresFullCalc: A binding to a Boolean indicating whether a full recalculation is required.
+    @State private var localScale: Double = 1.0
+    @State private var scaleMultiplier: Double = 5.0
+    @State private var scaleString: String = ""
+    
     init(picdef: Binding<PictureDefinition>, requiresFullCalc: Binding<Bool>) {
         self._picdef = picdef
         self._requiresFullCalc = requiresFullCalc
-        self._scale = State(initialValue: picdef.wrappedValue.scale)
-        self._scaleString = State(initialValue: picdef.wrappedValue.scale.customFormattedString())
+        let initialScale = picdef.wrappedValue.scale
+        self._localScale = State(initialValue: initialScale)
+        self._scaleString = State(initialValue: initialScale.customFormattedString())
     }
     
-    /// Updates the scale value and synchronizes it across the document, the scale state, and the text field.
-    ///
-    /// - Parameter newScale: The new scale value to be set.
-    func updateScale(newScale: Double) {
-        scale = newScale
-        picdef.scale = scale
-        scaleString = scale.customFormattedString()
-        didChange.toggle()
+    /// Safely updates the scale, only if `picdef` is still valid.
+    private func updateScale(newScale: Double) {
+        localScale = newScale
+        scaleString = newScale.customFormattedString()
         requiresFullCalc = true
-    }
-    
-    /// Increases the scale by a factor of 2.
-    func zoomIn() {
-        updateScale(newScale: scale * 2.0)
-    }
-    
-    /// Decreases the scale by a factor of 2.
-    func zoomOut() {
-        updateScale(newScale: scale / 2.0)
-    }
-    
-    /// Increases the scale by the custom scale multiplier.
-    func zoomInCustom() {
-        requiresFullCalc = true
-        updateScale(newScale: scale * scaleMultiplier)
-    }
-    
-    /// Decreases the scale by the custom scale multiplier.
-    func zoomOutCustom() {
-        requiresFullCalc = true
-        updateScale(newScale: scale / scaleMultiplier)
+        
+        Task {
+            guard let modelContext = picdef.modelContext else {
+                print("⚠️ Skipping update: picdef is no longer valid.")
+                return
+            }
+            do {
+                picdef.scale = localScale
+                try modelContext.save()
+            } catch {
+                print("Error saving updated scale: \(error)")
+            }
+        }
     }
     
     var body: some View {
-        Section(
-            header:
-                Text("Set Magnification")
-                .font(.headline)
-                .fontWeight(.medium)
-                .padding(.vertical)
-            
-        ) {
+        Section(header: Text("Set Magnification").font(.headline)) {
             HStack {
-                //  Text("Magnification")
-                TextField(
-                    "",
-                    text: $scaleString,
-                    onCommit: {
-                        if let newScale = Double(scaleString) {
-                            updateScale(newScale: newScale)
-                        }
+                TextField("", text: $scaleString, onCommit: {
+                    if let newScale = Double(scaleString) {
+                        updateScale(newScale: newScale)
                     }
-                )
+                })
                 .textFieldStyle(.roundedBorder)
                 .multilineTextAlignment(.trailing)
                 .frame(maxWidth: 180)
                 .help("Enter the magnification (may take a while).")
                 .onAppear {
-                    scaleString = picdef.scale.customFormattedString()
-                }
-                .onChange(of: picdef.scale) { _ , _ in
-                    // Update scaleString whenever doc changes
-                    let newScaleString = picdef.scale.customFormattedString()
-                    
-                    if newScaleString != scaleString {
-                        scaleString = newScaleString
+                    if let context = picdef.modelContext {
+                        scaleString = picdef.scale.customFormattedString()
+                    } else {
+                        print("picdef lost context onAppear")
                     }
-                    didChange.toggle()
-                    requiresFullCalc = true
+                }
+                .onChange(of: picdef.scale) { _, newValue in
+                    if let context = picdef.modelContext {
+                        scaleString = newValue.customFormattedString()
+                    } else {
+                        print("picdef lost context onChange")
+                    }
                 }
             }
             .padding(.horizontal)
@@ -113,69 +70,35 @@ struct TabFindScale: View {
             HStack {
                 VStack {
                     Text("Zoom By 2")
-                    Text("  ")
                     HStack {
-                        Button("+") { zoomIn() }
-                            .help("Zoom in by factor of 2 (may take a while).")
+                        Button("+") { updateScale(newScale: localScale * 2.0) }
                         Text("2")
-                        Button("-") { zoomOut() }
-                            .help("Zoom out by factor of 2 (may take a while).")
+                        Button("-") { updateScale(newScale: localScale / 2.0) }
                     }
                 }
                 Divider()
-                
                 VStack {
-                    Text("Custom Zoom ")
-                    Text("(1.0001 to 10.0000)")
+                    Text("Custom Zoom")
                     HStack {
-                        Button("+") { zoomInCustom() }
-                            .help("Zoom in by multiplier (may take a while).")
-                        
-                        // SCALE MULTIPLIER
-                        
-                        TextField(
-                            "",
-                            text: Binding(
-                                get: { "\(editedMultiplier)" },
-                                set: { newValue in
-                                    if let newMultiplier = Double(newValue) {
-                                        editedMultiplier = newMultiplier
-                                    }
-                                }),
-                            // ensures changes are applied when the user presses "Enter"
-                            //Without it, the TextField would update in real-time but wouldn't finalize changes properly.
-                            onCommit: {
-                                scaleMultiplier = editedMultiplier
-                                didChange.toggle()
+                        Button("+") { updateScale(newScale: localScale * scaleMultiplier) }
+                        TextField("", text: Binding(
+                            get: { "\(scaleMultiplier)" },
+                            set: { newValue in
+                                if let newMultiplier = Double(newValue) {
+                                    scaleMultiplier = max(1.0001, min(10.0, newMultiplier)) // Keep in range
+                                }
                             }
-                        )
-                        
+                        ), onCommit: {
+                            scaleMultiplier = max(1.0001, min(10.0, scaleMultiplier))
+                        })
                         .textFieldStyle(.roundedBorder)
                         .multilineTextAlignment(.trailing)
                         .frame(minWidth: 70, maxWidth: 90)
                         .help("Maximum value of 10.")
-                        //onChange ensures constraints (like min/max limits) are applied immediately
-                        //This prevents out-of-range values (e.g., <1.0001 or >10.0000).
-                        .onChange(of: scaleMultiplier) { _, newValue in
-                            print("in onchange")
-                            if newValue < 1.0001 {
-                                print("updating from 1.0001")
-                                scaleMultiplier = 1.0001
-                                didChange.toggle()
-                            }
-                            if newValue > 10 {
-                                print("updating from 10")
-                                scaleMultiplier = 10
-                                didChange.toggle()
-                            }
-                        }
-                        
-                        Button("-") { zoomOutCustom() }
-                            .help("Zoom out by multiplier (may take a while).")
+                        Button("-") { updateScale(newScale: localScale / scaleMultiplier) }
                     }
                 }
             }
         }
-        Divider()
     }
 }

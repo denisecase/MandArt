@@ -7,7 +7,8 @@ import SwiftData
 struct WelcomeMainInformationView: View {
   @EnvironmentObject var appState: AppState
   let showWelcomeScreen: Bool
-
+    let picdef: PictureDefinition
+    
   var body: some View {
     VStack(alignment: .leading, spacing: 10) {
       Text("MandArt is the ultimate app for creating custom art from the Mandelbrot set.")
@@ -70,10 +71,10 @@ struct WelcomeMainInformationView: View {
                 )
                 newWindow.center()
                 newWindow.setFrameAutosaveName("MandArt Main Window")
-                newWindow.contentView = NSHostingView(rootView: ContentView().environment(\.modelContext, context))
+                newWindow.contentView = NSHostingView(rootView: ContentView(picdef: picdef).environment(\.modelContext, context))
                 newWindow.makeKeyAndOrderFront(nil)
             } catch {
-                print("❌ Error opening default MandArt document: \(error)")
+                print("Error opening default MandArt document: \(error)")
             }
         }
     }

@@ -13,7 +13,6 @@
 		880250E12A9D21B00076E001 /* PopupColorCube.swift in Sources */ = {isa = PBXBuildFile; fileRef = 880250E02A9D21B00076E001 /* PopupColorCube.swift */; };
 		880250EB2AA2050A0076E001 /* PopupColorSlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 880250EA2AA2050A0076E001 /* PopupColorSlice.swift */; };
 		8806E115293A5011005F5CB4 /* MandArtApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8806E113293A5011005F5CB4 /* MandArtApp.swift */; };
-		8806E116293A5011005F5CB4 /* MandArtDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8806E114293A5011005F5CB4 /* MandArtDocument.swift */; };
 		882BAED3293409FE003ACB0B /* PictureDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 882BAED2293409FE003ACB0B /* PictureDefinition.swift */; };
 		882BAED929346C92003ACB0B /* Hue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 882BAED829346C92003ACB0B /* Hue.swift */; };
 		883C1A732BA775C500BFBC5C /* TabFindImagePower.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883C1A722BA775C500BFBC5C /* TabFindImagePower.swift */; };
@@ -29,17 +28,10 @@
 		88A271A22A97158200766654 /* TabSave.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A271A12A97158200766654 /* TabSave.swift */; };
 		88A271A82A971C1C00766654 /* MAFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A271A72A971C1C00766654 /* MAFormatters.swift */; };
 		88A271AA2A977AF300766654 /* ContentView+GestureCalculations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A271A92A977AF300766654 /* ContentView+GestureCalculations.swift */; };
-		88A271AC2A97843400766654 /* WelcomeHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A271AB2A97843400766654 /* WelcomeHeaderView.swift */; };
-		88A271AE2A97844200766654 /* WelcomeMainImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A271AD2A97844200766654 /* WelcomeMainImageView.swift */; };
 		88A271B02A97845300766654 /* WelcomeMainInformationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A271AF2A97845300766654 /* WelcomeMainInformationView.swift */; };
-		88A271B22A97860700766654 /* WelcomeMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A271B12A97860700766654 /* WelcomeMainView.swift */; };
 		88A271B52A9790DB00766654 /* WelcomeWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A271B42A9790DB00766654 /* WelcomeWindowController.swift */; };
 		88A271B72A979A0E00766654 /* MandArtApp+Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A271B62A979A0E00766654 /* MandArtApp+Menu.swift */; };
 		88ADC6912B2FA7B1006CD099 /* Double+CustomDecimalFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88ADC6902B2FA7B1006CD099 /* Double+CustomDecimalFormat.swift */; };
-		88BECC5E2B1647BA00770843 /* MandArtDocument+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88BECC5B2B1647BA00770843 /* MandArtDocument+Helpers.swift */; };
-		88BECC5F2B1647BA00770843 /* MandArtDocument+FileHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88BECC5C2B1647BA00770843 /* MandArtDocument+FileHandling.swift */; };
-		88BECC602B1647BA00770843 /* MandArtDocument+Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88BECC5D2B1647BA00770843 /* MandArtDocument+Constants.swift */; };
-		88BECC642B17D1E700770843 /* PictureDefinition+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88BECC632B17D1E700770843 /* PictureDefinition+Equatable.swift */; };
 		88BECC6A2B1821DF00770843 /* MandArt.docc in Sources */ = {isa = PBXBuildFile; fileRef = 88BECC692B1821DF00770843 /* MandArt.docc */; };
 		88BECC6C2B1824BC00770843 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 88BECC6B2B1824BC00770843 /* README.md */; };
 		88BECC6E2B1824C700770843 /* CARE_AND_FEEDING.md in Resources */ = {isa = PBXBuildFile; fileRef = 88BECC6D2B1824C700770843 /* CARE_AND_FEEDING.md */; };
@@ -69,12 +61,10 @@
 		88C358212A99A08D007E7A92 /* PopupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C358202A99A08D007E7A92 /* PopupManager.swift */; };
 		88CA2C422B18EA6C000235EB /* TabColorListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88CA2C412B18EA6B000235EB /* TabColorListRow.swift */; };
 		88EF98282AC0D3DC005A3ABC /* Color+Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88EF98272AC0D3DC005A3ABC /* Color+Components.swift */; };
-		88EF982A2AC0D6EB005A3ABC /* Hue+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88EF98292AC0D6EB005A3ABC /* Hue+Equatable.swift */; };
 		88EF982C2AC0D78E005A3ABC /* String+Subscripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88EF982B2AC0D78E005A3ABC /* String+Subscripting.swift */; };
 		88EF982E2AC0D7F3005A3ABC /* UTType+mandart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88EF982D2AC0D7F3005A3ABC /* UTType+mandart.swift */; };
 		88EF98302AC0D858005A3ABC /* CGImage+PNGData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88EF982F2AC0D858005A3ABC /* CGImage+PNGData.swift */; };
 		88EF98322AC0DB48005A3ABC /* Color+Codeable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88EF98312AC0DB48005A3ABC /* Color+Codeable.swift */; };
-		88EF98342AC0DC5E005A3ABC /* MandArtDocument+HueManagementUndo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88EF98332AC0DC5E005A3ABC /* MandArtDocument+HueManagementUndo.swift */; };
 		88EF98362AC0DE41005A3ABC /* Array+Safe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88EF98352AC0DE41005A3ABC /* Array+Safe.swift */; };
 		88EF983E2AC13350005A3ABC /* DataSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88EF983D2AC13350005A3ABC /* DataSaver.swift */; };
 		88EF98402AC133D5005A3ABC /* MandArtError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88EF983F2AC133D5005A3ABC /* MandArtError.swift */; };
@@ -90,7 +80,6 @@
 		880250E02A9D21B00076E001 /* PopupColorCube.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupColorCube.swift; sourceTree = "<group>"; };
 		880250EA2AA2050A0076E001 /* PopupColorSlice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupColorSlice.swift; sourceTree = "<group>"; };
 		8806E113293A5011005F5CB4 /* MandArtApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MandArtApp.swift; sourceTree = "<group>"; };
-		8806E114293A5011005F5CB4 /* MandArtDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MandArtDocument.swift; sourceTree = "<group>"; };
 		882BAED2293409FE003ACB0B /* PictureDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureDefinition.swift; sourceTree = "<group>"; };
 		882BAED829346C92003ACB0B /* Hue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hue.swift; sourceTree = "<group>"; };
 		883C1A722BA775C500BFBC5C /* TabFindImagePower.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabFindImagePower.swift; sourceTree = "<group>"; };
@@ -108,18 +97,11 @@
 		88A271A12A97158200766654 /* TabSave.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabSave.swift; sourceTree = "<group>"; };
 		88A271A72A971C1C00766654 /* MAFormatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAFormatters.swift; sourceTree = "<group>"; };
 		88A271A92A977AF300766654 /* ContentView+GestureCalculations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContentView+GestureCalculations.swift"; sourceTree = "<group>"; };
-		88A271AB2A97843400766654 /* WelcomeHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeHeaderView.swift; sourceTree = "<group>"; };
-		88A271AD2A97844200766654 /* WelcomeMainImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeMainImageView.swift; sourceTree = "<group>"; };
 		88A271AF2A97845300766654 /* WelcomeMainInformationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeMainInformationView.swift; sourceTree = "<group>"; };
-		88A271B12A97860700766654 /* WelcomeMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeMainView.swift; sourceTree = "<group>"; };
 		88A271B42A9790DB00766654 /* WelcomeWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeWindowController.swift; sourceTree = "<group>"; };
 		88A271B62A979A0E00766654 /* MandArtApp+Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MandArtApp+Menu.swift"; sourceTree = "<group>"; };
 		88ADC6902B2FA7B1006CD099 /* Double+CustomDecimalFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+CustomDecimalFormat.swift"; sourceTree = "<group>"; };
 		88BECC592B16228700770843 /* MandArt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MandArt.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		88BECC5B2B1647BA00770843 /* MandArtDocument+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MandArtDocument+Helpers.swift"; sourceTree = "<group>"; };
-		88BECC5C2B1647BA00770843 /* MandArtDocument+FileHandling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MandArtDocument+FileHandling.swift"; sourceTree = "<group>"; };
-		88BECC5D2B1647BA00770843 /* MandArtDocument+Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MandArtDocument+Constants.swift"; sourceTree = "<group>"; };
-		88BECC632B17D1E700770843 /* PictureDefinition+Equatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PictureDefinition+Equatable.swift"; sourceTree = "<group>"; };
 		88BECC692B1821DF00770843 /* MandArt.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = MandArt.docc; sourceTree = "<group>"; };
 		88BECC6B2B1824BC00770843 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		88BECC6D2B1824C700770843 /* CARE_AND_FEEDING.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CARE_AND_FEEDING.md; sourceTree = "<group>"; };
@@ -149,12 +131,10 @@
 		88C358202A99A08D007E7A92 /* PopupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupManager.swift; sourceTree = "<group>"; };
 		88CA2C412B18EA6B000235EB /* TabColorListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabColorListRow.swift; sourceTree = "<group>"; };
 		88EF98272AC0D3DC005A3ABC /* Color+Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Components.swift"; sourceTree = "<group>"; };
-		88EF98292AC0D6EB005A3ABC /* Hue+Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hue+Equatable.swift"; sourceTree = "<group>"; };
 		88EF982B2AC0D78E005A3ABC /* String+Subscripting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Subscripting.swift"; sourceTree = "<group>"; };
 		88EF982D2AC0D7F3005A3ABC /* UTType+mandart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UTType+mandart.swift"; sourceTree = "<group>"; };
 		88EF982F2AC0D858005A3ABC /* CGImage+PNGData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGImage+PNGData.swift"; sourceTree = "<group>"; };
 		88EF98312AC0DB48005A3ABC /* Color+Codeable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Codeable.swift"; sourceTree = "<group>"; };
-		88EF98332AC0DC5E005A3ABC /* MandArtDocument+HueManagementUndo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MandArtDocument+HueManagementUndo.swift"; sourceTree = "<group>"; };
 		88EF98352AC0DE41005A3ABC /* Array+Safe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Safe.swift"; sourceTree = "<group>"; };
 		88EF983D2AC13350005A3ABC /* DataSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSaver.swift; sourceTree = "<group>"; };
 		88EF983F2AC133D5005A3ABC /* MandArtError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MandArtError.swift; sourceTree = "<group>"; };
@@ -246,10 +226,7 @@
 				88A271A12A97158200766654 /* TabSave.swift */,
 				88C3580A2A97E9F9007E7A92 /* TabSavePopup.swift */,
 				88C358042A97D7A0007E7A92 /* TabTune.swift */,
-				88A271AB2A97843400766654 /* WelcomeHeaderView.swift */,
-				88A271AD2A97844200766654 /* WelcomeMainImageView.swift */,
 				88A271AF2A97845300766654 /* WelcomeMainInformationView.swift */,
-				88A271B12A97860700766654 /* WelcomeMainView.swift */,
 				884752A529AFE73400FBECC2 /* WelcomeView.swift */,
 			);
 			path = Views;
@@ -273,16 +250,9 @@
 			children = (
 				88EF983D2AC13350005A3ABC /* DataSaver.swift */,
 				882BAED829346C92003ACB0B /* Hue.swift */,
-				88EF98292AC0D6EB005A3ABC /* Hue+Equatable.swift */,
-				8806E114293A5011005F5CB4 /* MandArtDocument.swift */,
-				88BECC5D2B1647BA00770843 /* MandArtDocument+Constants.swift */,
-				88BECC5C2B1647BA00770843 /* MandArtDocument+FileHandling.swift */,
-				88BECC5B2B1647BA00770843 /* MandArtDocument+Helpers.swift */,
-				88EF98332AC0DC5E005A3ABC /* MandArtDocument+HueManagementUndo.swift */,
 				88EF983F2AC133D5005A3ABC /* MandArtError.swift */,
 				882BAED2293409FE003ACB0B /* PictureDefinition.swift */,
 				8882E3322B8A7ACB003B1BF7 /* PictureDefinition+Decode.swift */,
-				88BECC632B17D1E700770843 /* PictureDefinition+Equatable.swift */,
 				9A351DA42D5ED55D0070ED7D /* PictureDefinition+FileHandling.swift */,
 				9A351DA62D5ED56A0070ED7D /* PictureDefinition+HueManagementUndo.swift */,
 			);
@@ -425,22 +395,17 @@
 				88CA2C422B18EA6C000235EB /* TabColorListRow.swift in Sources */,
 				88C358092A97E38A007E7A92 /* TabColorList.swift in Sources */,
 				88EF98322AC0DB48005A3ABC /* Color+Codeable.swift in Sources */,
-				88BECC602B1647BA00770843 /* MandArtDocument+Constants.swift in Sources */,
 				6A3AEC0F26F879E700D7E31A /* ContentView.swift in Sources */,
 				9A351DA52D5ED55D0070ED7D /* PictureDefinition+FileHandling.swift in Sources */,
 				884752A629AFE73400FBECC2 /* WelcomeView.swift in Sources */,
-				88BECC5F2B1647BA00770843 /* MandArtDocument+FileHandling.swift in Sources */,
 				88EF98362AC0DE41005A3ABC /* Array+Safe.swift in Sources */,
 				88C358102A980312007E7A92 /* SliderTextView.swift in Sources */,
 				88EF98302AC0D858005A3ABC /* CGImage+PNGData.swift in Sources */,
-				88BECC5E2B1647BA00770843 /* MandArtDocument+Helpers.swift in Sources */,
 				8806E115293A5011005F5CB4 /* MandArtApp.swift in Sources */,
 				88C03C822B157E8D00D4A79B /* TabFindImageCenter.swift in Sources */,
 				88C358212A99A08D007E7A92 /* PopupManager.swift in Sources */,
-				88A271AC2A97843400766654 /* WelcomeHeaderView.swift in Sources */,
 				880250E12A9D21B00076E001 /* PopupColorCube.swift in Sources */,
 				88C358012A97D675007E7A92 /* TabFind.swift in Sources */,
-				88EF982A2AC0D6EB005A3ABC /* Hue+Equatable.swift in Sources */,
 				88C3581E2A98EA53007E7A92 /* PanelDisplay.swift in Sources */,
 				88BECC6A2B1821DF00770843 /* MandArt.docc in Sources */,
 				88C358072A97D983007E7A92 /* TabbedView.swift in Sources */,
@@ -448,21 +413,16 @@
 				88EF983E2AC13350005A3ABC /* DataSaver.swift in Sources */,
 				88C358052A97D7A0007E7A92 /* TabTune.swift in Sources */,
 				883C1A732BA775C500BFBC5C /* TabFindImagePower.swift in Sources */,
-				88BECC642B17D1E700770843 /* PictureDefinition+Equatable.swift in Sources */,
 				880250DF2A9D1FA10076E001 /* ContentViewPopups.swift in Sources */,
-				88EF98342AC0DC5E005A3ABC /* MandArtDocument+HueManagementUndo.swift in Sources */,
 				88A271AA2A977AF300766654 /* ContentView+GestureCalculations.swift in Sources */,
-				88A271B22A97860700766654 /* WelcomeMainView.swift in Sources */,
 				88ADC6912B2FA7B1006CD099 /* Double+CustomDecimalFormat.swift in Sources */,
 				883C1A752BA7992500BFBC5C /* TabFindDefaultButtons.swift in Sources */,
-				88A271AE2A97844200766654 /* WelcomeMainImageView.swift in Sources */,
 				88EF98282AC0D3DC005A3ABC /* Color+Components.swift in Sources */,
 				882BAED3293409FE003ACB0B /* PictureDefinition.swift in Sources */,
 				88C03C7E2B1556A700D4A79B /* TabFindScale.swift in Sources */,
 				88511CB32948B3FF009B5CF6 /* MandMath.swift in Sources */,
 				8882E3332B8A7ACB003B1BF7 /* PictureDefinition+Decode.swift in Sources */,
 				88A271B02A97845300766654 /* WelcomeMainInformationView.swift in Sources */,
-				8806E116293A5011005F5CB4 /* MandArtDocument.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

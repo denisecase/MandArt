@@ -6,11 +6,13 @@ import SwiftUI
 class WelcomeWindowController: NSWindowController {
     // The AppState instance managing the application's state.
     var appState: AppState
+    let picdef: PictureDefinition
     
     /// Initializes a new WelcomeWindowController with the given AppState.
     /// - Parameter appState: The application state to be used.
-    init(appState: AppState) {
+    init(appState: AppState, picdef: PictureDefinition = PictureDefinition()) {
         self.appState = appState
+        self.picdef = picdef
         let width = MandArtApp.AppConstants.defaultWidth()
         let height = MandArtApp.AppConstants.defaultHeight()
         let minW = MandArtApp.AppConstants.minWelcomeWidth
@@ -35,7 +37,7 @@ class WelcomeWindowController: NSWindowController {
         window.minSize = NSSize(width: minW, height: minH)
         window.maxSize = NSSize(width: maxW, height: maxH)
         
-        window.contentView = NSHostingView(rootView: WelcomeView().environmentObject(self.appState))
+        window.contentView = NSHostingView(rootView: WelcomeView(picdef: picdef).environmentObject(self.appState))
     }
     
     /// Required initializer for NSCoder, not implemented for this class.

@@ -10,28 +10,6 @@ class AppState: ObservableObject {
     .object(forKey: "shouldShowWelcomeWhenStartingUp") as? Bool ?? true
 }
 
-/// `WindowAccessor` is a SwiftUI view that allows access to the underlying NSWindow.
-struct WindowAccessor: NSViewRepresentable {
-  var callback: (NSWindow?) -> Void
-
-  func makeNSView(context _: Context) -> NSView {
-    let view = NSView()
-    DispatchQueue.main.async {
-      self.callback(view.window)
-      if let window = view.window {
-        let screenSize = NSScreen.main?.frame.size ?? CGSize(width: 800, height: 600)
-        let width = screenSize.width * MandArtApp.AppConstants.defaultPercentWidth
-        let height = screenSize.height * MandArtApp.AppConstants.defaultPercentHeight
-        let x = (screenSize.width - width) / 2
-        let y = (screenSize.height - height) / 2
-        window.setFrame(NSRect(x: x, y: y, width: width, height: height), display: true)
-      }
-    }
-    return view
-  }
-
-  func updateNSView(_: NSView, context _: Context) {}
-}
 
 /// `MandArtApp` is the main structure for the SwiftUI app.
 /// It defines the behavior and layout of the app.
@@ -40,25 +18,93 @@ struct MandArtApp: App {
     @StateObject var appState: AppState
     @State private var shouldShowWelcomeWhenStartingUp: Bool
     @State private var modelContainer: ModelContainer?
-    
-    
+    @State private var picdef: PictureDefinition?
+
     init() {
         let initialState = UserDefaults.standard.object(forKey: "shouldShowWelcomeWhenStartingUp") as? Bool ?? true
         _appState = StateObject(wrappedValue: AppState())
         _shouldShowWelcomeWhenStartingUp = State(initialValue: initialState)
-    }
-    
-    /// Ensures at least one `PictureDefinition` exists in SwiftData
-    private func ensurePictureDefinitionExists(in context: ModelContext) {
-        Task {
-            let existingPicdefs = try? context.fetch(FetchDescriptor<PictureDefinition>())
-            if existingPicdefs?.isEmpty ?? true {
-                let newPicdef = PictureDefinition()
-                context.insert(newPicdef)
-                try? context.save() // Ensure it persists
-            }
+      
+        do {
+            let result = try MandArtApp.initializeSwiftDataSync()
+            self.modelContainer = result.container
+            self.picdef = result.picdef
+        } catch {
+            fatalError("Failed to initialize SwiftData: \(error)")
         }
     }
+
+    
+
+    var body: some Scene {
+        WindowGroup {
+            Group {
+                if shouldShowWelcomeWhenStartingUp {
+                    WelcomeView(picdef:picdef!)
+                        .environmentObject(appState)
+                } else if let modelContainer = modelContainer, let unwrappedPicdef = picdef {
+                    ContentView(picdef: picdef!)
+                        .environment(\.modelContext, modelContainer.mainContext)
+                } else {
+                    Text("Loading MandArt...") // Placeholder until initialization completes
+                }
+            }
+            .task {
+                await initializeSwiftData()
+            }
+        }
+        .defaultSize(width: windowWidth, height: windowHeight)
+        .commands {
+            appMenuCommands()
+        }
+    }
+    
+    
+    /// **Ensures SwiftData initializes properly (Sync Version for `init()`)**
+    static func initializeSwiftDataSync() throws -> (container: ModelContainer, picdef: PictureDefinition) {
+        let schema = Schema([PictureDefinition.self])
+        let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
+        let container = try ModelContainer(for: schema, configurations: [configuration])
+        let context = container.mainContext
+        
+        var existingPicdefs = try context.fetch(FetchDescriptor<PictureDefinition>())
+        
+        if existingPicdefs.isEmpty {
+            let newPicdef = PictureDefinition()
+            context.insert(newPicdef)
+            try context.save()
+            existingPicdefs.append(newPicdef)
+        }
+        
+        return (container, existingPicdefs.first!)
+    }
+    
+    /// **Ensures SwiftData initializes properly**
+    private func initializeSwiftData() async {
+        do {
+            let schema = Schema([PictureDefinition.self])
+            let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
+            let container = try ModelContainer(for: schema, configurations: [configuration])
+            
+            let context = container.mainContext
+            var existingPicdefs = try context.fetch(FetchDescriptor<PictureDefinition>())
+            
+            if existingPicdefs.isEmpty {
+                let newPicdef = PictureDefinition()
+                context.insert(newPicdef)
+                try context.save()
+                existingPicdefs.append(newPicdef)
+            }
+            
+            DispatchQueue.main.async {
+                self.picdef = existingPicdefs.first // ✅ Guarantees a single picdef exists
+                self.modelContainer = container
+            }
+        } catch {
+            fatalError("Failed to initialize SwiftData: \(error)")
+        }
+    }
+
     
     /// Constants used across the app, such as dimensions and margins.
     enum AppConstants {
@@ -126,53 +172,4 @@ struct MandArtApp: App {
         screenSize.height * 0.9 // Use 90% of the available height
     }
     
-    
-    
-    /// The main body of the app, defining the views and their behavior.
-    var body: some Scene {
-        WindowGroup {
-            Group {
-                if shouldShowWelcomeWhenStartingUp {
-                    WelcomeView()
-                        .environmentObject(appState)
-                } else if let modelContainer = modelContainer {
-                    ContentView()
-                        .environment(\.modelContext, modelContainer.mainContext)
-                } else {
-                    Text("Error: Unable to load data")
-                }
-            }
-            .task {
-                await initializeSwiftData()
-            }
-        }
-        .defaultSize(width: windowWidth, height: windowHeight)
-        .commands {
-            appMenuCommands()
-        }
-    }
-    
-    /// **Ensure SwiftData container is initialized**
-    private func initializeSwiftData() async {
-        do {
-            let schema = Schema([PictureDefinition.self])
-            let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
-            let container = try ModelContainer(for: schema, configurations: [configuration])
-            
-            // Ensure at least one PictureDefinition exists
-            let context = container.mainContext
-            let existingPicdefs = try? context.fetch(FetchDescriptor<PictureDefinition>())
-            if existingPicdefs?.isEmpty ?? true {
-                let newPicdef = PictureDefinition()
-                context.insert(newPicdef)
-                try? context.save()
-            }
-            
-            DispatchQueue.main.async {
-                self.modelContainer = container
-            }
-        } catch {
-            fatalError("Failed to initialize SwiftData: \(error)")
-        }
-    }
 }

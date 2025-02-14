@@ -13,7 +13,6 @@ var contextImageGlobal: CGImage?
 struct ContentView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.modelContext) private var modelContext
-    @Query private var picdefs: [PictureDefinition]
     @StateObject var popupManager = PopupManager()
     @State var requiresFullCalc = true
     @State var showGradient: Bool = false
@@ -24,11 +23,12 @@ struct ContentView: View {
     @State private var textFieldImageHeight: NSTextField = .init()
     @State private var textFieldY: NSTextField = .init()
     private let widthOfInputPanel: CGFloat = 400
+    var picdef: PictureDefinition
+
     
     var body: some View {
         GeometryReader { _ in
             HStack(spacing: 0) {
-                if let picdef = picdefs.first {
                     PanelUI(
                         picdef: Binding(
                             get: { picdef },
@@ -54,16 +54,10 @@ struct ContentView: View {
                         showGradient: $showGradient
                     )
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else {
-                    Text("No MandArt document found. Creating a new one...")
-                        .onAppear {
-                            createDefaultPictureDefinition()
-                        }
-                }
+                
             }
             .overlay(
                 Group {
-                    if let picdef = picdefs.first {
                         ContentViewPopups(
                             picdef: Binding(
                                 get: { picdef },
@@ -74,7 +68,7 @@ struct ContentView: View {
                             popupManager: popupManager,
                             requiresFullCalc: $requiresFullCalc
                         )
-                    }
+                    
                 }
             )
             
@@ -84,12 +78,7 @@ struct ContentView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     } // body
     
-    /// Ensures at least one `PictureDefinition` exists
-    private func checkAndCreateDefaultPicdef() {
-        if picdefs.isEmpty {
-            addNewPictureDefinition()
-        }
-    }
+
     
     /// Creates and inserts a new `PictureDefinition`
     private func addNewPictureDefinition() {
@@ -97,13 +86,7 @@ struct ContentView: View {
         modelContext.insert(newPicdef)
     }
     
-    /// Ensures at least one `PictureDefinition` exists before proceeding
-    private func createDefaultPictureDefinition() {
-        if picdefs.isEmpty {
-            let newPicdef = PictureDefinition()
-            modelContext.insert(newPicdef)
-        }
-    }
+
     
     /// Updates an existing `PictureDefinition`
     private func updatePicdef(_ oldPicdef: PictureDefinition, with newPicdef: PictureDefinition) {
