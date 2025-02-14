@@ -42,9 +42,15 @@ struct TabColorListRow: View {
                 ColorPicker(
                     "",
                     selection: Binding<Color>(
-                        get: { picdef.hues[index].color },
+                        get: {
+                            if picdef.hues.indices.contains(index) {
+                                return picdef.hues[index].color
+                            } else {
+                                return Color.white  // ✅ Provide default color if index is invalid
+                            }
+                        },
                         set: { newColor in
-                            if let components = newColor.cgColor?.components, components.count >= 3 {
+                            if picdef.hues.indices.contains(index), let components = newColor.cgColor?.components, components.count >= 3 {
                                 var updatedHues = picdef.hues
                                 updatedHues[index] = Hue(
                                     num: updatedHues[index].num,
@@ -90,16 +96,27 @@ struct TabColorListRow: View {
                     )
                 }
                 
-                Text(String(format: "%03d", Int(picdef.hues[index].r)))
-                Text(String(format: "%03d", Int(picdef.hues[index].g)))
-                Text(String(format: "%03d", Int(picdef.hues[index].b)))
+                Text(String(format: "%03d", picdef.hues.indices.contains(index) ? Int(picdef.hues[index].r) : 255))
+                Text(String(format: "%03d", picdef.hues.indices.contains(index) ? Int(picdef.hues[index].g) : 255))
+                Text(String(format: "%03d", picdef.hues.indices.contains(index) ? Int(picdef.hues[index].b) : 255))
+
                 
                 Button(role: .destructive) {
                     var updatedHues = picdef.hues
-                    updatedHues.remove(at: index)
-                    picdef.hues = updatedHues
-                    updateHueNums()
-                } label: {
+                    
+                    if updatedHues.indices.contains(index) {
+                        updatedHues.remove(at: index)
+                        picdef.hues = updatedHues
+                        updateHueNums()
+                        
+                        // If hues is empty, insert a default hue to avoid empty state crash
+                        if updatedHues.isEmpty {
+                            let defaultHue = Hue(num: 1, r: 255, g: 255, b: 255) // Default to white
+                            picdef.hues.append(defaultHue)
+                        }
+                    }
+                }
+                    label: {
                     Image(systemName: "trash")
                 }
                 .help("Delete " + "\(rowNumber)")
