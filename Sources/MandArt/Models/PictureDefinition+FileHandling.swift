@@ -4,33 +4,53 @@ import UniformTypeIdentifiers
 
 extension PictureDefinition {
     
-    /// Saves the MandArt image inputs as a JSON file in the Documents directory.
-    func saveMandArtImageInputs() {
+    /// Saves the MandArt image inputs as a JSON file, overwriting the last opened file.
+    func saveMandArtImageInputs(to url: URL? = nil) {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         
+        let saveURL = url ?? lastOpenedFileURL // Use the provided URL or fallback to last opened file
+        
+        guard let saveURL = saveURL else {
+            print("Error: No save location specified.")
+            return
+        }
+        
         do {
             let data = try encoder.encode(self)
-            let saveURL = getSaveURL()
             try data.write(to: saveURL)
-            print("Image inputs saved successfully to \(saveURL.path)")
+            print("MandArt image inputs saved to \(saveURL.path)")
         } catch {
             print("Error saving MandArt image inputs: \(error.localizedDescription)")
         }
     }
-
-    /// Returns the URL for saving the data file.
-    private func getSaveURL() -> URL {
-        let fileName = "MandArt_" + UUID().uuidString + ".mandart"
-        return FileManager.default
-            .urls(for: .documentDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent(fileName)
+    
+    /// Prompts user to save to a new file (Save As)
+    func saveMandArtImageInputsAs() {
+        let panel = NSSavePanel()
+        panel.allowedContentTypes = [UTType.json]
+        panel.nameFieldStringValue = "NewArtwork.mandart"
+        
+        if panel.runModal() == .OK, let url = panel.url {
+            saveMandArtImageInputs(to: url)
+        }
     }
-
+    
+    /// Returns the last opened file URL (used for overwriting)
+    private var lastOpenedFileURL: URL? {
+        // Store and retrieve the last opened file path
+        // This should be managed at the app level (set it when opening a file)
+        return nil // Needs to be set when loading a file
+    }
+    
     /// Loads a MandArt file from disk and returns a `PictureDefinition` instance.
     static func loadMandArtFile(from url: URL) -> PictureDefinition? {
         do {
             let data = try Data(contentsOf: url)
+            guard !data.isEmpty else {
+                print("Error: File at \(url.path) is empty.")
+                return nil
+            }
             let decoder = JSONDecoder()
             let pictureDefinition = try decoder.decode(PictureDefinition.self, from: data)
             print("Successfully loaded MandArt file from \(url.path)")
@@ -40,21 +60,25 @@ extension PictureDefinition {
             return nil
         }
     }
-
-    /// Saves the current MandArt image (as .png) with metadata.
-    func saveMandArtImage(image: NSImage) {
-        guard let data = image.pngData() else {
-            print("Error: Could not convert image to PNG data")
-            return
-        }
+    
+    /// Saves the current MandArt image as a PNG file.
+    func saveMandArtImageAsPNG(image: NSImage) {
+        let panel = NSSavePanel()
+        panel.allowedContentTypes = [UTType.png]
+        panel.nameFieldStringValue = "NewArtwork.png"
         
-        let saveURL = getSaveURL().deletingPathExtension().appendingPathExtension("png")
-        
-        do {
-            try data.write(to: saveURL)
-            print("Image saved successfully to \(saveURL.path)")
-        } catch {
-            print("Error saving image: \(error.localizedDescription)")
+        if panel.runModal() == .OK, let url = panel.url {
+            guard let data = image.pngData() else {
+                print("Error: Could not convert image to PNG data")
+                return
+            }
+            
+            do {
+                try data.write(to: url)
+                print("Image saved successfully to \(url.path)")
+            } catch {
+                print("Error saving image: \(error.localizedDescription)")
+            }
         }
     }
 }

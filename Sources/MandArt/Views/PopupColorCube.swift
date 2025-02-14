@@ -4,7 +4,7 @@ import SwiftUI
 
 @available(macOS 12.0, *)
 struct PopupColorCube: View {
-    @Binding var picdef: PictureDefinition
+    @EnvironmentObject var appState: AppState
     @ObservedObject var popupManager: PopupManager
     @State var selectedColor: (r: Int, g: Int, b: Int)?
     
@@ -12,11 +12,9 @@ struct PopupColorCube: View {
     let cubeCount: Int = 8
     
     init(
-        picdef: Binding<PictureDefinition>,
         popupManager: PopupManager,
         hues: [Hue]
     ) {
-        _picdef = picdef
         self.popupManager = popupManager
         self.hues = hues
     }
@@ -65,7 +63,7 @@ struct PopupColorCube: View {
                             let start = sliceIndex * 8 * 8
                             // -1 to correctly end at the last index of the slice
                             let end = (sliceIndex + 1) * 8 * 8 - 1
-                            PopupColorSlice(picdef: $picdef, selectedColor: $selectedColor, arrColors: currentColors, start: start, end: end)
+                            PopupColorSlice(selectedColor: $selectedColor, arrColors: currentColors, start: start, end: end)
                         }
                     }
                 }
@@ -79,7 +77,7 @@ struct PopupColorCube: View {
                             let start = sliceIndex * 9 * 9
                             // -1 to correctly end at the last index of the slice
                             let end = (sliceIndex + 1) * 9 * 9 - 1
-                            PopupColorSlice(picdef: $picdef, selectedColor: $selectedColor, arrColors: currentColors, start: start, end: end)
+                            PopupColorSlice( selectedColor: $selectedColor, arrColors: currentColors, start: start, end: end)
                         }
                     }
                 }

@@ -71,7 +71,7 @@ struct WelcomeMainInformationView: View {
                 )
                 newWindow.center()
                 newWindow.setFrameAutosaveName("MandArt Main Window")
-                newWindow.contentView = NSHostingView(rootView: ContentView(picdef: picdef).environment(\.modelContext, context))
+                newWindow.contentView = NSHostingView(rootView: ContentView().environment(\.modelContext, context))
                 newWindow.makeKeyAndOrderFront(nil)
             } catch {
                 print("Error opening default MandArt document: \(error)")

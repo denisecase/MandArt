@@ -3,10 +3,8 @@ import UniformTypeIdentifiers
 import AppKit
 
 struct TabSave: View {
-    @Binding var picdef: PictureDefinition
+    @EnvironmentObject var appState: AppState
     @ObservedObject var popupManager = PopupManager()
-    @Binding var requiresFullCalc: Bool
-    @Binding var showGradient: Bool
     
     var body: some View {
         ScrollView {
@@ -19,34 +17,40 @@ struct TabSave: View {
                         .padding(.vertical)
                 ) {
                     Button("Save Picture Inputs (as data file)") {
-                        picdef.saveMandArtImageInputs()
+                        appState.picdef.saveMandArtImageInputs()
                     }
                     .help("Save MandArt picture inputs as .mandart.")
                     
-                    Button("Save Picture (as .png)") {
+                    Button("Save Picture As…") {
+                        appState.picdef.saveMandArtImageInputsAs()
+                    }
+                    .help("Save MandArt picture inputs to a new .mandart file.")
+                    
+                    Button("Export as PNG") {
                         if let image = generateNSImage() {
-                            picdef.saveMandArtImage(image: image)
+                            appState.picdef.saveMandArtImageAsPNG(image: image)
                         } else {
                             print("Error: Could not generate image")
                         }
                     }
                     .help("Save MandArt picture as .png.")
                 } // end section
-            } //  vstack
-        } // scroll
+            } // VStack
+        } // ScrollView
         .onAppear {
-            requiresFullCalc = false
-            showGradient = false
+            appState.updateRequiresFullCalc(false)
+            appState.updateShowGradient(false)
         }
         .onDisappear {
-            if requiresFullCalc {
-                requiresFullCalc = false
+            if appState.requiresFullCalc {
+                appState.updateRequiresFullCalc(false)
             }
         }
     }
     
     /// **Generates an NSImage from the current MandArt view**
     private func generateNSImage() -> NSImage? {
+        let picdef = appState.picdef
         let size = NSSize(width: picdef.imageWidth, height: picdef.imageHeight)
         let image = NSImage(size: size)
         
@@ -62,30 +66,6 @@ struct TabSave: View {
         }
         
         image.unlockFocus() // Stop drawing
-        
         return image
     }
-    
-    
-    
-    
 }
-
-
-enum MandArtError: LocalizedError {
-    case encodingError
-    case emptyData
-    case failedSaving
-    
-    var errorDescription: String? {
-        switch self {
-        case .encodingError:
-            return "Error encoding picdef."
-        case .emptyData:
-            return "Encoded data is empty."
-        case .failedSaving:
-            return "Failed to save picture inputs."
-        }
-    }
-}
-

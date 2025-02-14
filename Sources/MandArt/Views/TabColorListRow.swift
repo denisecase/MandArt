@@ -3,7 +3,7 @@ import UniformTypeIdentifiers
 
 /// A view representing a row in the color list.
 struct TabColorListRow: View {
-    @Binding var picdef: PictureDefinition
+    @EnvironmentObject var appState: AppState
     @State private var showingPrintablePopups = false
     @State private var didChange = false
     
@@ -14,21 +14,21 @@ struct TabColorListRow: View {
     }
     
     var isIndexValid: Bool {
-        picdef.hues.indices.contains(index)
+        appState.picdef.hues.indices.contains(index)
     }
     
     /// Updates the hue numbers to match their position in the list.
     func updateHueNums() {
         DispatchQueue.main.async {
-            for (i, _) in picdef.hues.enumerated() {
-                picdef.hues[i].num = i + 1
+            for (i, _) in appState.picdef.hues.enumerated() {
+                appState.picdef.hues[i].num = i + 1
             }
         }
     }
     
     /// Determines if a color is likely to print accurately.
     func getIsPrintable(color: Color) -> Bool {
-        MandMath.isColorNearPrintableList(color: color.cgColor!, num: picdef.hues[index].num)
+        MandMath.isColorNearPrintableList(color: color.cgColor!, num: appState.picdef.hues[index].num)
     }
     
     var body: some View {
@@ -43,24 +43,26 @@ struct TabColorListRow: View {
                     "",
                     selection: Binding<Color>(
                         get: {
-                            if picdef.hues.indices.contains(index) {
-                                return picdef.hues[index].color
+                            if appState.picdef.hues.indices.contains(index) {
+                                return appState.picdef.hues[index].color
                             } else {
                                 return Color.white  // ✅ Provide default color if index is invalid
                             }
                         },
                         set: { newColor in
-                            if picdef.hues.indices.contains(index), let components = newColor.cgColor?.components, components.count >= 3 {
-                                var updatedHues = picdef.hues
-                                updatedHues[index] = Hue(
-                                    num: updatedHues[index].num,
-                                    r: components[0] * 255.0,
-                                    g: components[1] * 255.0,
-                                    b: components[2] * 255.0
-                                )
-                                picdef.hues = updatedHues
-                            }
+                            guard appState.picdef.hues.indices.contains(index),
+                                  let components = newColor.cgColor?.components, components.count >= 3,
+                                  let modelContext = appState.picdef.modelContext else { return }
+                            
+                            // ✅ Modify the hue directly inside SwiftData
+                            appState.picdef.hues[index].r = components[0] * 255.0
+                            appState.picdef.hues[index].g = components[1] * 255.0
+                            appState.picdef.hues[index].b = components[2] * 255.0
+                            
+                            appState.picdef.sortHuesByNumber()  // ✅ Always ensure order
+                            appState.picdef.saveChanges()  // ✅ Save changes to SwiftData
                         }
+
                     ),
                     supportsOpacity: false
                 )
@@ -69,9 +71,9 @@ struct TabColorListRow: View {
                     showingPrintablePopups = true
                 } label: {
                     Image(systemName: "exclamationmark.circle")
-                        .opacity(getIsPrintable(color: picdef.hues[index].color) ? 0 : 1)
+                        .opacity(getIsPrintable(color: appState.picdef.hues[index].color) ? 0 : 1)
                 }
-                .opacity(getIsPrintable(color: picdef.hues[index].color) ? 0 : 1)
+                .opacity(getIsPrintable(color: appState.picdef.hues[index].color) ? 0 : 1)
                 .help("See printable options for " + "\(rowNumber)")
                 
                 if showingPrintablePopups {
@@ -96,23 +98,23 @@ struct TabColorListRow: View {
                     )
                 }
                 
-                Text(String(format: "%03d", picdef.hues.indices.contains(index) ? Int(picdef.hues[index].r) : 255))
-                Text(String(format: "%03d", picdef.hues.indices.contains(index) ? Int(picdef.hues[index].g) : 255))
-                Text(String(format: "%03d", picdef.hues.indices.contains(index) ? Int(picdef.hues[index].b) : 255))
+                Text(String(format: "%03d", appState.picdef.hues.indices.contains(index) ? Int(appState.picdef.hues[index].r) : 255))
+                Text(String(format: "%03d", appState.picdef.hues.indices.contains(index) ? Int(appState.picdef.hues[index].g) : 255))
+                Text(String(format: "%03d", appState.picdef.hues.indices.contains(index) ? Int(appState.picdef.hues[index].b) : 255))
 
                 
                 Button(role: .destructive) {
-                    var updatedHues = picdef.hues
+                    var updatedHues = appState.picdef.hues
                     
                     if updatedHues.indices.contains(index) {
                         updatedHues.remove(at: index)
-                        picdef.hues = updatedHues
+                        appState.picdef.hues = updatedHues
                         updateHueNums()
                         
                         // If hues is empty, insert a default hue to avoid empty state crash
                         if updatedHues.isEmpty {
                             let defaultHue = Hue(num: 1, r: 255, g: 255, b: 255) // Default to white
-                            picdef.hues.append(defaultHue)
+                            appState.picdef.hues.append(defaultHue)
                         }
                     }
                 }

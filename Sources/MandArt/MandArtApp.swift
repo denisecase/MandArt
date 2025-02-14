@@ -3,50 +3,35 @@ import SwiftData
 import UniformTypeIdentifiers
 import AppKit
 
-/// `AppState` is a class that holds the application's state.
-/// It observes changes and updates the UI accordingly.
-class AppState: ObservableObject {
-  @Published var shouldShowWelcomeWhenStartingUp: Bool = UserDefaults.standard
-    .object(forKey: "shouldShowWelcomeWhenStartingUp") as? Bool ?? true
-}
-
-
-/// `MandArtApp` is the main structure for the SwiftUI app.
-/// It defines the behavior and layout of the app.
 @main
 struct MandArtApp: App {
     @StateObject var appState: AppState
     @State private var shouldShowWelcomeWhenStartingUp: Bool
-    @State private var modelContainer: ModelContainer?
-    @State private var picdef: PictureDefinition?
-
+    
     init() {
+        // Get the initial state for whether to show the welcome view.
         let initialState = UserDefaults.standard.object(forKey: "shouldShowWelcomeWhenStartingUp") as? Bool ?? true
-        _appState = StateObject(wrappedValue: AppState())
         _shouldShowWelcomeWhenStartingUp = State(initialValue: initialState)
-      
+        
+        // Synchronously initialize SwiftData to obtain a valid container and a non‑optional picdef.
         do {
             let result = try MandArtApp.initializeSwiftDataSync()
-            self.modelContainer = result.container
-            self.picdef = result.picdef
+            let state = AppState()
+            state.modelContainer = result.container
+            state.picdef = result.picdef  // Now non‑optional
+            _appState = StateObject(wrappedValue: state)
         } catch {
             fatalError("Failed to initialize SwiftData: \(error)")
         }
     }
-
     
-
     var body: some Scene {
         WindowGroup {
             Group {
                 if shouldShowWelcomeWhenStartingUp {
-                    WelcomeView(picdef:picdef!)
-                        .environmentObject(appState)
-                } else if let modelContainer = modelContainer, let unwrappedPicdef = picdef {
-                    ContentView(picdef: picdef!)
-                        .environment(\.modelContext, modelContainer.mainContext)
+                    WelcomeView().environmentObject(appState)
                 } else {
-                    Text("Loading MandArt...") // Placeholder until initialization completes
+                    ContentView().environmentObject(appState)
                 }
             }
             .task {
@@ -55,12 +40,11 @@ struct MandArtApp: App {
         }
         .defaultSize(width: windowWidth, height: windowHeight)
         .commands {
-            appMenuCommands()
+            appMenuCommands(appState: appState)
         }
     }
     
-    
-    /// **Ensures SwiftData initializes properly (Sync Version for `init()`)**
+    /// Synchronous SwiftData initialization.
     static func initializeSwiftDataSync() throws -> (container: ModelContainer, picdef: PictureDefinition) {
         let schema = Schema([PictureDefinition.self])
         let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
@@ -68,7 +52,6 @@ struct MandArtApp: App {
         let context = container.mainContext
         
         var existingPicdefs = try context.fetch(FetchDescriptor<PictureDefinition>())
-        
         if existingPicdefs.isEmpty {
             let newPicdef = PictureDefinition()
             context.insert(newPicdef)
@@ -79,16 +62,14 @@ struct MandArtApp: App {
         return (container, existingPicdefs.first!)
     }
     
-    /// **Ensures SwiftData initializes properly**
+    /// Asynchronously ensures SwiftData is up to date.
     private func initializeSwiftData() async {
         do {
             let schema = Schema([PictureDefinition.self])
             let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
             let container = try ModelContainer(for: schema, configurations: [configuration])
-            
             let context = container.mainContext
             var existingPicdefs = try context.fetch(FetchDescriptor<PictureDefinition>())
-            
             if existingPicdefs.isEmpty {
                 let newPicdef = PictureDefinition()
                 context.insert(newPicdef)
@@ -96,17 +77,17 @@ struct MandArtApp: App {
                 existingPicdefs.append(newPicdef)
             }
             
-            DispatchQueue.main.async {
-                self.picdef = existingPicdefs.first // ✅ Guarantees a single picdef exists
-                self.modelContainer = container
+            await MainActor.run {
+                self.appState.modelContainer = container
+                self.appState.picdef = existingPicdefs.first!  // Guaranteed non‑optional
             }
         } catch {
             fatalError("Failed to initialize SwiftData: \(error)")
         }
     }
-
     
-    /// Constants used across the app, such as dimensions and margins.
+    // MARK: - App Constants and Window Size Calculations
+    
     enum AppConstants {
         static let defaultOpeningWidth: CGFloat = 800.0
         static let defaultOpeningHeight: CGFloat = 600.0
@@ -160,16 +141,13 @@ struct MandArtApp: App {
         }
     }
     
-    
-    /// **Window size calculations**
     private var screenSize: CGSize {
-        NSScreen.main?.frame.size ?? CGSize(width: 1440, height: 900) // Default to a common screen size
+        NSScreen.main?.frame.size ?? CGSize(width: 1440, height: 900)
     }
     private var windowWidth: CGFloat {
-        max(1000, screenSize.width * 0.85) // Ensure it's at least 1000px wide
+        max(1000, screenSize.width * 0.85)
     }
     private var windowHeight: CGFloat {
-        screenSize.height * 0.9 // Use 90% of the available height
+        screenSize.height * 0.9
     }
-    
 }

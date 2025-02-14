@@ -3,25 +3,21 @@ import UniformTypeIdentifiers
 import SwiftData
 
 struct PanelDisplay: View {
-    @Binding  var picdef: PictureDefinition
-    @Binding var requiresFullCalc: Bool
-    @Binding var showGradient: Bool
+    @EnvironmentObject var appState: AppState
+
     @State private var selectedTab = 0
     @State private var moved: Double = 0.0
     @State private var startTime: Date?
     
     var body: some View {
         VStack(alignment: .leading) {
-            let viewModel = ImageViewModel(
-                picdef: picdef,
-                requiresFullCalc: $requiresFullCalc,
-                showGradient: $showGradient
-            )
+            let viewModel = ImageViewModel(appState: appState)
+
             ScrollView([.horizontal, .vertical], showsIndicators: true) {
                 if let cgImage = viewModel.getImage() {
                     Image(decorative: cgImage, scale: 1.0)
                         .frame(width: CGFloat(cgImage.width), height: CGFloat(cgImage.height))
-                        .gesture(tapGesture(for: picdef))
+                        .gesture(tapGesture(for: appState.picdef))
                 } else {
                     Text("No Image Available")
                         .foregroundColor(.gray)

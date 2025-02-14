@@ -37,7 +37,7 @@ class WelcomeWindowController: NSWindowController {
         window.minSize = NSSize(width: minW, height: minH)
         window.maxSize = NSSize(width: maxW, height: maxH)
         
-        window.contentView = NSHostingView(rootView: WelcomeView(picdef: picdef).environmentObject(self.appState))
+        window.contentView = NSHostingView(rootView: WelcomeView().environmentObject(self.appState))
     }
     
     /// Required initializer for NSCoder, not implemented for this class.

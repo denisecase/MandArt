@@ -3,9 +3,7 @@ import UniformTypeIdentifiers
 
 @available(macOS 12.0, *)
 struct TabTune: View {
-    @Binding var picdef: PictureDefinition
-    @Binding var requiresFullCalc: Bool
-    @Binding var showGradient: Bool
+    @EnvironmentObject var appState: AppState
     
     var body: some View {
         ScrollView {
@@ -18,7 +16,7 @@ struct TabTune: View {
                         placeholder: "5",
                         formatter: MAFormatters.fmtSpacingNearEdge,
                         helpText: "Enter the value for the color spacing near the edges of the image, away from Mini-Mand.",
-                        value: $picdef.spacingColorFar
+                        value: $appState.picdef.spacingColorFar
                     )
                 }
                 
@@ -30,7 +28,7 @@ struct TabTune: View {
                         placeholder: "15",
                         formatter: MAFormatters.fmtSpacingFarFromEdge,
                         helpText: "Enter the value for the color spacing away from the edges of the image, near the Mini-Mand.",
-                        value: $picdef.spacingColorNear
+                        value: $appState.picdef.spacingColorNear
                     )
                 }
                 
@@ -43,7 +41,7 @@ struct TabTune: View {
                         placeholder: "0",
                         formatter: MAFormatters.fmtChangeInMinIteration,
                         helpText: "Enter a value for the change in the minimum number of iterations in the image. This will change the coloring.",
-                        value: $picdef.dFIterMin
+                        value: $appState.picdef.dFIterMin
                     )
                 }
                 
@@ -57,8 +55,8 @@ struct TabTune: View {
                         formatter: MAFormatters.fmtNBlocks,
                         helpText: "Enter a value for the number of blocks of color in the image.",
                         value: Binding(
-                            get: { Double(picdef.nBlocks) },
-                            set: { picdef.nBlocks = Int($0) }
+                            get: { Double(appState.picdef.nBlocks) },
+                            set: { appState.picdef.nBlocks = Int($0) }
                         )
                     )
                 }
@@ -69,7 +67,7 @@ struct TabTune: View {
                 }
                 HStack {
                     Text("0")
-                    Slider(value: $picdef.yY, in: 0 ... 1, step: 0.1)
+                    Slider(value: $appState.picdef.yY, in: 0 ... 1, step: 0.1)
                         .help(
                             "Enter a value for the fraction of a block of colors that will be a solid color before the rest is a gradient."
                         )
@@ -77,7 +75,7 @@ struct TabTune: View {
                     
                     TextField(
                         "0",
-                        value: $picdef.yY,
+                        value: $appState.picdef.yY,
                         formatter: MAFormatters.fmtHoldFractionGradient
                     )
                     .textFieldStyle(.roundedBorder)
@@ -95,12 +93,13 @@ struct TabTune: View {
         } // scrollview
         .padding()
         .onAppear {
-            requiresFullCalc = false
-            showGradient = false
+            appState.updateRequiresFullCalc(false)
+            appState.updateShowGradient(false)
+         
         }
         .onDisappear {
-            if requiresFullCalc {
-                requiresFullCalc = false
+            if appState.requiresFullCalc {
+                appState.updateRequiresFullCalc(false)
             }
         }
     }

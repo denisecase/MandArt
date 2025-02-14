@@ -3,51 +3,45 @@ import SwiftData
 import UniformTypeIdentifiers
 
 struct TabFindDefaultButtons: View {
-    @Binding var picdef: PictureDefinition
-    @Binding var requiresFullCalc: Bool
+    @EnvironmentObject var appState: AppState
     @State private var didChange: Bool = false
-    
-    init(picdef: Binding<PictureDefinition>, requiresFullCalc: Binding<Bool>) {
-        _picdef = picdef
-        _requiresFullCalc = requiresFullCalc
-    }
     
     func showDefaultMandArt(mandPowerReal: Int) {
         if mandPowerReal == 2 {
-            picdef.imageWidth = 1100
-            picdef.imageHeight = 1000
-            picdef.xCenter = -0.75
-            picdef.yCenter = 0.0
-            picdef.theta = 0.0
-            picdef.scale = 430.0
-            picdef.iterationsMax = 10000.0
-            picdef.rSqLimit = 500.0
+            appState.picdef.imageWidth = 1100
+            appState.picdef.imageHeight = 1000
+            appState.picdef.xCenter = -0.75
+            appState.picdef.yCenter = 0.0
+            appState.picdef.theta = 0.0
+            appState.picdef.scale = 430.0
+            appState.picdef.iterationsMax = 10000.0
+            appState.picdef.rSqLimit = 500.0
             
         } else if mandPowerReal == 3 {
-            picdef.imageWidth = 1100
-            picdef.imageHeight = 1000
-            picdef.xCenter = 0.0
-            picdef.yCenter = 0.0
-            picdef.theta = 0.0
-            picdef.iterationsMax = 10000.0
-            picdef.scale = 360.0
-            picdef.rSqLimit = 64.0
+            appState.picdef.imageWidth = 1100
+            appState.picdef.imageHeight = 1000
+            appState.picdef.xCenter = 0.0
+            appState.picdef.yCenter = 0.0
+            appState.picdef.theta = 0.0
+            appState.picdef.iterationsMax = 10000.0
+            appState.picdef.scale = 360.0
+            appState.picdef.rSqLimit = 64.0
         }
         
         else {
-            picdef.imageWidth = 1100
-            picdef.imageHeight = 1000
-            picdef.xCenter = 0.0
-            picdef.yCenter = 0
-            picdef.theta = 0.0
-            picdef.iterationsMax = 50.0
-            picdef.scale = 430.0
-            picdef.rSqLimit = 25.0
+            appState.picdef.imageWidth = 1100
+            appState.picdef.imageHeight = 1000
+            appState.picdef.xCenter = 0.0
+            appState.picdef.yCenter = 0
+            appState.picdef.theta = 0.0
+            appState.picdef.iterationsMax = 50.0
+            appState.picdef.scale = 430.0
+            appState.picdef.rSqLimit = 25.0
         }
-        picdef.mandPowerReal = mandPowerReal
-        //  picdef.mandPowerImaginary = 0.0
+        appState.picdef.mandPowerReal = mandPowerReal
+        //  appState.picdef.mandPowerImaginary = 0.0
         didChange = !didChange // Force redraw if needed
-        requiresFullCalc = true
+        appState.updateRequiresFullCalc(true)
     }
     
     var body: some View {

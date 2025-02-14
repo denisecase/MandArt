@@ -1,25 +1,25 @@
 import SwiftUI
 import SwiftData
 
-/// A ViewModel for managing and displaying images in a SwiftUI view.
-/// This class handles the logic for calculating images based on the provided document,
-/// and manages whether a full calculation is required or if a gradient should be shown.
+@MainActor
 class ImageViewModel: ObservableObject {
-    @Bindable var picdef: PictureDefinition
-    @Binding var requiresFullCalc: Bool
-    @Binding var showGradient: Bool
-    
+    let appState: AppState
     private var previousPicdef: PictureDefinition?
     private var _cachedArtImage: CGImage?
+    
+    init(appState: AppState) {
+        self.appState = appState
+    }
+    
     
     /// A computed property for managing a cached MandArt image.
     /// It checks if a new image calculation is required based on the current document settings.
     var cachedArtImage: CGImage? {
         get {
             if _cachedArtImage == nil || keyVariablesChanged {
-                var colors: [[Double]] = picdef.hues.map { [$0.r, $0.g, $0.b] }
-                let art = ArtImage(picdef: picdef)
-                _cachedArtImage = requiresFullCalc ?
+                var colors: [[Double]] = appState.picdef.hues.map { [$0.r, $0.g, $0.b] }
+                let art = ArtImage(picdef: appState.picdef)
+                _cachedArtImage = appState.requiresFullCalc ?
                 art.getGrandArtFullPictureImage(colors: &colors) :
                 art.getNewlyColoredImage(colors: &colors)
             }
@@ -29,24 +29,14 @@ class ImageViewModel: ObservableObject {
             _cachedArtImage = newValue
         }
     }
-    
-    /// Initializes a new instance of `ImageViewModel`.
-    /// - Parameters:
-    /// - picdef: The `PictureDefinition` instance to use.
-    ///   - requiresFullCalc: A binding to a Boolean value indicating whether a full image calculation is required.
-    ///   - showGradient: A binding to a Boolean value indicating whether to show a gradient.
-    init(picdef: PictureDefinition, requiresFullCalc: Binding<Bool>, showGradient: Binding<Bool>) {
-        self.picdef = picdef
-        _requiresFullCalc = requiresFullCalc
-        _showGradient = showGradient
-    }
+
     
     /// Calculates the right number for gradient display based on whether the left gradient number is valid.
     /// - Parameter leftGradientIsValid: A Boolean indicating whether the left gradient number is valid.
     /// - Returns: The calculated right number for the gradient.
     func getCalculatedRightNumber(leftGradientIsValid: Bool) -> Int {
-        if leftGradientIsValid, picdef.leftNumber < picdef.hues.count {
-            return picdef.leftNumber + 1
+        if leftGradientIsValid, appState.picdef.leftNumber < appState.picdef.hues.count {
+            return appState.picdef.leftNumber + 1
         }
         return 1
     }
@@ -54,30 +44,30 @@ class ImageViewModel: ObservableObject {
     /// Determines whether the left gradient number is valid.
     /// - Returns: A Boolean indicating whether the left gradient number is valid.
     func getLeftGradientIsValid() -> Bool {
-        let leftNum = picdef.leftNumber
-        let lastPossible = picdef.hues.count
+        let leftNum = appState.picdef.leftNumber
+        let lastPossible = appState.picdef.hues.count
         return leftNum >= 1 && leftNum <= lastPossible
     }
     
     /// A private computed property to check if key variables of the picture definition have changed.
     private var keyVariablesChanged: Bool {
         guard let previousPicdef = previousPicdef else {
-            self.previousPicdef = picdef
+            self.previousPicdef = appState.picdef
             return true
         }
         
         let hasChanged =
-        previousPicdef.imageWidth != picdef.imageWidth ||
-        previousPicdef.imageHeight != picdef.imageHeight ||
-        previousPicdef.xCenter != picdef.xCenter ||
-        previousPicdef.yCenter != picdef.yCenter ||
-        previousPicdef.theta != picdef.theta ||
-        previousPicdef.scale != picdef.scale ||
-        previousPicdef.iterationsMax != picdef.iterationsMax ||
-        previousPicdef.rSqLimit != picdef.rSqLimit
+        previousPicdef.imageWidth != appState.picdef.imageWidth ||
+        previousPicdef.imageHeight != appState.picdef.imageHeight ||
+        previousPicdef.xCenter != appState.picdef.xCenter ||
+        previousPicdef.yCenter != appState.picdef.yCenter ||
+        previousPicdef.theta != appState.picdef.theta ||
+        previousPicdef.scale != appState.picdef.scale ||
+        previousPicdef.iterationsMax != appState.picdef.iterationsMax ||
+        previousPicdef.rSqLimit != appState.picdef.rSqLimit
         
         if hasChanged {
-            self.previousPicdef = picdef
+            self.previousPicdef = appState.picdef
         }
         
         return hasChanged
@@ -88,7 +78,7 @@ class ImageViewModel: ObservableObject {
     /// or show a gradient based on the current state.
     /// - Returns: An optional `CGImage` representing the current image.
     func getImage() -> CGImage? {
-        if showGradient && getLeftGradientIsValid() {
+        if appState.showGradient && getLeftGradientIsValid() {
             return getGradientImage()
         }
         return cachedArtImage
@@ -97,22 +87,22 @@ class ImageViewModel: ObservableObject {
     /// Generates a gradient image based on the left and right color values.
     /// - Returns: An optional `CGImage` representing the gradient.
     func getGradientImage() -> CGImage? {
-        let leftNumber = picdef.leftNumber
+        let leftNumber = appState.picdef.leftNumber
         let rightNumber = getCalculatedRightNumber(leftGradientIsValid: getLeftGradientIsValid())
         
-        guard let leftColorRGBArray = picdef.getColorGivenNumberStartingAtOne(leftNumber) else {
+        guard let leftColorRGBArray = appState.picdef.getColorGivenNumberStartingAtOne(leftNumber) else {
             return nil
         }
-        guard let rightColorRGBArray = picdef.getColorGivenNumberStartingAtOne(rightNumber) else {
+        guard let rightColorRGBArray = appState.picdef.getColorGivenNumberStartingAtOne(rightNumber) else {
             return nil
         }
         
         let gradientParameters = GradientImage.GradientImageInputs(
-            imageWidth: 500, // self.picdef.imageWidth,
-            imageHeight: 500, // self.picdef.imageHeight,
+            imageWidth: 500, // self.appState.picdef.imageWidth,
+            imageHeight: 500, // self.appState.picdef.imageHeight,
             leftColorRGBArray: leftColorRGBArray,
             rightColorRGBArray: rightColorRGBArray,
-            gradientThreshold: 0.0 // self.picdef.yY
+            gradientThreshold: 0.0 // self.appState.picdef.yY
         )
         return GradientImage.createCGImage(using: gradientParameters)
     }

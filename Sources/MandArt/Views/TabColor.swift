@@ -2,12 +2,9 @@ import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
 
-@available(macOS 12.0, *)
 struct TabColor: View {
-    @Binding var picdef: PictureDefinition
+    @EnvironmentObject var appState: AppState
     @ObservedObject var popupManager: PopupManager
-    @Binding var requiresFullCalc: Bool
-    @Binding var showGradient: Bool
     @State private var didChange = false
     
     private var mandColorBinding: Binding<Color> {
@@ -15,9 +12,9 @@ struct TabColor: View {
             get: {
                 // Convert Hue to Color
                 Color(
-                    red: picdef.mandColor.r / 255,
-                    green: picdef.mandColor.g / 255,
-                    blue: picdef.mandColor.b / 255
+                    red: appState.picdef.mandColor.r / 255,
+                    green: appState.picdef.mandColor.g / 255,
+                    blue: appState.picdef.mandColor.b / 255
                 )
             },
             set: {
@@ -26,21 +23,21 @@ struct TabColor: View {
                 let red = (components?[0] ?? 0) * 255
                 let green = (components?[1] ?? 0) * 255
                 let blue = (components?[2] ?? 0) * 255
-                picdef.mandColor = Hue(num: picdef.mandColor.num, r: red, g: green, b: blue)
+                appState.picdef.mandColor = Hue(num: appState.picdef.mandColor.num, r: red, g: green, b: blue)
             }
         )
     }
     
     func updateArt() {
-        for (index, _) in picdef.hues.enumerated() {
-            picdef.hues[index].num = index + 1
+        for (index, _) in appState.picdef.hues.enumerated() {
+            appState.picdef.hues[index].num = index + 1
         }
         didChange.toggle()
     }
     
     var calculatedRightNumber: Int {
-        if picdef.leftNumber >= 1 && picdef.leftNumber < picdef.hues.count {
-            return picdef.leftNumber + 1
+        if appState.picdef.leftNumber >= 1 && appState.picdef.leftNumber < appState.picdef.hues.count {
+            return appState.picdef.leftNumber + 1
         }
         return 1
     }
@@ -63,13 +60,13 @@ struct TabColor: View {
                     
                     HStack {
                         Button("Add New Color") {
-                            guard let modelContext = picdef.modelContext else {
+                            guard let modelContext = appState.picdef.modelContext else {
                                 print("Error: No SwiftData context found!")
                                 return
                             }
                             
                             // Create a new Hue with a default color (black or white)
-                            let newHue = Hue(num: picdef.hues.count + 1, r: 0, g: 0, b: 0) // Defaults to black
+                            let newHue = Hue(num: appState.picdef.hues.count + 1, r: 0, g: 0, b: 0) // Defaults to black
                             
                             // Insert into SwiftData context **before** modifying picdef.hues
                             modelContext.insert(newHue)
@@ -80,7 +77,7 @@ struct TabColor: View {
                                     modelContext.insert(newHue)
                                     
                                     // Append the new color to the end of the list
-                                    picdef.hues.append(newHue)
+                                    appState.picdef.hues.append(newHue)
                                     
                                     // Ensure the numbers are correctly updated
                                     updateArt()
@@ -92,7 +89,7 @@ struct TabColor: View {
                             // Save changes to SwiftData
                             do {
                                 try modelContext.save()
-                                print("Successfully saved new hue. Total hues:", picdef.hues.count)
+                                print("Successfully saved new hue. Total hues:", appState.picdef.hues.count)
 
                             } catch {
                                 print("Error saving new hue: \(error)")
@@ -102,7 +99,7 @@ struct TabColor: View {
                         .padding([.bottom], 2)
                     }
                     
-                    TabColorList(picdef: $picdef,  requiresFullCalc: $requiresFullCalc, showGradient: $showGradient)
+                    TabColorList().environmentObject(appState)
                         .background(Color.red.opacity(0.5))
                         .frame(height: 300)
                 } //  section
@@ -120,28 +117,28 @@ struct TabColor: View {
                         Text("From:")
                             .help("Choose the left color number.")
                         
-                        Picker("Select a color number", selection: $picdef.leftNumber) {
-                            ForEach(1 ..< picdef.hues.count + 1, id: \.self) { index in
+                        Picker("Select a color number", selection: $appState.picdef.leftNumber) {
+                            ForEach(1 ..< appState.picdef.hues.count + 1, id: \.self) { index in
                                 Text("\(index)")
                             }
                         }
                         .frame(maxWidth: 50)
                         .labelsHidden()
                         .help("Select the color number for the left side of a gradient.")
-                        .onChange(of: picdef.leftNumber) { _,_ in
-                            showGradient = true
+                        .onChange(of: appState.picdef.leftNumber) { _,_ in
+                            appState.updateShowGradient(true)
                         }
                         
                         Text("to \(calculatedRightNumber)")
                             .help("The color number for the right side of a gradient.")
                         
                         Button("Display Gradient") {
-                            showGradient = true
+                            appState.updateShowGradient(true)
                         }
                         .help("Display a gradient to review the transition between adjoining colors.")
                         
                         Button("Display Art") {
-                            showGradient = false
+                            appState.updateShowGradient(false)
                         }
                         .help("Display art again after checking gradients.")
                     } //  hstack
@@ -170,12 +167,12 @@ struct TabColor: View {
             } //  vstack
         } //  scrollview
         .onAppear {
-            showGradient = false
-            requiresFullCalc = false
+            appState.updateShowGradient(false)
+            appState.updateRequiresFullCalc(false)
         }
         .onDisappear {
-            if showGradient {
-                showGradient = false
+            if appState.showGradient {
+                appState.updateShowGradient(false)
             }
         }
     }

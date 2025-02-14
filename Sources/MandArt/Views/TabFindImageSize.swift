@@ -3,12 +3,11 @@ import UniformTypeIdentifiers
 
 @available(macOS 12.0, *)
 struct TabFindImageSize: View {
-    @Binding var picdef: PictureDefinition
-    @Binding var requiresFullCalc: Bool
+    @EnvironmentObject var appState: AppState
     
     func aspectRatio() -> Double {
-        let h = Double(picdef.imageHeight)
-        let w = Double(picdef.imageWidth)
+        let h = Double(appState.picdef.imageHeight)
+        let w = Double(appState.picdef.imageWidth)
         return max(h / w, w / h)
     }
     
@@ -26,7 +25,7 @@ struct TabFindImageSize: View {
                     Text("Width, px")
                     DelayedTextFieldInt(
                         placeholder: "1100",
-                        value: $picdef.imageWidth,
+                        value: $appState.picdef.imageWidth,
                         formatter: MAFormatters.fmtImageWidthHeight
                     )
                     .textFieldStyle(.roundedBorder)
@@ -34,8 +33,8 @@ struct TabFindImageSize: View {
                     .frame(maxWidth: 80)
                     .padding(10)
                     .help("Enter the width, in pixels, of the picture.")
-                    .onChange(of: picdef.imageWidth) { _ , _ in
-                        requiresFullCalc = true
+                    .onChange(of: appState.picdef.imageWidth) { _ , _ in
+                        appState.updateRequiresFullCalc(true)
                     }
                 } // end vstack
                 
@@ -43,14 +42,14 @@ struct TabFindImageSize: View {
                     Text("Height, px")
                     DelayedTextFieldInt(
                         placeholder: "1000",
-                        value: $picdef.imageHeight,
+                        value: $appState.picdef.imageHeight,
                         formatter: MAFormatters.fmtImageWidthHeight
                     )
                     .frame(maxWidth: 80)
                     .padding(10)
                     .help("Enter the height, in pixels, of the picture.")
-                    .onChange(of: picdef.imageHeight) { _ , _ in
-                        requiresFullCalc = true
+                    .onChange(of: appState.picdef.imageHeight) { _ , _ in
+                        appState.updateRequiresFullCalc(true)
                     }
                 } // end vstack
                 

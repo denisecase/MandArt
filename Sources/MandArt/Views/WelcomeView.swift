@@ -13,7 +13,6 @@ struct WelcomeView: View {
   @EnvironmentObject var appState: AppState
     @State private var scale: CGFloat = 1
     @State private var angle: Double = 0
-  let picdef: PictureDefinition
 
   var body: some View {
     VStack(spacing: 0) {
@@ -53,7 +52,7 @@ struct WelcomeView: View {
                 
                 WelcomeMainInformationView(
                     showWelcomeScreen: appState.shouldShowWelcomeWhenStartingUp,
-                    picdef: picdef
+                    picdef: appState.picdef
                 )
                     .frame(maxHeight: .infinity) // all  vertical space
                     .padding()

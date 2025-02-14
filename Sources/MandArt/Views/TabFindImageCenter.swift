@@ -1,10 +1,8 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-@available(macOS 12.0, *)
 struct TabFindImageCenter: View {
-    @Binding var picdef: PictureDefinition
-    @Binding var requiresFullCalc: Bool
+    @EnvironmentObject var appState: AppState
     
     var body: some View {
         Section(
@@ -21,7 +19,7 @@ struct TabFindImageCenter: View {
                     Text("Between -2 and 2")
                     DelayedTextFieldDouble(
                         placeholder: "-0.75",
-                        value: $picdef.xCenter,
+                        value: $appState.picdef.xCenter,
                         formatter: MAFormatters.fmtXY
                     )
                     .textFieldStyle(.roundedBorder)
@@ -30,8 +28,8 @@ struct TabFindImageCenter: View {
                     .help(
                         "Enter horizontal center of the picture. Recommended: If you plan to use a power > 2, you might change to 0.0 to start."
                     )
-                    .onChange(of: picdef.xCenter) { _, _ in
-                        requiresFullCalc = true
+                    .onChange(of: appState.picdef.xCenter) { _, _ in
+                        appState.updateRequiresFullCalc(true)
                     }
                 } // end vstack
                 
@@ -40,19 +38,18 @@ struct TabFindImageCenter: View {
                     Text("Between -2 and 2")
                     DelayedTextFieldDouble(
                         placeholder: "0.0",
-                        value: $picdef.yCenter,
+                        value: $appState.picdef.yCenter,
                         formatter: MAFormatters.fmtXY
                     )
                     .textFieldStyle(.roundedBorder)
                     .multilineTextAlignment(.trailing)
                     .frame(maxWidth: 170)
                     .help("Enter vertical center of the picture.")
-                    .onChange(of: picdef.yCenter) { _, _ in
-                        requiresFullCalc = true
+                    .onChange(of: appState.picdef.xCenter) { _, _ in
+                        appState.requiresFullCalc = true
                     }
                 }
             } // end HStack for XY
-              // .padding(.bottom, 20)
         }
         Divider()
     }

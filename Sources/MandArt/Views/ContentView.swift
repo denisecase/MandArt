@@ -23,52 +23,22 @@ struct ContentView: View {
     @State private var textFieldImageHeight: NSTextField = .init()
     @State private var textFieldY: NSTextField = .init()
     private let widthOfInputPanel: CGFloat = 400
-    var picdef: PictureDefinition
 
     
     var body: some View {
         GeometryReader { _ in
             HStack(spacing: 0) {
-                    PanelUI(
-                        picdef: Binding(
-                            get: { picdef },
-                            set: { newValue in
-                                updatePicdef(picdef, with: newValue)
-                            }
-                        ),
-                        popupManager: popupManager,
-                        requiresFullCalc: $requiresFullCalc,
-                        showGradient: $showGradient
-                    )
+                PanelUI(popupManager: popupManager)
                     .frame(width: widthOfInputPanel)
                     .fixedSize(horizontal: true, vertical: false)
                     
-                    PanelDisplay(
-                        picdef: Binding(
-                            get: { picdef },
-                            set: { newValue in
-                                updatePicdef(picdef, with: newValue)
-                            }
-                        ),
-                        requiresFullCalc: $requiresFullCalc,
-                        showGradient: $showGradient
-                    )
+                    PanelDisplay()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 
             }
             .overlay(
                 Group {
-                        ContentViewPopups(
-                            picdef: Binding(
-                                get: { picdef },
-                                set: { newValue in
-                                    updatePicdef(picdef, with: newValue)
-                                }
-                            ),
-                            popupManager: popupManager,
-                            requiresFullCalc: $requiresFullCalc
-                        )
-                    
+                        ContentViewPopups(popupManager: popupManager)
                 }
             )
             

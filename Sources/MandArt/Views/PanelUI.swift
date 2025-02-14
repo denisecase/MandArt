@@ -3,11 +3,9 @@ import SwiftData
 
 @available(macOS 12.0, *)
 struct PanelUI: View {
+    @EnvironmentObject var appState: AppState
     @Environment(\.modelContext) private var modelContext
-    @Binding var picdef: PictureDefinition
     @ObservedObject var popupManager: PopupManager
-    @Binding var requiresFullCalc: Bool
-    @Binding var showGradient: Bool
     @State private var selectedTab = 0
     
     var body: some View {
@@ -23,11 +21,8 @@ struct PanelUI: View {
             Divider()
 
                 TabbedView(
-                    picdef: $picdef,
-                    popupManager: popupManager,
-                    requiresFullCalc: $requiresFullCalc,
-                    showGradient: $showGradient
-                )
+                    popupManager: popupManager
+                ).environmentObject(appState)
 
             Spacer()
         }
@@ -38,12 +33,12 @@ struct PanelUI: View {
     
     /// Updates an existing `PictureDefinition`
     private func updatePicdef(_ newPicdef: PictureDefinition) {
-        picdef.hues = newPicdef.hues
-        picdef.leftNumber = newPicdef.leftNumber
-        picdef.mandColor = newPicdef.mandColor
-        picdef.scale = newPicdef.scale
-        picdef.theta = newPicdef.theta
-        picdef.iterationsMax = newPicdef.iterationsMax
+        appState.picdef.hues = newPicdef.hues
+        appState.picdef.leftNumber = newPicdef.leftNumber
+        appState.picdef.mandColor = newPicdef.mandColor
+        appState.picdef.scale = newPicdef.scale
+        appState.picdef.theta = newPicdef.theta
+        appState.picdef.iterationsMax = newPicdef.iterationsMax
     }
     
     /// Adds a new `PictureDefinition` instance if needed

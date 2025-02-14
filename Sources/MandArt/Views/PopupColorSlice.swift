@@ -2,7 +2,7 @@ import SwiftUI
 
 @available(macOS 12.0, *)
 struct PopupColorSlice: View {
-    @Binding var picdef: PictureDefinition
+    @EnvironmentObject var appState: AppState
     @Binding var selectedColor: (r: Int, g: Int, b: Int)?
     
     let arrColors: [Color]
@@ -10,13 +10,11 @@ struct PopupColorSlice: View {
     let end: Int
     
     init(
-        picdef: Binding<PictureDefinition>,
         selectedColor: Binding<(r: Int, g: Int, b: Int)?>,
         arrColors: [Color],
         start: Int,
         end: Int
     ) {
-        self._picdef = picdef
         _selectedColor = selectedColor
         self.arrColors = arrColors
         self.start = start
@@ -28,7 +26,7 @@ struct PopupColorSlice: View {
         if let components = color.colorComponents {
             let newColor = (r: Int(components.red * 255), g: Int(components.green * 255), b: Int(components.blue * 255))
             selectedColor = newColor
-            picdef.addHue(r: Double(newColor.r), g: Double(newColor.g), b: Double(newColor.b))
+            appState.picdef.addHue(r: Double(newColor.r), g: Double(newColor.g), b: Double(newColor.b))
         }
     }
     

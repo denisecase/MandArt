@@ -3,18 +3,16 @@ import SwiftUI
 
 @available(macOS 12.0, *)
 struct PopupPrintableColors: View {
-    @Binding var picdef: PictureDefinition
+    @EnvironmentObject var appState: AppState
     @ObservedObject var popupManager: PopupManager
     @State private var selectedColor: (r: Int, g: Int, b: Int)?
     
     var hues: [Hue]
     
     init(
-        picdef: Binding<PictureDefinition>,
         popupManager: PopupManager,
         hues: [Hue]
     ) {
-        _picdef = picdef
         self.popupManager = popupManager
         self.hues = hues
     }
@@ -34,7 +32,7 @@ struct PopupPrintableColors: View {
     private func handleColorSelection(components: [CGFloat]) {
         selectedColor = (r: Int(components[0] * 255), g: Int(components[1] * 255), b: Int(components[2] * 255))
         if let selected = selectedColor {
-            picdef.addHue(r: Double(selected.r), g: Double(selected.g), b: Double(selected.b))
+            appState.picdef.addHue(r: Double(selected.r), g: Double(selected.g), b: Double(selected.b))
         }
     }
     

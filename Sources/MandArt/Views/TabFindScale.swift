@@ -1,42 +1,11 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-@available(macOS 12.0, *)
 struct TabFindScale: View {
-    @Binding var picdef: PictureDefinition
-    @Binding var requiresFullCalc: Bool
-    
+    @EnvironmentObject var appState: AppState
     @State private var localScale: Double = 1.0
     @State private var scaleMultiplier: Double = 5.0
     @State private var scaleString: String = ""
-    
-    init(picdef: Binding<PictureDefinition>, requiresFullCalc: Binding<Bool>) {
-        self._picdef = picdef
-        self._requiresFullCalc = requiresFullCalc
-        let initialScale = picdef.wrappedValue.scale
-        self._localScale = State(initialValue: initialScale)
-        self._scaleString = State(initialValue: initialScale.customFormattedString())
-    }
-    
-    /// Safely updates the scale, only if `picdef` is still valid.
-    private func updateScale(newScale: Double) {
-        localScale = newScale
-        scaleString = newScale.customFormattedString()
-        requiresFullCalc = true
-        
-        Task {
-            guard let modelContext = picdef.modelContext else {
-                print("⚠️ Skipping update: picdef is no longer valid.")
-                return
-            }
-            do {
-                picdef.scale = localScale
-                try modelContext.save()
-            } catch {
-                print("Error saving updated scale: \(error)")
-            }
-        }
-    }
     
     var body: some View {
         Section(header: Text("Set Magnification").font(.headline)) {
@@ -51,18 +20,12 @@ struct TabFindScale: View {
                 .frame(maxWidth: 180)
                 .help("Enter the magnification (may take a while).")
                 .onAppear {
-                    if let context = picdef.modelContext {
-                        scaleString = picdef.scale.customFormattedString()
-                    } else {
-                        print("picdef lost context onAppear")
-                    }
+                    // Initialize localScale and scaleString from appState.picdef when the view appears.
+                    localScale = appState.picdef.scale
+                    scaleString = appState.picdef.scale.customFormattedString()
                 }
-                .onChange(of: picdef.scale) { _, newValue in
-                    if let context = picdef.modelContext {
-                        scaleString = newValue.customFormattedString()
-                    } else {
-                        print("picdef lost context onChange")
-                    }
+                .onChange(of: appState.picdef.scale) { _, newValue in
+                    scaleString = newValue.customFormattedString()
                 }
             }
             .padding(.horizontal)
@@ -85,7 +48,7 @@ struct TabFindScale: View {
                             get: { "\(scaleMultiplier)" },
                             set: { newValue in
                                 if let newMultiplier = Double(newValue) {
-                                    scaleMultiplier = max(1.0001, min(10.0, newMultiplier)) // Keep in range
+                                    scaleMultiplier = max(1.0001, min(10.0, newMultiplier))
                                 }
                             }
                         ), onCommit: {
@@ -98,6 +61,26 @@ struct TabFindScale: View {
                         Button("-") { updateScale(newScale: localScale / scaleMultiplier) }
                     }
                 }
+            }
+        }
+    }
+    
+    /// Safely updates the scale, only if `picdef` is still valid.
+    private func updateScale(newScale: Double) {
+        localScale = newScale
+        scaleString = newScale.customFormattedString()
+        appState.updateRequiresFullCalc(true)
+        
+        Task {
+            guard let modelContext = appState.picdef.modelContext else {
+                print("Skipping update: picdef is no longer valid.")
+                return
+            }
+            do {
+                appState.picdef.scale = localScale
+                try modelContext.save()
+            } catch {
+                print("Error saving updated scale: \(error)")
             }
         }
     }
