@@ -67,6 +67,8 @@
 		9A351DA52D5ED55D0070ED7D /* PictureDefinition+FileHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A351DA42D5ED55D0070ED7D /* PictureDefinition+FileHandling.swift */; };
 		9A351DA72D5ED56A0070ED7D /* PictureDefinition+HueManagementUndo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A351DA62D5ED56A0070ED7D /* PictureDefinition+HueManagementUndo.swift */; };
 		9A351DAA2D5F89C50070ED7D /* PictureDefinition+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A351DA92D5F89BD0070ED7D /* PictureDefinition+UI.swift */; };
+		9A351DB32D5FE7270070ED7D /* Discoveries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A351DB22D5FE71F0070ED7D /* Discoveries.swift */; };
+		9A351DB52D5FE9CF0070ED7D /* mandart_discoveries.json in Resources */ = {isa = PBXBuildFile; fileRef = 9A351DB42D5FE9CF0070ED7D /* mandart_discoveries.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -134,6 +136,8 @@
 		9A351DA42D5ED55D0070ED7D /* PictureDefinition+FileHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PictureDefinition+FileHandling.swift"; sourceTree = "<group>"; };
 		9A351DA62D5ED56A0070ED7D /* PictureDefinition+HueManagementUndo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PictureDefinition+HueManagementUndo.swift"; sourceTree = "<group>"; };
 		9A351DA92D5F89BD0070ED7D /* PictureDefinition+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PictureDefinition+UI.swift"; sourceTree = "<group>"; };
+		9A351DB22D5FE71F0070ED7D /* Discoveries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Discoveries.swift; sourceTree = "<group>"; };
+		9A351DB42D5FE9CF0070ED7D /* mandart_discoveries.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = mandart_discoveries.json; path = Resources/mandart_discoveries.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -154,6 +158,7 @@
 		6A3AEC0026F879E700D7E31A = {
 			isa = PBXGroup;
 			children = (
+				9A351DB42D5FE9CF0070ED7D /* mandart_discoveries.json */,
 				88BECC732B18261F00770843 /* .gitignore */,
 				88BECC742B18261F00770843 /* .periphery.yml */,
 				88BECC752B18261F00770843 /* .swiftlint.yml */,
@@ -244,6 +249,7 @@
 		88A271962A967E6400766654 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				9A351DB22D5FE71F0070ED7D /* Discoveries.swift */,
 				88EF983D2AC13350005A3ABC /* DataSaver.swift */,
 				882BAED829346C92003ACB0B /* Hue.swift */,
 				88EF983F2AC133D5005A3ABC /* MandArtError.swift */,
@@ -341,6 +347,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A351DB52D5FE9CF0070ED7D /* mandart_discoveries.json in Resources */,
 				88BECC782B18261F00770843 /* .swiftlint.yml in Resources */,
 				88BECC722B1824F300770843 /* LICENSE in Resources */,
 				88BECC7A2B18264000770843 /* DEV_NOTES.md in Resources */,
@@ -410,6 +417,7 @@
 				88EF98282AC0D3DC005A3ABC /* Color+Components.swift in Sources */,
 				882BAED3293409FE003ACB0B /* PictureDefinition.swift in Sources */,
 				88C03C7E2B1556A700D4A79B /* TabFindScale.swift in Sources */,
+				9A351DB32D5FE7270070ED7D /* Discoveries.swift in Sources */,
 				88511CB32948B3FF009B5CF6 /* MandMath.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
