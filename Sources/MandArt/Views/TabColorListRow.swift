@@ -43,29 +43,20 @@ struct TabColorListRow: View {
                     "",
                     selection: Binding<Color>(
                         get: {
+                            // Get the color directly from the hue.
                             if appState.picdef.hues.indices.contains(index) {
                                 return appState.picdef.hues[index].color
                             } else {
-                                return Color.white  // ✅ Provide default color if index is invalid
+                                return Color.white
                             }
                         },
                         set: { newColor in
-                            guard appState.picdef.hues.indices.contains(index),
-                                  let components = newColor.cgColor?.components, components.count >= 3,
-                                  let modelContext = appState.picdef.modelContext else { return }
-                            
-                            // ✅ Modify the hue directly inside SwiftData
-                            appState.picdef.hues[index].r = components[0] * 255.0
-                            appState.picdef.hues[index].g = components[1] * 255.0
-                            appState.picdef.hues[index].b = components[2] * 255.0
-                            
-                            appState.picdef.sortHuesByNumber()  // ✅ Always ensure order
-                            appState.picdef.saveChanges()  // ✅ Save changes to SwiftData
+                            appState.picdef.updateHueWithColorPick(index: index, newColorPick: newColor)
                         }
-
                     ),
                     supportsOpacity: false
                 )
+
                 
                 Button {
                     showingPrintablePopups = true

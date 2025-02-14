@@ -110,13 +110,12 @@ extension PictureDefinition {
         guard hues.indices.contains(index), let modelContext = self.modelContext else { return }
         let oldHue = hues[index]
         
-        if let arr = newColorPick.cgColor, let components = arr.components, components.count >= 3 {
+        if let cgColor = newColorPick.cgColor,
+           let components = cgColor.components, components.count >= 3 {
             hues[index].r = components[0] * 255.0
             hues[index].g = components[1] * 255.0
             hues[index].b = components[2] * 255.0
         }
-        
-        sortHuesByNumber()
         saveChanges()
         
         undoManager?.registerUndo(withTarget: self) { [weak self] picdef in
@@ -124,6 +123,7 @@ extension PictureDefinition {
             self?.saveChanges()
         }
     }
+
     
     func sortHuesByNumber() {
         hues.sort { $0.num < $1.num }
