@@ -121,9 +121,9 @@ extension PictureDefinition: Codable {
         let dFIterMin = try container.decode(Double.self, forKey: .dFIterMin)
         let leftNumber = try container.decode(Int.self, forKey: .leftNumber)
         let hues = try container.decode([Hue].self, forKey: .hues)
-        let mandColor = try container.decode(Hue.self, forKey: .mandColor)
-        let mandPowerReal = try container.decode(Int.self, forKey: .mandPowerReal)
-        
+        let mandColor = try container.decodeIfPresent(Hue.self, forKey: .mandColor) ?? Hue(num: 0, r: 0.0, g: 0.0, b: 0.0)
+        let mandPowerReal = try container.decodeIfPresent(Int.self, forKey: .mandPowerReal) ?? 2
+
         self.init(hues: hues)
         
         self.id = id

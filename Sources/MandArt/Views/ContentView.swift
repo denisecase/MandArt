@@ -41,9 +41,27 @@ struct ContentView: View {
                         ContentViewPopups(popupManager: popupManager)
                 }
             )
-            
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding(.leading, 0)
+            .alert(isPresented: $appState.showResetAlert) {
+                Alert(
+                    title: Text("Reset MandArt"),
+                    message: Text("This will delete your changes and reset to the default MandArt example. Are you sure you want to continue?"),
+                    primaryButton: .destructive(Text("Reset")) {
+                        appState.resetMandArt()
+                    },
+                    secondaryButton: .cancel() {
+                        appState.showResetAlert = false
+                    }
+                )
+            }
+            .alert("Replace MandArt?", isPresented: $appState.showReplaceAlert) {
+                Button("Cancel", role: .cancel) { appState.pendingReplacement = nil }
+                Button("Replace", role: .destructive) { appState.confirmReplaceMandArt() }
+            } message: {
+                Text("Are you sure you want to replace the current MandArt with a new one?")
+            }
+
         } // geo
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     } // body

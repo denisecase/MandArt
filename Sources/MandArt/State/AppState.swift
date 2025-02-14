@@ -11,7 +11,10 @@ class AppState: ObservableObject {
     @Published var renderedImage: NSImage?
     @Published var requiresFullCalc: Bool = true
     @Published var showGradient: Bool = true
-    
+    @Published var showResetAlert: Bool = false
+    @Published var showReplaceAlert: Bool = false
+    @Published var pendingReplacement: (() -> Void)? = nil
+
     var modelContainer: ModelContainer?
     
     /// Initializes the app state and loads the last used PictureDefinition.
@@ -36,6 +39,51 @@ class AppState: ObservableObject {
     
     func updateShowGradient(_ newValue: Bool) {
         self.showGradient = newValue
+    }
+    
+    func resetMandArt() {
+        print("CAUTION: Resetting MandArt to default state.")
+        if let container = modelContainer {
+            let context = container.mainContext
+            let newPicdef = PictureDefinition()
+            context.insert(newPicdef)
+            do {
+                try context.save()
+                self.picdef = newPicdef
+            } catch {
+                print("Error resetting MandArt: \(error)")
+            }
+        }
+    }
+    
+    func promptReplaceMandArt(action: @escaping () -> Void) {
+        self.pendingReplacement = action
+        self.showReplaceAlert = true
+    }
+    
+    func confirmReplaceMandArt() {
+        if let action = pendingReplacement {
+            action()
+            pendingReplacement = nil
+        }
+    }
+    
+    func replaceMandArt() {
+        print("CAUTION: Replacing current MandArt.")
+        promptReplaceMandArt { [weak self] in
+            guard let self = self else { return }
+            if let container = modelContainer {
+                let context = container.mainContext
+                let newPicdef = PictureDefinition()
+                context.insert(newPicdef)
+                do {
+                    try context.save()
+                    self.picdef = newPicdef
+                } catch {
+                    print("Error replacing MandArt: \(error)")
+                }
+            }
+        }
     }
     
     

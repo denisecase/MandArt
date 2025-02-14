@@ -18,13 +18,12 @@ extension MandArtApp {
             CommandGroup(before: CommandGroupPlacement.saveItem) {
                 
                 Button("Reset MandArt") {
-                    print("Reset MandArt")
+                    appState.showResetAlert = true
                 }
                 .keyboardShortcut("r", modifiers: [.command])
                 
                 Button("Open MandArt from URL…") {
-                    // Placeholder: Insert URL-based loading logic here.
-                    print("Open MandArt from URL…")
+                    openMandArtFromURL(appState: appState)
                 }
                 .keyboardShortcut("o", modifiers: [.command, .shift])
                 
@@ -71,5 +70,46 @@ extension MandArtApp {
                 Link(displayText2, destination: url2)
             }
         }
+    }
+    
+    // MARK: - Helper Functions for Open MandArt from URL
+    
+    private func openMandArtFromURL(appState: AppState) {
+        // Create an NSAlert with a text field to prompt for the URL.
+        let alert = NSAlert()
+        alert.messageText = "Open MandArt from URL"
+        alert.informativeText = "Enter the URL of the .mandart file:"
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "Open")
+        alert.addButton(withTitle: "Cancel")
+        
+        let inputField = NSTextField(frame: NSRect(x: 0, y: 0, width: 300, height: 60))
+        alert.accessoryView = inputField
+        
+        let response = alert.runModal()
+        if response == .alertFirstButtonReturn {
+            let urlString = inputField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard let url = URL(string: urlString) else {
+                print("Invalid URL: \(urlString)")
+                return
+            }
+            Task {
+                do {
+                    let newPicdef = try await loadMandArt(from: url)
+                    await MainActor.run {
+                        appState.picdef = newPicdef
+                    }
+                } catch {
+                    print("Error loading MandArt from URL: \(error)")
+                }
+            }
+        }
+    }
+    
+    private func loadMandArt(from url: URL) async throws -> PictureDefinition {
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let decoder = JSONDecoder()
+        let picdef = try decoder.decode(PictureDefinition.self, from: data)
+        return picdef
     }
 }
