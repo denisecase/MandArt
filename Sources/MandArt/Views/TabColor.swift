@@ -63,8 +63,40 @@ struct TabColor: View {
                     
                     HStack {
                         Button("Add New Color") {
-                            picdef.addHue()
-                            self.updateArt()
+                            guard let modelContext = picdef.modelContext else {
+                                print("Error: No SwiftData context found!")
+                                return
+                            }
+                            
+                            // Create a new Hue with a default color (black or white)
+                            let newHue = Hue(num: picdef.hues.count + 1, r: 0, g: 0, b: 0) // Defaults to black
+                            
+                            // Insert into SwiftData context **before** modifying picdef.hues
+                            modelContext.insert(newHue)
+                            
+                            Task {
+                                await MainActor.run {
+                                    // Insert into SwiftData context before modifying picdef.hues
+                                    modelContext.insert(newHue)
+                                    
+                                    // Append the new color to the end of the list
+                                    picdef.hues.append(newHue)
+                                    
+                                    // Ensure the numbers are correctly updated
+                                    updateArt()
+                                }
+             
+                            }
+                            
+                            
+                            // Save changes to SwiftData
+                            do {
+                                try modelContext.save()
+                                print("Successfully saved new hue. Total hues:", picdef.hues.count)
+
+                            } catch {
+                                print("Error saving new hue: \(error)")
+                            }
                         }
                         .help("Add a new color.")
                         .padding([.bottom], 2)
