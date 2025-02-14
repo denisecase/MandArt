@@ -17,12 +17,12 @@ struct TabSave: View {
                         .padding(.vertical)
                 ) {
                     Button("Save Picture Inputs (as data file)") {
-                        appState.picdef.saveMandArtImageInputs()
+                        appState.picdef.saveMandArtImageInputs(appState: appState)
                     }
                     .help("Save MandArt picture inputs as .mandart.")
                     
                     Button("Save Picture As…") {
-                        appState.picdef.saveMandArtImageInputsAs()
+                        appState.picdef.saveMandArtImageInputsAs(appState: appState)
                     }
                     .help("Save MandArt picture inputs to a new .mandart file.")
                     

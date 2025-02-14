@@ -4,15 +4,15 @@ import UniformTypeIdentifiers
 
 extension MandArtApp {
     
-    func appMenuCommands(appState: AppState) -> some Commands {
+    func appMenuCommands(appState: AppState) -> some  Commands {
+        
         return Group {
-            
             // Remove native New Window/New Document commands.
             CommandGroup(replacing: CommandGroupPlacement.newItem) { }
             
             // Remove native window arrangement options
             CommandGroup(replacing: CommandGroupPlacement.windowArrangement) { }
-
+            
             // Remove native File / Close window option
             CommandGroup(after: .appInfo) {
                 Button("Close Window") {
@@ -21,19 +21,18 @@ extension MandArtApp {
                 .keyboardShortcut("w", modifiers: .command)
                 .disabled(true) // Prevents the user from closing the last window
             }
-
+            
             
             // Insert custom Open commands after the native Open items.
             CommandGroup(before: CommandGroupPlacement.saveItem) {
-                
                 Button("Reset MandArt") {
                     appState.showResetAlert = true
                 }
                 .keyboardShortcut("r", modifiers: [.command])
                 
                 Button("Open MandArt from List…") {
-                        openMandArtFromList(appState: appState)
-                        }
+                    openMandArtFromList(appState: appState)
+                }
                 .keyboardShortcut("o", modifiers: [.command, .shift])
                 
                 Button("Open MandArt from URL…") {
@@ -48,17 +47,19 @@ extension MandArtApp {
                     }
                 }
                 .keyboardShortcut("o", modifiers: [.command])
+                
             }
             
             // Insert custom Save/Export commands after the native Save items.
             CommandGroup(after: CommandGroupPlacement.saveItem) {
+                
                 Button("Save MandArt") {
-                    appState.picdef.saveMandArtImageInputs()
+                    appState.picdef.saveMandArtImageInputs(appState: appState)
                 }
                 .keyboardShortcut("s", modifiers: [.command])
                 
                 Button("Save MandArt As…") {
-                    appState.picdef.saveMandArtImageInputsAs()
+                    appState.picdef.saveMandArtImageInputsAs(appState: appState)
                 }
                 .keyboardShortcut("s", modifiers: [.command, .shift])
                 
@@ -70,6 +71,7 @@ extension MandArtApp {
                     }
                 }
                 .keyboardShortcut("e", modifiers: [.command])
+                
             }
             
             // Remove Edit/Pasteboard menu
@@ -87,6 +89,7 @@ extension MandArtApp {
             }
         }
     }
+    
     
     // MARK: - Helper Functions for Open MandArt from URL
     

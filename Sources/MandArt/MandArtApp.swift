@@ -33,7 +33,6 @@ struct MandArtApp: App {
         }
     }
     
-    /// Synchronous SwiftData initialization.
     static func initializeSwiftDataSync() throws -> (container: ModelContainer, picdef: PictureDefinition) {
         let schema = Schema([PictureDefinition.self])
         let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
@@ -41,39 +40,53 @@ struct MandArtApp: App {
         let context = container.mainContext
         
         var existingPicdefs = try context.fetch(FetchDescriptor<PictureDefinition>())
+        
         if existingPicdefs.isEmpty {
+            print("🔹 No saved MandArt found. Creating and saving default.")
             let newPicdef = PictureDefinition()
-            context.insert(newPicdef)
+            context.insert(newPicdef) // Save new default
             try context.save()
             existingPicdefs.append(newPicdef)
+        } else {
+            print("Loaded last MandArt from SwiftData: \(existingPicdefs.first!.id)")
         }
         
-        return (container, existingPicdefs.first!)
+        return (container, existingPicdefs.first!) // Always return the latest MandArt
     }
+
+
     
     /// Asynchronously ensures SwiftData is up to date.
+    @MainActor
     private func initializeSwiftData() async {
         do {
             let schema = Schema([PictureDefinition.self])
             let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
             let container = try ModelContainer(for: schema, configurations: [configuration])
             let context = container.mainContext
+            
+            // Fetch the last stored PictureDefinition
             var existingPicdefs = try context.fetch(FetchDescriptor<PictureDefinition>())
-            if existingPicdefs.isEmpty {
+            
+            if let lastUsedPicdef = existingPicdefs.first {
+                print("Using saved MandArt: \(lastUsedPicdef.id)")
+                self.appState.picdef = lastUsedPicdef
+            } else {
+                print("🔹 No saved MandArt found in async init. Creating default.")
                 let newPicdef = PictureDefinition()
-                context.insert(newPicdef)
-                try context.save()
-                existingPicdefs.append(newPicdef)
+                context.insert(newPicdef) // Insert new default MandArt
+                try context.save() // Save to SwiftData
+                
+                self.appState.picdef = newPicdef // Ensure appState matches
             }
             
-            await MainActor.run {
-                self.appState.modelContainer = container
-                self.appState.picdef = existingPicdefs.first!  // Guaranteed non‑optional
-            }
+            self.appState.modelContainer = container // Store SwiftData container in appState
+            
         } catch {
             fatalError("Failed to initialize SwiftData: \(error)")
         }
     }
+
     
     // MARK: - App Constants and Window Size Calculations
     

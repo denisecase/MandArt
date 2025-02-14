@@ -65,35 +65,29 @@ struct TabColor: View {
                                 return
                             }
                             
-                            // Create a new Hue with a default color (black or white)
-                            let newHue = Hue(num: appState.picdef.hues.count + 1, r: 0, g: 0, b: 0) // Defaults to black
-                            
-                            // Insert into SwiftData context **before** modifying picdef.hues
-                            modelContext.insert(newHue)
-                            
                             Task {
                                 await MainActor.run {
-                                    // Insert into SwiftData context before modifying picdef.hues
+                                    // Create and insert the new hue in the SwiftData context FIRST
+                                    let newHue = Hue(num: appState.picdef.hues.count + 1, r: 0, g: 0, b: 0)
                                     modelContext.insert(newHue)
                                     
-                                    // Append the new color to the end of the list
-                                    appState.picdef.hues.append(newHue)
-                                    
-                                    // Ensure the numbers are correctly updated
-                                    updateArt()
+                                    do {
+                                        // Save immediately to persist the object
+                                        try modelContext.save()
+                                        print("New hue saved: \(newHue)")
+                                        
+                                        // Now append the persisted hue to `picdef.hues`
+                                        appState.picdef.hues.append(newHue)
+                                        
+                                        // Ensure UI updates
+                                        appState.objectWillChange.send()
+                                        
+                                    } catch {
+                                        print("Error saving new hue: \(error)")
+                                    }
                                 }
-             
                             }
-                            
-                            
-                            // Save changes to SwiftData
-                            do {
-                                try modelContext.save()
-                                print("Successfully saved new hue. Total hues:", appState.picdef.hues.count)
 
-                            } catch {
-                                print("Error saving new hue: \(error)")
-                            }
                         }
                         .help("Add a new color.")
                         .padding([.bottom], 2)

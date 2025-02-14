@@ -154,4 +154,9 @@ extension PictureDefinition: Codable {
         }
         return [hues[index].r, hues[index].g, hues[index].b]
     }
+    
+    static let defaultInstance: PictureDefinition = {
+        let defaultPicdef = PictureDefinition()
+        return defaultPicdef
+    }()
 }

@@ -4,37 +4,44 @@ import UniformTypeIdentifiers
 
 extension PictureDefinition {
     
-    /// Saves the MandArt image inputs as a JSON file, overwriting the last opened file.
-    func saveMandArtImageInputs(to url: URL? = nil) {
+    @MainActor
+    func saveMandArtImageInputs(to url: URL? = nil, appState: AppState) {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         
-        let saveURL = url ?? lastOpenedFileURL // Use the provided URL or fallback to last opened file
+        // Save only if a file was previously opened, otherwise require Save As
+        let saveURL = url ?? appState.currentFileURL
         
         guard let saveURL = saveURL else {
-            print("Error: No save location specified.")
+            print("WARNING: No previously opened file. Please use 'Save As' first.")
             return
         }
         
         do {
             let data = try encoder.encode(self)
             try data.write(to: saveURL)
-            print("MandArt image inputs saved to \(saveURL.path)")
+            print("SUCCESS: MandArt saved to: \(saveURL.path)")
+            
+            // Update the file reference so future "Save" calls use this file
+            appState.updateCurrentFile(url: saveURL)
         } catch {
-            print("Error saving MandArt image inputs: \(error.localizedDescription)")
+            print("ERROR saving MandArt: \(error.localizedDescription)")
         }
     }
-    
-    /// Prompts user to save to a new file (Save As)
-    func saveMandArtImageInputsAs() {
+
+    @MainActor
+    func saveMandArtImageInputsAs(appState: AppState) {
         let panel = NSSavePanel()
         panel.allowedContentTypes = [UTType.json]
         panel.nameFieldStringValue = "NewArtwork.mandart"
         
         if panel.runModal() == .OK, let url = panel.url {
-            saveMandArtImageInputs(to: url)
+            saveMandArtImageInputs(to: url, appState: appState)
+            
+            appState.updateCurrentFile(url: url)
         }
     }
+
     
     /// Returns the last opened file URL (used for overwriting)
     private var lastOpenedFileURL: URL? {
