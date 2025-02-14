@@ -53,7 +53,7 @@ struct DelayedTextFieldInt: View {
           }
         }
       })
-      .onChange(of: value) { newValue in
+      .onChange(of: value) { _, newValue in
         // Update stringValue with formatted string
         // when the bound value changes
         let newStringValue = formatter.string(from: NSNumber(value: newValue)) ?? ""

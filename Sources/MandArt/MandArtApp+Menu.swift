@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(macOS 12.0, *)
 extension MandArtApp {
   func appMenuCommands() -> some Commands {
     Group {

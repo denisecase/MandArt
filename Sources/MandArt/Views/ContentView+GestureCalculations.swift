@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(macOS 12.0, *)
 extension ContentView {
   /**
    Calculates the x-coordinate of the picture's center after a user's drag gesture.
@@ -8,16 +7,16 @@ extension ContentView {
    - Parameter tap: Information about the drag.
    - Returns: The new center x-coordinate, adjusted for the drag position.
    */
-  func getCenterXFromDrag(_ tap: _ChangedGesture<DragGesture>.Value) -> Double {
+  func getCenterXFromDrag(_ tap: _ChangedGesture<DragGesture>.Value, picdef: PictureDefinition) -> Double {
     let movedX = tap.startLocation.x - tap.location.x
     let movedY = tap.location.y - tap.startLocation.y
 
-    let thetaRadians = Double(doc.picdef.theta) * .pi / 180.0
-    let diffX = movedX / doc.picdef.scale
-    let diffY = movedY / doc.picdef.scale
+    let thetaRadians = Double(picdef.theta) * .pi / 180.0
+    let diffX = movedX / picdef.scale
+    let diffY = movedY / picdef.scale
 
     let dCenterX = diffY * sin(thetaRadians) + diffX * cos(thetaRadians)
-    return doc.picdef.xCenter + dCenterX
+    return picdef.xCenter + dCenterX
   }
 
   /**
@@ -26,16 +25,16 @@ extension ContentView {
    - Parameter tap: Information about the drag.
    - Returns: The new center y-coordinate, adjusted for the drag position.
    */
-  func getCenterYFromDrag(_ tap: _ChangedGesture<DragGesture>.Value) -> Double {
+  func getCenterYFromDrag(_ tap: _ChangedGesture<DragGesture>.Value, picdef: PictureDefinition) -> Double {
     let movedX = tap.startLocation.x - tap.location.x
     let movedY = tap.location.y - tap.startLocation.y
 
-    let thetaRadians = Double(doc.picdef.theta) * .pi / 180.0
-    let diffX = movedX / doc.picdef.scale
-    let diffY = movedY / doc.picdef.scale
+    let thetaRadians = Double(picdef.theta) * .pi / 180.0
+    let diffX = movedX / picdef.scale
+    let diffY = movedY / picdef.scale
 
     let dCenterY = diffY * cos(thetaRadians) - diffX * sin(thetaRadians)
-    return doc.picdef.yCenter + dCenterY
+    return picdef.yCenter + dCenterY
   }
 
   /**
@@ -44,19 +43,19 @@ extension ContentView {
    - Parameter tap: Information about the tap.
    - Returns: The new center x-coordinate, adjusted for the tap position.
    */
-  func getCenterXFromTap(_ tap: _ChangedGesture<DragGesture>.Value) -> Double {
-    let halfImageWidth = Double(doc.picdef.imageWidth) / 2.0
-    let halfImageHeight = Double(doc.picdef.imageHeight) / 2.0
+  func getCenterXFromTap(_ tap: _ChangedGesture<DragGesture>.Value, picdef: PictureDefinition) -> Double {
+    let halfImageWidth = Double(picdef.imageWidth) / 2.0
+    let halfImageHeight = Double(picdef.imageHeight) / 2.0
 
     let movedX = tap.startLocation.x - halfImageWidth
-    let movedY = halfImageHeight - (Double(doc.picdef.imageHeight) - tap.startLocation.y)
+      let movedY = halfImageHeight - (Double(picdef.imageHeight) - tap.startLocation.y)
 
-    let thetaRadians = Double(doc.picdef.theta) * .pi / 180.0
-    let diffX = movedX / doc.picdef.scale
-    let diffY = movedY / doc.picdef.scale
+    let thetaRadians = Double(picdef.theta) * .pi / 180.0
+    let diffX = movedX / picdef.scale
+    let diffY = movedY / picdef.scale
 
     let dCenterX = diffY * sin(thetaRadians) + diffX * cos(thetaRadians)
-    return doc.picdef.xCenter + dCenterX
+    return picdef.xCenter + dCenterX
   }
 
   /**
@@ -65,18 +64,18 @@ extension ContentView {
    - Parameter tap: Information about the tap.
    - Returns: The new center y-coordinate, adjusted for the tap position.
    */
-  func getCenterYFromTap(_ tap: _ChangedGesture<DragGesture>.Value) -> Double {
-    let halfImageWidth = Double(doc.picdef.imageWidth) / 2.0
-    let halfImageHeight = Double(doc.picdef.imageHeight) / 2.0
+  func getCenterYFromTap(_ tap: _ChangedGesture<DragGesture>.Value, picdef: PictureDefinition) -> Double {
+    let halfImageWidth = Double(picdef.imageWidth) / 2.0
+    let halfImageHeight = Double(picdef.imageHeight) / 2.0
 
     let movedX = tap.startLocation.x - halfImageWidth
-    let movedY = halfImageHeight - (Double(doc.picdef.imageHeight) - tap.startLocation.y)
+    let movedY = halfImageHeight - (Double(picdef.imageHeight) - tap.startLocation.y)
 
-    let thetaRadians = Double(doc.picdef.theta) * .pi / 180.0
-    let diffX = movedX / doc.picdef.scale
-    let diffY = movedY / doc.picdef.scale
+    let thetaRadians = Double(picdef.theta) * .pi / 180.0
+    let diffX = movedX / picdef.scale
+    let diffY = movedY / picdef.scale
 
     let dCenterY = diffY * cos(thetaRadians) - diffX * sin(thetaRadians)
-    return doc.picdef.yCenter + dCenterY
+    return picdef.yCenter + dCenterY
   }
 }

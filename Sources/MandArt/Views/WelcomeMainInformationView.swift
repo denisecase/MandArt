@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import SwiftData
 
 /// View for the welcome screen informational content and show toggle.
 @available(macOS 11.0, *)
@@ -19,8 +20,8 @@ struct WelcomeMainInformationView: View {
       .fixedSize(horizontal: false, vertical: true) // wrap
 
       Button(action: {
-        NSApp.sendAction(#selector(NSWindow.performClose(_:)), to: nil, from: nil)
-        NSDocumentController.shared.newDocument("new.mandart")
+          openDefaultMandArtDocument()
+
       }) {
         Text("Click here to open default MandArt document and get started")
           .fontWeight(.semibold)
@@ -34,10 +35,47 @@ struct WelcomeMainInformationView: View {
       .onTapGesture {
         // do nothing else
       }
-      .onChange(of: appState.shouldShowWelcomeWhenStartingUp) { newValue in
+      .onChange(of: appState.shouldShowWelcomeWhenStartingUp) { _, newValue in
         UserDefaults.standard.setValue(newValue, forKey: "shouldShowWelcomeWhenStartingUp")
       }
     }
     .padding()
   }
+    
+    /// Ensures a default MandArt document exists and opens ContentView
+    private func openDefaultMandArtDocument() {
+        if let window = NSApplication.shared.mainWindow {
+            window.close() // Close the welcome screen
+        }
+        
+        // Insert a default `PictureDefinition` into SwiftData if needed
+        Task {
+            do {
+                let container = try ModelContainer(for: Schema([PictureDefinition.self]))
+                let context = container.mainContext
+                
+                let existingPicdefs = try context.fetch(FetchDescriptor<PictureDefinition>())
+                if existingPicdefs.isEmpty {
+                    let newPicdef = PictureDefinition()
+                    context.insert(newPicdef)
+                    try context.save()
+                }
+                
+                // Open ContentView in a new window
+                let newWindow = NSWindow(
+                    contentRect: NSRect(x: 0, y: 0, width: 1000, height: 800),
+                    styleMask: [.titled, .closable, .resizable, .miniaturizable],
+                    backing: .buffered,
+                    defer: false
+                )
+                newWindow.center()
+                newWindow.setFrameAutosaveName("MandArt Main Window")
+                newWindow.contentView = NSHostingView(rootView: ContentView().environment(\.modelContext, context))
+                newWindow.makeKeyAndOrderFront(nil)
+            } catch {
+                print("❌ Error opening default MandArt document: \(error)")
+            }
+        }
+    }
+
 }

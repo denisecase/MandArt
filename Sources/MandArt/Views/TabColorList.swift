@@ -15,38 +15,38 @@ import UniformTypeIdentifiers
 ///
 @available(macOS 12.0, *)
 struct TabColorList: View {
-  @ObservedObject var doc: MandArtDocument
-  @Binding var requiresFullCalc: Bool
-  @Binding var showGradient: Bool
-
-  var body: some View {
-    GeometryReader { geometry in
-      List {
-        ForEach(doc.picdef.hues.indices, id: \.self) { index in
-          TabColorListRow(doc: doc, index: index)
+    @Binding var picdef: PictureDefinition
+    @Binding var requiresFullCalc: Bool
+    @Binding var showGradient: Bool
+    
+    var body: some View {
+        GeometryReader { geometry in
+            List {
+                ForEach(picdef.hues.indices, id: \.self) { index in
+                    TabColorListRow(picdef: $picdef, index: index)
+                }
+                .onMove(perform: moveHues)
+            }
+            .frame(height: geometry.size.height)
         }
-        .onMove(perform: moveHues)
-      }
-      .frame(height: geometry.size.height)
+        .onAppear {
+            requiresFullCalc = false
+        }
+        .frame(maxHeight: .infinity)
     }
-    .onAppear {
-      requiresFullCalc = false
+    
+    /// Handles the reordering of hues within the document.
+    ///
+    /// When hues are moved in the list, this function updates their order in the `MandArtDocument`.
+    /// It also reassigns the hue numbers to reflect the new order.
+    ///
+    /// - Parameters:
+    ///   - source: An `IndexSet` indicating the original positions of the moved hues.
+    ///   - destination: An `Int` representing the new position for the moved hues.
+    func moveHues(from source: IndexSet, to destination: Int) {
+        picdef.hues.move(fromOffsets: source, toOffset: destination)
+        for (index, _) in picdef.hues.enumerated() {
+            picdef.hues[index].num = index + 1
+        }
     }
-    .frame(maxHeight: .infinity)
-  }
-
-  /// Handles the reordering of hues within the document.
-  ///
-  /// When hues are moved in the list, this function updates their order in the `MandArtDocument`.
-  /// It also reassigns the hue numbers to reflect the new order.
-  ///
-  /// - Parameters:
-  ///   - source: An `IndexSet` indicating the original positions of the moved hues.
-  ///   - destination: An `Int` representing the new position for the moved hues.
-  func moveHues(from source: IndexSet, to destination: Int) {
-    doc.picdef.hues.move(fromOffsets: source, toOffset: destination)
-    for (index, _) in doc.picdef.hues.enumerated() {
-      doc.picdef.hues[index].num = index + 1
-    }
-  }
 }
