@@ -6,9 +6,7 @@ import AppKit // for rendered image
 /// It observes changes and updates the UI accordingly.
 @MainActor
 class AppState: ObservableObject {
-    @Published var shouldShowWelcomeWhenStartingUp: Bool = UserDefaults.standard
-        .object(forKey: "shouldShowWelcomeWhenStartingUp") as? Bool ?? true
-    
+
     @Published var picdef: PictureDefinition
     @Published var renderedImage: NSImage?
     @Published var requiresFullCalc: Bool = true

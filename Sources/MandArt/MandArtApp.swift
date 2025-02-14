@@ -6,13 +6,8 @@ import AppKit
 @main
 struct MandArtApp: App {
     @StateObject var appState: AppState
-    @State private var shouldShowWelcomeWhenStartingUp: Bool
     
     init() {
-        // Get the initial state for whether to show the welcome view.
-        let initialState = UserDefaults.standard.object(forKey: "shouldShowWelcomeWhenStartingUp") as? Bool ?? true
-        _shouldShowWelcomeWhenStartingUp = State(initialValue: initialState)
-        
         // Synchronously initialize SwiftData to obtain a valid container and a non‑optional picdef.
         do {
             let result = try MandArtApp.initializeSwiftDataSync()
@@ -27,16 +22,10 @@ struct MandArtApp: App {
     
     var body: some Scene {
         WindowGroup {
-            Group {
-                if shouldShowWelcomeWhenStartingUp {
-                    WelcomeView().environmentObject(appState)
-                } else {
-                    ContentView().environmentObject(appState)
+            ContentView().environmentObject(appState)
+                .task {
+                    await initializeSwiftData()
                 }
-            }
-            .task {
-                await initializeSwiftData()
-            }
         }
         .defaultSize(width: windowWidth, height: windowHeight)
         .commands {
@@ -94,8 +83,6 @@ struct MandArtApp: App {
         static let defaultPercentWidth: CGFloat = 0.8
         static let defaultPercentHeight: CGFloat = 0.8
         static let dockAndPreviewsWidth: CGFloat = 200.0
-        static let minWelcomeWidth: CGFloat = 500.0
-        static let minWelcomeHeight: CGFloat = 500.0
         static let heightMargin: CGFloat = 50.0
         
         static func defaultWidth() -> CGFloat {
@@ -110,20 +97,6 @@ struct MandArtApp: App {
                 return screenHeight * defaultPercentHeight
             }
             return defaultOpeningHeight
-        }
-        
-        static func maxWelcomeWidth() -> CGFloat {
-            if let screenWidth = NSScreen.main?.visibleFrame.width {
-                return screenWidth * 0.66
-            }
-            return minWelcomeWidth
-        }
-        
-        static func maxWelcomeHeight() -> CGFloat {
-            if let screenHeight = NSScreen.main?.visibleFrame.height {
-                return screenHeight * 0.8
-            }
-            return minWelcomeHeight
         }
         
         static func maxDocumentWidth() -> CGFloat {

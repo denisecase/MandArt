@@ -17,21 +17,6 @@ We initially set out to develop an app that would generate pictures good enough 
 Since then, we realized that printers can't show nearly the full range of colors that are available on a computer, so now it is more of a computer app.
 The pictures can also display well on a TV screen.
 
-### Welcome Screen
-
-The app opens with the window shown below.
-
-![Welcome Screen](WindowWelcome2.png)
-
-Click where indicated and a new window pops up as shown below.
-
-![Initial Picture](Initial1.png)
-
-Only the middle of the window shows up, so move the window up and left.
-Then, grab the lower-right corner of the window and move it down and right so you can see the whole picture.
-
-![Whole Picture](WholePicture1.png)
-
 ### Mandelbrot and Mini-Mands
 
 ![Mandelbrot](Mandelbrot.png)

@@ -8,10 +8,6 @@ Explore the application programming interfaces (API) to understand the building 
 
 ## Sources / MandArt
 
-### Controllers
-
-- <doc:WelcomeWindowController>: Manages the behavior and presentation of the welcome window.
-
 ### Models
 
 - <doc:DataSaver>: Handles saving of the application's data.
@@ -58,11 +54,6 @@ Explore the application programming interfaces (API) to understand the building 
 - <doc:TabSavePopup>: Manages the pop-up functionality in the save tab.
 - <doc:TabTune>: View for the tune (adjustment) tab in the application.
 - <doc:TabbedView>: Manages the tabbed interface of the application.
-- <doc:WelcomeHeaderView>: Displays the header view in the welcome screen.
-- <doc:WelcomeMainImageView>: Manages the main image view in the welcome screen.
-- <doc:WelcomeMainInformationView>: Displays information on the main welcome screen.
-- <doc:WelcomeMainView>: The main view of the welcome screen.
-- <doc:WelcomeView>: The overall welcome screen view of the application.
 
 
 ### Acknowledgements

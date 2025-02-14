@@ -20,12 +20,6 @@ class UserPreferences: ObservableObject {
         set { UserDefaults.standard.setValue(newValue, forKey: "lastOpenedFile") }
     }
     
-    /// **Should show welcome screen at startup (persisted)**
-    var shouldShowWelcomeWhenStartingUp: Bool {
-        get { UserDefaults.standard.bool(forKey: "shouldShowWelcomeWhenStartingUp") }
-        set { UserDefaults.standard.setValue(newValue, forKey: "shouldShowWelcomeWhenStartingUp") }
-    }
-    
     /// Saves the last opened file path
     func saveLastOpenedFile(_ filePath: String) {
         lastOpenedFile = filePath

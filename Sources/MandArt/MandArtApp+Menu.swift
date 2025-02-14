@@ -1,3 +1,4 @@
+// MandArtApp+Menu.swift
 import SwiftUI
 
 extension MandArtApp {
@@ -5,13 +6,43 @@ extension MandArtApp {
     func appMenuCommands(appState: AppState) -> some Commands {
         return Group {
             
-            CommandMenu("File") {
-                Button("Save") {
+            // Remove native New Window/New Document commands.
+            CommandGroup(replacing: CommandGroupPlacement.newItem) { }
+            
+            // Remove native window arrangement options
+            CommandGroup(replacing: CommandGroupPlacement.windowArrangement) { }
+
+            
+            
+            // Insert custom Open commands after the native Open items.
+            CommandGroup(before: CommandGroupPlacement.saveItem) {
+                
+                Button("Reset MandArt") {
+                    print("Reset MandArt")
+                }
+                .keyboardShortcut("r", modifiers: [.command])
+                
+                Button("Open MandArt from URL…") {
+                    // Placeholder: Insert URL-based loading logic here.
+                    print("Open MandArt from URL…")
+                }
+                .keyboardShortcut("o", modifiers: [.command, .shift])
+                
+                Button("Open MandArt from Machine…") {
+                    // Placeholder: Insert local file open logic here.
+                    print("Open MandArt from Machine…")
+                }
+                .keyboardShortcut("o", modifiers: [.command])
+            }
+            
+            // Insert custom Save/Export commands after the native Save items.
+            CommandGroup(after: CommandGroupPlacement.saveItem) {
+                Button("Save MandArt") {
                     appState.picdef.saveMandArtImageInputs()
                 }
                 .keyboardShortcut("s", modifiers: [.command])
                 
-                Button("Save As…") {
+                Button("Save MandArt As…") {
                     appState.picdef.saveMandArtImageInputsAs()
                 }
                 .keyboardShortcut("s", modifiers: [.command, .shift])
@@ -24,14 +55,6 @@ extension MandArtApp {
                     }
                 }
                 .keyboardShortcut("e", modifiers: [.command])
-            }
-            
-            CommandMenu("Welcome") {
-                Button("Show Welcome Screen") {
-                    let controller = WelcomeWindowController(appState: appState)
-                    controller.showWindow(self)
-                    controller.window?.makeKeyAndOrderFront(nil)
-                }
             }
             
             // Remove Edit/Pasteboard menu
