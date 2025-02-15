@@ -3,7 +3,7 @@ import Foundation
 
 extension AppState {
     
-    /// **Loads the last opened MandArt file from disk.**
+    /// Load Last Opened File (Manual Menu Option)
     func loadLastOpenedMandArt() {
         if let lastOpenedPath = UserDefaults.standard.string(forKey: "lastOpenedFilePath") {
             let url = URL(fileURLWithPath: lastOpenedPath)
@@ -21,7 +21,7 @@ extension AppState {
         self.currentFileURL = nil
     }
     
-    /// **Updates the current file path and saves it persistently.**
+    /// Updates the current file path and saves it persistently.
     func updateCurrentFile(url: URL) {
         self.currentFileURL = url
         UserDefaults.standard.set(url.path, forKey: "lastOpenedFilePath")

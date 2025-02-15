@@ -10,6 +10,9 @@ struct MandArtApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView().environmentObject(appState)
+                .onAppear{
+                    print("Window Group Content View Appeared")
+                }
         }
         .defaultSize(width: windowWidth, height: windowHeight)
         .commands {

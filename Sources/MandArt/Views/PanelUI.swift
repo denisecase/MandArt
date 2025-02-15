@@ -1,7 +1,6 @@
 import SwiftUI
 import SwiftData
 
-@available(macOS 12.0, *)
 struct PanelUI: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.modelContext) private var modelContext
@@ -28,6 +27,9 @@ struct PanelUI: View {
         }
         .frame(maxWidth: .infinity, alignment: .topLeading) // Ensure correct positioning
         .padding()
+        .onAppear {
+            print("panelUI: onAppear")
+        }
 
     }
     

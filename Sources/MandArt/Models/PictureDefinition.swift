@@ -16,12 +16,12 @@ final class PictureDefinition: Codable, ObservableObject {
     @Transient var context: ModelContext?
     
     /// Hues stored as JSON (SwiftData cannot store arrays of structs yet)
-    private var huesData: Data = Data() {
+     var huesData: Data = Data() {
         didSet { decodeHues() }
     }
     
     /// Store `mandColor` as JSON-encoded data
-    private var mandColorData: Data = Data() {
+     var mandColorData: Data = Data() {
         didSet { decodeMandColor() }
     }
 
@@ -36,6 +36,7 @@ final class PictureDefinition: Codable, ObservableObject {
             huesData = (try? JSONEncoder().encode(newValue)) ?? Data()
             objectWillChange.send()  // Force UI update
             saveToSwiftData()
+            print("Saved hues: \(newValue)")
         }
     }
     
@@ -116,13 +117,19 @@ final class PictureDefinition: Codable, ObservableObject {
         (leftNumber >= 1 && leftNumber < hues.count) ? leftNumber + 1 : 1
     }
     
-    private func decodeHues() {
-        hues = (try? JSONDecoder().decode([Hue].self, from: huesData)) ?? []
-    }
+ 
+        private func decodeHues() {
+            let decoded = (try? JSONDecoder().decode([Hue].self, from: huesData)) ?? []
+            print("Decoded hues: \(decoded)") // Debugging
+            hues = decoded.isEmpty ? PictureDefinition.defaultHues : decoded
+        }
+   
     
     /// Decode `mandColor` when the data changes
     private func decodeMandColor() {
-        mandColor = (try? JSONDecoder().decode(Hue.self, from: mandColorData)) ?? Hue.defaultHue
+        let decoded = (try? JSONDecoder().decode(Hue.self, from: mandColorData)) ?? Hue.defaultHue
+        print("Decoded mandColor: \(decoded)") // Debugging
+        mandColor = decoded
     }
     
     /// **Returns the row number for a given hue index** (1-based index).
@@ -182,7 +189,7 @@ final class PictureDefinition: Codable, ObservableObject {
     // MARK: - SwiftData Integration
     
     /// Save changes to SwiftData
-    private func saveToSwiftData() {
+     func saveToSwiftData() {
         guard let context = context else { return }
         do {
             try context.save()

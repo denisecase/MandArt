@@ -14,7 +14,10 @@ extension PictureDefinition {
         updateHue(at: index, with: newHue, undoManager: undoManager)
         
         undoManager?.registerUndo(withTarget: self) { picDef in
-            Task { await picDef.updateHue(at: index, with: oldHue, undoManager: undoManager) }
+            Task {
+                await picDef.updateHue(at: index, with: oldHue, undoManager: undoManager)
+                picDef.saveToSwiftData()
+            }
         }
     }
     
@@ -34,7 +37,9 @@ extension PictureDefinition {
         updatePicdef()
         
         undoManager?.registerUndo(withTarget: self) { picDef in
-            Task { await picDef.removeHue(at: huesList.count - 1, undoManager: undoManager) }
+            Task { await picDef.removeHue(at: huesList.count - 1, undoManager: undoManager)
+                picDef.saveToSwiftData()
+            }
         }
     }
     
@@ -51,7 +56,9 @@ extension PictureDefinition {
         
         // Register undo, ensuring safe capture of values
         undoManager?.registerUndo(withTarget: self) { [deletedHue] picDef in
-            Task { await picDef.insertHue(deletedHue, at: min(index, picDef.hues.count), undoManager: undoManager) }
+            Task { await picDef.insertHue(deletedHue, at: min(index, picDef.hues.count), undoManager: undoManager)
+                picDef.saveToSwiftData()
+            }
         }
     }
 
@@ -65,7 +72,10 @@ extension PictureDefinition {
         updatePicdef()
         
         undoManager?.registerUndo(withTarget: self) { picDef in
-            Task { await picDef.removeHue(at: index, undoManager: undoManager) }
+            Task {
+                await picDef.removeHue(at: index, undoManager: undoManager)
+                picDef.saveToSwiftData()
+            }
         }
     }
     
@@ -81,7 +91,9 @@ extension PictureDefinition {
         updatePicdef()
         
         undoManager?.registerUndo(withTarget: self) { picDef in
-            Task { await picDef.updateHue(at: index, with: oldHue, undoManager: undoManager) }
+            Task { await picDef.updateHue(at: index, with: oldHue, undoManager: undoManager)
+                picDef.saveToSwiftData()
+            }
         }
     }
     

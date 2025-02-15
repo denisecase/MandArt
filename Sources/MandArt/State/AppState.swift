@@ -29,25 +29,69 @@ class AppState: ObservableObject {
     // MARK: - Pending Actions
     @Published var pendingReplacement: (() -> Void)? = nil
     
+
+    
     // MARK: - Initializer
     init() {
+        print("Initializing app state....")
         do {
             let result = try PersistenceManager.initializeSwiftData()
             self.modelContainer = result.container
-            self.picdef = result.picdef
+            print("result: \(result)")
+
+            let fetchDescriptor = FetchDescriptor<PictureDefinition>()
+            let existingPicdefs = try result.container.mainContext.fetch(fetchDescriptor)
+            print("existingPicdefs: \(existingPicdefs)")
+
+
+            if existingPicdefs.isEmpty {
+                print("Empty existing picdefs, creating a new one.")
+                let defaultPicdef = PictureDefinition()
+                result.container.mainContext.insert(defaultPicdef)
+                self.picdef = defaultPicdef
+                try result.container.mainContext.save()
+            } else {
+                print("Count of picdefs found: \(existingPicdefs.count)")
+                self.picdef = existingPicdefs.first! // Load the first existing one
+                
+                // Check if hues are missing and load defaults if necessary
+                if self.picdef.hues.isEmpty {
+                    print("Warning: Loaded picdef has no hues. Using default hues.")
+                    self.picdef.hues = PictureDefinition.defaultHues
+                    try result.container.mainContext.save()
+                }
+                
+                print("loaded picdef: \(self.picdef)")
+            }
             self.picdef.context = result.container.mainContext
+            print("AppState setup complete.")
+            print("Final picdef: \(self.picdef)")
+
 
         } catch {
             print("Failed to initialize SwiftData: \(error.localizedDescription). Using default.")
             self.modelContainer = nil
             self.picdef = PictureDefinition()
         }
-        self.loadLastOpenedMandArt()
     }
 
     // MARK: - Save Function
     func saveToSwiftData() {
         guard let context = modelContainer?.mainContext else { return }
+        
+        // Ensure picdef exists
+        guard let picdef = self.picdef as? PictureDefinition else {
+            print("Error: picdef is nil or incorrect type")
+            return
+        }
+        
+        // Convert huesData and mandColorData to JSON for debugging
+        let huesJson = String(data: picdef.huesData, encoding: .utf8) ?? "Invalid Data"
+        let mandColorJson = String(data: picdef.mandColorData, encoding: .utf8) ?? "Invalid Data"
+        
+        print("Saving hues JSON: \(huesJson)")
+        print("Saving mandColor JSON: \(mandColorJson)")
+        
         do {
             try context.save()
             print("Successfully saved changes to SwiftData")
@@ -55,4 +99,5 @@ class AppState: ObservableObject {
             print("Error saving SwiftData: \(error)")
         }
     }
+
 }

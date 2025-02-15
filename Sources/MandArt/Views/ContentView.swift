@@ -23,22 +23,31 @@ struct ContentView: View {
     @State private var textFieldImageHeight: NSTextField = .init()
     @State private var textFieldY: NSTextField = .init()
     private let widthOfInputPanel: CGFloat = 400
-
+    
     
     var body: some View {
+        
         GeometryReader { _ in
+            
             HStack(spacing: 0) {
+                
                 PanelUI(popupManager: popupManager)
                     .frame(width: widthOfInputPanel)
                     .fixedSize(horizontal: true, vertical: false)
-                    
-                    PanelDisplay()
+                    .onAppear {
+                        print("PanelUI appeared successfully.")
+                    }
+                
+                PanelDisplay()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .onAppear {
+                        print("PanelDisplay appeared successfully.")
+                    }
                 
             }
             .overlay(
                 Group {
-                        ContentViewPopups(popupManager: popupManager)
+                    ContentViewPopups(popupManager: popupManager)
                 }
             )
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -61,20 +70,26 @@ struct ContentView: View {
             } message: {
                 Text("Are you sure you want to replace the current MandArt with a new one?")
             }
-
+            
         } // geo
+        .onAppear {
+            print("ContentView is fully loaded!")
+            print("appState.picdef: \(appState.picdef)")
+            print("appState.showGradient: \(appState.showGradient)")
+            print("appState.requiresFullCalc: \(appState.requiresFullCalc)")
+        }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-    } // body
-    
 
+    
+    } //body
     
     /// Creates and inserts a new `PictureDefinition`
-    private func addNewPictureDefinition() {
+    func addNewPictureDefinition() {
         let newPicdef = PictureDefinition()
         modelContext.insert(newPicdef)
     }
     
-
+    
     
     /// Updates an existing `PictureDefinition`
     private func updatePicdef(_ oldPicdef: PictureDefinition, with newPicdef: PictureDefinition) {
@@ -86,3 +101,5 @@ struct ContentView: View {
         oldPicdef.iterationsMax = newPicdef.iterationsMax
     }
 }
+    
+    

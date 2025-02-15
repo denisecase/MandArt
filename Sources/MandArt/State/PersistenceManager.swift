@@ -1,30 +1,26 @@
 import SwiftData
-import Foundation
 
-/// **Manages SwiftData persistence for `PictureDefinition`.**
+/// Manages SwiftData persistence for the app.
 struct PersistenceManager {
     
-    /// **Initializes SwiftData and loads the last saved `PictureDefinition`.**
     @MainActor
     static func initializeSwiftData() throws -> (container: ModelContainer, picdef: PictureDefinition) {
         let schema = Schema([PictureDefinition.self])
-        let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
-        let container = try ModelContainer(for: schema, configurations: [configuration])
-        let context = container.mainContext
+        let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
         
-        // Fetch existing saved MandArt
-        let existingPicdefs = try context.fetch(FetchDescriptor<PictureDefinition>())
+        let container = try ModelContainer(for: schema, configurations: config)
         
-        if let lastSavedPicdef = existingPicdefs.first {
-            print("Loaded last saved MandArt settings.")
-            return (container, lastSavedPicdef)
+        // Try fetching the last stored PictureDefinition
+        let fetchDescriptor = FetchDescriptor<PictureDefinition>(sortBy: [.init(\.id, order: .reverse)])
+        
+        if let lastSaved = try container.mainContext.fetch(fetchDescriptor).first {
+            return (container, lastSaved)
         } else {
-            // No saved instance found → Create a new default one
-            let newPicdef = PictureDefinition()
-            context.insert(newPicdef)
-            try context.save()
-            print("Created & saved new default MandArt.")
-            return (container, newPicdef)
+            // No existing record, create a new one
+            let newPicDef = PictureDefinition()
+            container.mainContext.insert(newPicDef)
+            try container.mainContext.save()
+            return (container, newPicDef)
         }
     }
 }

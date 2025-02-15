@@ -69,6 +69,7 @@
 		9A351DAA2D5F89C50070ED7D /* PictureDefinition+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A351DA92D5F89BD0070ED7D /* PictureDefinition+UI.swift */; };
 		9A351DB32D5FE7270070ED7D /* Discoveries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A351DB22D5FE71F0070ED7D /* Discoveries.swift */; };
 		9A351DB52D5FE9CF0070ED7D /* mandart_discoveries.json in Resources */ = {isa = PBXBuildFile; fileRef = 9A351DB42D5FE9CF0070ED7D /* mandart_discoveries.json */; };
+		9A351E4B2D611F9C0070ED7D /* PictureDefinition+Description.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A351E4A2D611F8E0070ED7D /* PictureDefinition+Description.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -138,6 +139,7 @@
 		9A351DA92D5F89BD0070ED7D /* PictureDefinition+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PictureDefinition+UI.swift"; sourceTree = "<group>"; };
 		9A351DB22D5FE71F0070ED7D /* Discoveries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Discoveries.swift; sourceTree = "<group>"; };
 		9A351DB42D5FE9CF0070ED7D /* mandart_discoveries.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = mandart_discoveries.json; path = Resources/mandart_discoveries.json; sourceTree = "<group>"; };
+		9A351E4A2D611F8E0070ED7D /* PictureDefinition+Description.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PictureDefinition+Description.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -257,6 +259,7 @@
 				9A351DA42D5ED55D0070ED7D /* PictureDefinition+FileHandling.swift */,
 				9A351DA62D5ED56A0070ED7D /* PictureDefinition+HueManagementUndo.swift */,
 				9A351DA92D5F89BD0070ED7D /* PictureDefinition+UI.swift */,
+				9A351E4A2D611F8E0070ED7D /* PictureDefinition+Description.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -406,6 +409,7 @@
 				88C3581E2A98EA53007E7A92 /* PanelDisplay.swift in Sources */,
 				88BECC6A2B1821DF00770843 /* MandArt.docc in Sources */,
 				88C358072A97D983007E7A92 /* TabbedView.swift in Sources */,
+				9A351E4B2D611F9C0070ED7D /* PictureDefinition+Description.swift in Sources */,
 				88A271A22A97158200766654 /* TabSave.swift in Sources */,
 				88EF983E2AC13350005A3ABC /* DataSaver.swift in Sources */,
 				88C358052A97D7A0007E7A92 /* TabTune.swift in Sources */,
