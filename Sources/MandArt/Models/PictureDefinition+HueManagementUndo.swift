@@ -1,141 +1,104 @@
 import SwiftUI
-import SwiftData
 
-// Provide hue operations on PictureDefinition.
+// Provide undo and animation-related hue operations on PictureDefinition.
 extension PictureDefinition {
     
-    private var hueCount: Int {
-        return hues.count
-    }
-    
-    @MainActor
-    func addHue(r: Double = 255, g: Double = 255, b: Double = 255, undoManager: UndoManager? = nil) {
-        guard let modelContext = self.modelContext else {
-            print("Error: No SwiftData context found!")
-            return
-        }
-        
-        let newHue = Hue(num: hueCount + 1, r: r, g: g, b: b)
-        modelContext.insert(newHue)
-        self.hues.append(newHue)
-        sortHuesByNumber()
-        saveChanges()
-        
-        undoManager?.registerUndo(withTarget: self) { [weak self] picdef in
-            self?.deleteHue(index: self?.hues.count ?? 0 - 1, undoManager: undoManager)
-        }
-    }
-    
-    @MainActor
-    func deleteHue(index: Int, undoManager: UndoManager? = nil) {
-        guard hues.indices.contains(index), let modelContext = self.modelContext else { return }
-        let deletedHue = hues.remove(at: index)
-        modelContext.delete(deletedHue)
-        sortHuesByNumber()
-        saveChanges()
-        
-        undoManager?.registerUndo(withTarget: self) { [weak self] picdef in
-            self?.addHue(r: deletedHue.r, g: deletedHue.g, b: deletedHue.b, undoManager: undoManager)
-        }
-    }
-    
-    @MainActor
-    func replaceHues(with newHues: [Hue], undoManager: UndoManager? = nil, animation: Animation? = .default) {
-        guard let modelContext = self.modelContext else { return }
-        let oldHues = self.hues
-        
-        withAnimation(animation) {
-            hues.forEach { modelContext.delete($0) }
-            hues = newHues
-            newHues.forEach { modelContext.insert($0) }
-            sortHuesByNumber()
-        }
-        
-        saveChanges()
-        
-        undoManager?.registerUndo(withTarget: self) { [weak self] picdef in
-            self?.replaceHues(with: oldHues, undoManager: undoManager, animation: animation)
-        }
-    }
-    
-    @MainActor
-    func moveHuesAt(offsets: IndexSet, toOffset: Int, undoManager: UndoManager? = nil) {
-        let oldHues = hues
-        hues.move(fromOffsets: offsets, toOffset: toOffset)
-        sortHuesByNumber()
-        saveChanges()
-        
-        undoManager?.registerUndo(withTarget: self) { [weak self] picdef in
-            self?.replaceHues(with: oldHues, undoManager: undoManager)
-        }
-    }
-    
-    @MainActor
-    func registerUndoHueChange(for hue: Hue, oldHue: Hue, undoManager: UndoManager?) {
-        guard let index = hues.firstIndex(of: hue) else { return }
-        let newHues = hues
-        
-        undoManager?.registerUndo(withTarget: self) { [weak self] picdef in
-            guard let self = self else { return }
-            self.hues[index] = oldHue
-            self.sortHuesByNumber()
-            self.saveChanges()
+        /// **Updates a hue's color using a color picker (with Undo support).**
+        @MainActor
+        func updateHueWithColorPick(index: Int, newColorPick: Color, undoManager: UndoManager? = nil) {
+            guard hues.indices.contains(index) else { return }
             
-            undoManager?.registerUndo(withTarget: self) { picdef in
-                picdef.replaceHues(with: newHues, undoManager: undoManager)
+            let oldHue = hues[index] // Save previous state
+            let newHue = oldHue.updated(with: newColorPick) // Get updated hue
+            
+            // Apply the color change
+            var updatedHues = hues
+            updatedHues[index] = newHue
+            hues = updatedHues
+            
+            // Register Undo
+            undoManager?.registerUndo(withTarget: self) { picDef in
+                picDef.updateHueWithColorPick(index: index, newColorPick: oldHue.color, undoManager: undoManager)
             }
         }
-    }
-    
-    @MainActor
-    func updateHueWithColorComponent(index: Int, r: Double? = nil, g: Double? = nil, b: Double? = nil, undoManager: UndoManager? = nil) {
-        guard hues.indices.contains(index), let modelContext = self.modelContext else { return }
-        let oldHue = hues[index]
-        
-        hues[index].r = r ?? oldHue.r
-        hues[index].g = g ?? oldHue.g
-        hues[index].b = b ?? oldHue.b
-        
-        sortHuesByNumber()
-        saveChanges()
-        
-        undoManager?.registerUndo(withTarget: self) { [weak self] picdef in
-            self?.hues[index] = oldHue
-            self?.saveChanges()
-        }
-    }
-    
-    @MainActor
-    func updateHueWithColorPick(index: Int, newColorPick: Color, undoManager: UndoManager? = nil) {
-        guard hues.indices.contains(index), let modelContext = self.modelContext else { return }
-        let oldHue = hues[index]
-        
-        if let cgColor = newColorPick.cgColor,
-           let components = cgColor.components, components.count >= 3 {
-            hues[index].r = components[0] * 255.0
-            hues[index].g = components[1] * 255.0
-            hues[index].b = components[2] * 255.0
-        }
-        saveChanges()
-        
-        undoManager?.registerUndo(withTarget: self) { [weak self] picdef in
-            self?.hues[index] = oldHue
-            self?.saveChanges()
-        }
-    }
 
     
-    func sortHuesByNumber() {
-        hues.sort { $0.num < $1.num }
+    /// **Adds a hue with undo support (default: black)**
+    @MainActor
+    func addHue(r: Double = 0, g: Double = 0, b: Double = 0, undoManager: UndoManager? = nil) {
+        let newHue = Hue(num: hues.count + 1, r: r, g: g, b: b)
+        var huesList = self.hues
+        huesList.append(newHue)
+        self.hues = huesList
+        
+        undoManager?.registerUndo(withTarget: self) { picDef in
+            picDef.removeHue(at: picDef.hues.count - 1, undoManager: undoManager)
+        }
     }
     
-    func saveChanges() {
-        guard let modelContext = self.modelContext else { return }
-        do {
-            try modelContext.save()
-            print("Changes saved successfully.")
-        } catch {
-            print("Error saving SwiftData changes: \(error)")
+    /// **Removes a hue at a given index with undo support**
+    @MainActor
+    func removeHue(at index: Int, undoManager: UndoManager? = nil) {
+        var huesList = self.hues
+        guard index >= 0, index < huesList.count else { return }
+        
+        let deletedHue = huesList.remove(at: index)
+        self.hues = huesList.sorted(by: { $0.num < $1.num }) // Sort after deleting
+        
+        // **Undo action: Reinsert the deleted hue at the original index**
+        undoManager?.registerUndo(withTarget: self) { picDef in
+            picDef.insertHue(deletedHue, at: index, undoManager: undoManager)
+        }
+    }
+    
+    /// **Inserts a hue at a specific index (used for undo)**
+    @MainActor
+    func insertHue(_ hue: Hue, at index: Int, undoManager: UndoManager? = nil) {
+        var huesList = self.hues
+        huesList.insert(hue, at: index)
+        self.hues = huesList.sorted(by: { $0.num < $1.num }) // Sort after inserting
+        
+        undoManager?.registerUndo(withTarget: self) { picDef in
+            picDef.removeHue(at: index, undoManager: undoManager)
+        }
+    }
+    
+    /// **Replaces hues with a new list (used for undo operations)**
+    @MainActor
+    func replaceHues(with newHues: [Hue], undoManager: UndoManager? = nil, animation: Animation? = .default) {
+        let oldHues = self.hues
+        withAnimation(animation) {
+            self.hues = newHues
+        }
+        
+        undoManager?.registerUndo(withTarget: self) { picDef in
+            picDef.replaceHues(with: oldHues, undoManager: undoManager, animation: animation)
+        }
+    }
+    
+    /// **Moves hues in the list (for UI reordering)**
+    @MainActor
+    func moveHuesAt(offsets: IndexSet, toOffset: Int, undoManager: UndoManager? = nil) {
+        var huesList = self.hues
+        huesList.move(fromOffsets: offsets, toOffset: toOffset)
+        self.hues = huesList
+        
+        undoManager?.registerUndo(withTarget: self) { picDef in
+            picDef.replaceHues(with: huesList, undoManager: undoManager)
+        }
+    }
+    
+    /// **Registers an undo action when a hue is changed**
+    @MainActor
+    func registerUndoHueChange(for hue: Hue, oldHue: Hue, undoManager: UndoManager?) {
+        guard let index = hues.firstIndex(where: { $0.num == hue.num }) else { return }
+        let newHues = self.hues
+        
+        undoManager?.registerUndo(withTarget: self) { picDef in
+            picDef.hues[index] = oldHue
+            undoManager?.registerUndo(withTarget: picDef) { picDef in
+                picDef.replaceHues(with: newHues, undoManager: undoManager)
+            }
         }
     }
 }

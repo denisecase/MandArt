@@ -1,15 +1,37 @@
 import Foundation
 import SwiftData
+import SwiftUI // for Color
 
 /**
  `PictureDefinition`
  
  A model for managing MandArt user inputs, supporting JSON file storage and retrieval.
  
- - Note: Since `@Model` does not support `Codable`, we implement `Encodable` and `Decodable` manually.
+ - Note: SwiftData does not support direct arrays of structs
  */
 @Model
-final class PictureDefinition {
+final class PictureDefinition: Codable, ObservableObject {
+    
+    // Reference to SwiftData Context
+    @Transient var context: ModelContext?
+    
+    /// Hues stored as JSON (SwiftData cannot store arrays of structs yet)
+    private var huesData: Data = Data() {
+        didSet { decodeHues() }
+    }
+    
+    /// UI-facing hues array (not stored directly in SwiftData)
+    var hues: [Hue] {
+        get {
+            (try? JSONDecoder().decode([Hue].self, from: huesData)) ?? []
+        }
+        set {
+            huesData = (try? JSONEncoder().encode(newValue)) ?? Data()
+            objectWillChange.send()  // Force UI update
+            saveToSwiftData()
+        }
+    }
+
     var id: UUID
     var xCenter: Double
     var yCenter: Double
@@ -26,10 +48,26 @@ final class PictureDefinition {
     var nImage: Int
     var dFIterMin: Double
     var leftNumber: Int
-    var hues: [Hue]
-    var mandColor: Hue
     var mandPowerReal: Int
     
+    /// Store `mandColor` as JSON-encoded data
+    private var mandColorData: Data {
+        didSet {
+            objectWillChange.send()  // 🔹 Notify UI updates when mandColor changes
+        }
+    }
+    
+    /// Computed property for accessing `mandColor`
+    var mandColor: Hue {
+        get { (try? JSONDecoder().decode(Hue.self, from: mandColorData)) ?? Hue.defaultHue }
+        set {
+            mandColorData = (try? JSONEncoder().encode(newValue)) ?? Data()
+            saveToSwiftData()
+        }
+    }
+
+    
+    /// Default hues used for initialization
     static let defaultHues: [Hue] = [
         Hue(num: 1, r: 0.0, g: 255.0, b: 0.0),
         Hue(num: 2, r: 255.0, g: 255.0, b: 0.0),
@@ -43,7 +81,9 @@ final class PictureDefinition {
     
     /// Default initializer with optional hues
     init(
-        hues: [Hue] = PictureDefinition.defaultHues
+        hues: [Hue] = PictureDefinition.defaultHues,
+        mandColor: Hue = Hue.defaultHue,
+        mandPowerReal: Int = 2
     ) {
         self.id = UUID()
         self.xCenter = -0.75
@@ -61,20 +101,143 @@ final class PictureDefinition {
         self.nImage = 0
         self.dFIterMin = 0.0
         self.leftNumber = 1
-        self.hues = hues
-        self.mandColor = Hue(num: 0, r: 0.0, g: 0.0, b: 0.0)
-        self.mandPowerReal = 2
+        self.huesData = (try? JSONEncoder().encode(hues)) ?? Data()
+        self.mandColorData = (try? JSONEncoder().encode(mandColor)) ?? Data()
+        self.mandPowerReal = mandPowerReal
+        decodeHues()
     }
-}
-
-// MARK: - Codable Implementation
-
-extension PictureDefinition: Codable {
     
+    // MARK: - Helper Functions Getters
+    
+    /// **Computes the Right Number for Gradients**
+    @MainActor
+    var calculatedRightNumber: Int {
+        (leftNumber >= 1 && leftNumber < hues.count) ? leftNumber + 1 : 1
+    }
+    
+    private func decodeHues() {
+        hues = (try? JSONDecoder().decode([Hue].self, from: huesData)) ?? []
+    }
+    
+    /// **Returns the row number for a given hue index** (1-based index).
+    @MainActor
+    func rowNumber(for index: Int) -> Int {
+        index + 1
+    }
+    
+    /// **Checks if the hue index is valid.**
+    func isHueIndexValid(_ index: Int) -> Bool {
+        hues.indices.contains(index)
+    }
+    
+    /// **Determines if a color is likely to print accurately.**
+    func isPrintableColor(at index: Int) -> Bool {
+        guard isHueIndexValid(index) else { return true }
+        return MandMath.isColorNearPrintableList(
+            color: hues[index].color.cgColor!,
+            num: hues[index].num
+        )
+    }
+    
+    /// Get color values as [Double] given a hue number (1-based index)
+    func getColorGivenNumberStartingAtOne(_ number: Int) -> [Double]? {
+        let index = number - 1
+        guard index >= 0, index < hues.count else {
+            return nil // Out-of-bounds index
+        }
+        return [hues[index].r, hues[index].g, hues[index].b]
+    }
+
+    
+    // MARK: - Helper Functions Updates
+    
+    // Encode hues back into JSON when modified
+    private func encodeHues() {
+        huesData = (try? JSONEncoder().encode(hues)) ?? Data()
+        saveToSwiftData()
+    }
+    
+    
+    /// **Updates the Mandelbrot Set Color**
+    @MainActor
+    func updateMandColor(to newColor: Color) {
+        mandColor.update(from: newColor)
+    }
+    
+    /// **Ensures all hues are numbered correctly in order.**
+    @MainActor
+    func updateHueNumbers() {
+        for (i, _) in hues.enumerated() {
+            hues[i].num = i + 1
+        }
+        encodeHues()
+    }
+    
+    // MARK: - SwiftData Integration
+    
+    /// Save changes to SwiftData
+    private func saveToSwiftData() {
+        guard let context = context else { return }
+        do {
+            try context.save()
+            print("Saved changes to SwiftData")
+        } catch {
+            print("Error saving SwiftData: \(error)")
+        }
+    }
+        
+    
+    // MARK: - Create Default
+    
+    @MainActor
+    static func create_default() -> PictureDefinition {
+        return PictureDefinition()
+    }
+    
+    // MARK: - Core Hue Management (Simple, No Undo)
+    
+    /// Save changes to SwiftData
+    @MainActor
+    func saveModelContext(_ context: ModelContext) {
+        do {
+            try context.save()
+            print("Successfully saved changes to SwiftData")
+        } catch {
+            print("Error saving SwiftData: \(error)")
+        }
+    }
+
+    /// Adds a hue (without undo tracking)
+    @MainActor
+    func addHue(_ hue: Hue) {
+        hues.append(hue)
+        encodeHues()
+    }
+    
+    /// Removes a hue at a given index (without undo tracking)
+    @MainActor
+    func removeHue(at index: Int) {
+        guard hues.indices.contains(index) else { return }
+        hues.remove(at: index)
+        encodeHues()
+    }
+    
+    /// Updates a hue at a given index (without undo tracking)
+    @MainActor
+    func updateHue(at index: Int, with hue: Hue) {
+        guard hues.indices.contains(index) else { return }
+        hues[index] = hue
+        encodeHues()
+    }
+
+    // MARK: - Codable Implementation
+
     enum CodingKeys: String, CodingKey {
         case id, xCenter, yCenter, scale, iterationsMax, rSqLimit, imageWidth, imageHeight, nBlocks,
-             spacingColorFar, spacingColorNear, yY, theta, nImage, dFIterMin, leftNumber, hues, mandColor, mandPowerReal
+             spacingColorFar, spacingColorNear, yY, theta, nImage, dFIterMin, leftNumber, huesData, mandColorData, mandPowerReal
     }
+    
+    
     
     /// **Custom Encoder** (for JSON Saving)
     func encode(to encoder: Encoder) throws {
@@ -95,15 +258,14 @@ extension PictureDefinition: Codable {
         try container.encode(nImage, forKey: .nImage)
         try container.encode(dFIterMin, forKey: .dFIterMin)
         try container.encode(leftNumber, forKey: .leftNumber)
-        try container.encode(hues, forKey: .hues)
-        try container.encode(mandColor, forKey: .mandColor)
+        try container.encode(huesData, forKey: .huesData)
+        try container.encode(mandColorData, forKey: .mandColorData)
         try container.encode(mandPowerReal, forKey: .mandPowerReal)
     }
     
     /// **Custom Decoder** (for JSON Loading)
     convenience init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        
         let id = try container.decode(UUID.self, forKey: .id)
         let xCenter = try container.decode(Double.self, forKey: .xCenter)
         let yCenter = try container.decode(Double.self, forKey: .yCenter)
@@ -120,12 +282,14 @@ extension PictureDefinition: Codable {
         let nImage = try container.decode(Int.self, forKey: .nImage)
         let dFIterMin = try container.decode(Double.self, forKey: .dFIterMin)
         let leftNumber = try container.decode(Int.self, forKey: .leftNumber)
-        let hues = try container.decode([Hue].self, forKey: .hues)
-        let mandColor = try container.decodeIfPresent(Hue.self, forKey: .mandColor) ?? Hue(num: 0, r: 0.0, g: 0.0, b: 0.0)
-        let mandPowerReal = try container.decodeIfPresent(Int.self, forKey: .mandPowerReal) ?? 2
-
-        self.init(hues: hues)
+        let huesData = try container.decode(Data.self, forKey: .huesData)
+        let mandColorData = try container.decode(Data.self, forKey: .mandColorData)
+        let mandPowerReal = try container.decode(Int.self, forKey: .mandPowerReal)
         
+        let hues = (try? JSONDecoder().decode([Hue].self, from: huesData)) ?? []
+        let mandColor = (try? JSONDecoder().decode(Hue.self, from: mandColorData)) ?? Hue.defaultHue
+        
+        self.init(hues: hues, mandColor: mandColor, mandPowerReal: mandPowerReal)
         self.id = id
         self.xCenter = xCenter
         self.yCenter = yCenter
@@ -142,21 +306,7 @@ extension PictureDefinition: Codable {
         self.nImage = nImage
         self.dFIterMin = dFIterMin
         self.leftNumber = leftNumber
-        self.mandColor = mandColor
-        self.mandPowerReal = mandPowerReal
+
     }
     
-    // Get a color [Double] based on a number starting at one
-    func getColorGivenNumberStartingAtOne(_ number: Int) -> [Double]? {
-        let index = number - 1
-        guard index >= 0 && index < hues.count else {
-            return nil // Handle out-of-bounds index
-        }
-        return [hues[index].r, hues[index].g, hues[index].b]
-    }
-    
-    static let defaultInstance: PictureDefinition = {
-        let defaultPicdef = PictureDefinition()
-        return defaultPicdef
-    }()
 }

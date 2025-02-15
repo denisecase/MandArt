@@ -31,19 +31,13 @@ struct PanelUI: View {
 
     }
     
-    /// Updates an existing `PictureDefinition`
+    /// Calls AppState function to update the current picture definition
     private func updatePicdef(_ newPicdef: PictureDefinition) {
-        appState.picdef.hues = newPicdef.hues
-        appState.picdef.leftNumber = newPicdef.leftNumber
-        appState.picdef.mandColor = newPicdef.mandColor
-        appState.picdef.scale = newPicdef.scale
-        appState.picdef.theta = newPicdef.theta
-        appState.picdef.iterationsMax = newPicdef.iterationsMax
+        appState.updatePicdef(newPicdef)
     }
     
-    /// Adds a new `PictureDefinition` instance if needed
+    /// Calls AppState function to add a new picture definition
     private func addNewPictureDefinition() {
-        let newPicdef = PictureDefinition()
-        modelContext.insert(newPicdef)
+        appState.addNewPictureDefinition()
     }
 }
