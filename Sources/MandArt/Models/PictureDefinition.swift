@@ -20,6 +20,13 @@ final class PictureDefinition: Codable, ObservableObject {
         didSet { decodeHues() }
     }
     
+    /// Store `mandColor` as JSON-encoded data
+    private var mandColorData: Data = Data() {
+        didSet { decodeMandColor() }
+    }
+
+    
+    
     /// UI-facing hues array (not stored directly in SwiftData)
     var hues: [Hue] {
         get {
@@ -28,6 +35,16 @@ final class PictureDefinition: Codable, ObservableObject {
         set {
             huesData = (try? JSONEncoder().encode(newValue)) ?? Data()
             objectWillChange.send()  // Force UI update
+            saveToSwiftData()
+        }
+    }
+    
+    /// Computed property for accessing `mandColor`
+    var mandColor: Hue {
+        get { (try? JSONDecoder().decode(Hue.self, from: mandColorData)) ?? Hue.defaultHue }
+        set {
+            mandColorData = (try? JSONEncoder().encode(newValue)) ?? Data()
+            objectWillChange.send()
             saveToSwiftData()
         }
     }
@@ -49,22 +66,6 @@ final class PictureDefinition: Codable, ObservableObject {
     var dFIterMin: Double
     var leftNumber: Int
     var mandPowerReal: Int
-    
-    /// Store `mandColor` as JSON-encoded data
-    private var mandColorData: Data {
-        didSet {
-            objectWillChange.send()  // 🔹 Notify UI updates when mandColor changes
-        }
-    }
-    
-    /// Computed property for accessing `mandColor`
-    var mandColor: Hue {
-        get { (try? JSONDecoder().decode(Hue.self, from: mandColorData)) ?? Hue.defaultHue }
-        set {
-            mandColorData = (try? JSONEncoder().encode(newValue)) ?? Data()
-            saveToSwiftData()
-        }
-    }
 
     
     /// Default hues used for initialization
@@ -117,6 +118,11 @@ final class PictureDefinition: Codable, ObservableObject {
     
     private func decodeHues() {
         hues = (try? JSONDecoder().decode([Hue].self, from: huesData)) ?? []
+    }
+    
+    /// Decode `mandColor` when the data changes
+    private func decodeMandColor() {
+        mandColor = (try? JSONDecoder().decode(Hue.self, from: mandColorData)) ?? Hue.defaultHue
     }
     
     /// **Returns the row number for a given hue index** (1-based index).
