@@ -273,7 +273,6 @@ enum MandMath {
           }
         }
       }
-
     case 6:
 
       var g = colorInts[0]
@@ -395,7 +394,6 @@ enum MandMath {
           }
         }
       }
-
     case 7:
 
       var b = colorInts[0]
@@ -517,7 +515,6 @@ enum MandMath {
           }
         }
       }
-
     case 8:
 
       var r = colorInts[0]
@@ -639,7 +636,6 @@ enum MandMath {
           }
         }
       }
-
     default:
       print("Not a valid sort index")
     }
@@ -1126,7 +1122,6 @@ enum MandMath {
           }
         }
       }
-
     case 6:
 
       var g = colorInts9[0]
@@ -1227,7 +1222,6 @@ enum MandMath {
           allColors.append(color)
         }
       }
-
     case 7:
 
       var b = colorInts9[0]
@@ -1328,7 +1322,6 @@ enum MandMath {
           allColors.append(color)
         }
       }
-
     case 8:
 
       var r = colorInts9[0]
@@ -1429,7 +1422,6 @@ enum MandMath {
           allColors.append(color)
         }
       }
-
     default:
       print("Not a valid sort index")
     }

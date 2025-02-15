@@ -48,7 +48,7 @@ extension ContentView {
     let halfImageHeight = Double(picdef.imageHeight) / 2.0
 
     let movedX = tap.startLocation.x - halfImageWidth
-      let movedY = halfImageHeight - (Double(picdef.imageHeight) - tap.startLocation.y)
+    let movedY = halfImageHeight - (Double(picdef.imageHeight) - tap.startLocation.y)
 
     let thetaRadians = Double(picdef.theta) * .pi / 180.0
     let diffX = movedX / picdef.scale

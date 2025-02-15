@@ -95,8 +95,7 @@ struct ArtImage {
       let xTemp = (xSquared - 3.0 * ySquared) * baseX
       let newY = (3.0 * xSquared - ySquared) * baseY
       return (xTemp, newY)
-    }
-     else {
+    } else {
       // Case for real powers
       let r = sqrt(baseX * baseX + baseY * baseY)
       let theta = atan2(baseY, baseX)
@@ -170,16 +169,15 @@ struct ArtImage {
     var test1 = 0.0
     var test2 = 0.0
     var test3 = 0.0
-    
+
     var N = 2
     N = powerInputs.mandPowerReal
- //   print(N)
- 
+    //   print(N)
 
     let rSqLimit = shapeInputs.rSqLimit
- //   print(sqrt(rSqLimit))
- //   rSqMax = (rSqLimit + 2) * (rSqLimit + 2) * (rSqLimit + 2) // mandart3
-    rSqMax = (pow(sqrt(rSqLimit),Double(N)) + 2)*(pow(sqrt(rSqLimit),Double(N)) + 2)
+    //   print(sqrt(rSqLimit))
+    //   rSqMax = (rSqLimit + 2) * (rSqLimit + 2) * (rSqLimit + 2) // mandart3
+    rSqMax = (pow(sqrt(rSqLimit), Double(N)) + 2) * (pow(sqrt(rSqLimit), Double(N)) + 2)
     print(rSqMax)
     // rSqMax = 1.01 * (rSqLimit + 2) * (rSqLimit + 2)
     gGML = log(log(rSqMax)) - log(log(rSqLimit))
@@ -234,28 +232,28 @@ struct ArtImage {
           test1 = 108.0 * an * an * an * an * yy * yy - (xx * xx + yy * yy - 4 * an * an) *
             (xx * xx + yy * yy - 4 * an * an) * (xx * xx + yy * yy - 4 * an * an)
 
-          test2 = (rSq2up + 2*ac*(yy-cup))*(rSq2up + 2*ac*(yy-cup)) - 4*ac*ac*rSq2up
-          test3 = (rSq2down - 2*ac*(yy+cup))*(rSq2down - 2*ac*(yy+cup)) - 4*ac*ac*rSq2down
+          test2 = (rSq2up + 2 * ac * (yy - cup)) * (rSq2up + 2 * ac * (yy - cup)) - 4 * ac * ac * rSq2up
+          test3 = (rSq2down - 2 * ac * (yy + cup)) * (rSq2down - 2 * ac * (yy + cup)) - 4 * ac * ac * rSq2down
 
-          if test1 > 0 {  // nephroid
-              fIter[u][v] = iterationsMax // black
-              iter = iterationsMax // black
-       //     fIter[u][v] = 0.0 // white
-       //     iter = 0.0 // white
+          if test1 > 0 { // nephroid
+            fIter[u][v] = iterationsMax // black
+            iter = iterationsMax // black
+            //     fIter[u][v] = 0.0 // white
+            //     iter = 0.0 // white
           } // end if
 
           else if test2 < 0 { // upper cardioid
-             fIter[u][v] = iterationsMax // black
+            fIter[u][v] = iterationsMax // black
             iter = iterationsMax // black
-       //     fIter[u][v] = 0.0 // white
-       //     iter = 0.0 // white
+            //     fIter[u][v] = 0.0 // white
+            //     iter = 0.0 // white
           } // end if
-          
+
           else if test3 < 0 { // lower cardioid
-             fIter[u][v] = iterationsMax // black
+            fIter[u][v] = iterationsMax // black
             iter = iterationsMax // black
-      //      fIter[u][v] = 0.0 // white
-      //      iter = 0.0 // white
+            //      fIter[u][v] = 0.0 // white
+            //      iter = 0.0 // white
           } // end if
 
           else {
@@ -288,8 +286,8 @@ struct ArtImage {
             let (newX, newY) = complexPow(
               baseX: xx,
               baseY: yy,
-              powerReal: powerInputs.mandPowerReal//,
-      //        powerImaginary: powerInputs.mandPowerImaginary
+              powerReal: powerInputs.mandPowerReal // ,
+              //        powerImaginary: powerInputs.mandPowerImaginary
             )
             xx = newX + x0
             yy = newY + y0

@@ -1,6 +1,6 @@
-//import Foundation
+// import Foundation
 //
-//enum MandArtError: LocalizedError {
+// enum MandArtError: LocalizedError {
 //  case encodingError
 //  case emptyData
 //  case failedSaving
@@ -15,4 +15,4 @@
 //      return "Failed to save picture inputs."
 //    }
 //  }
-//}
+// }
