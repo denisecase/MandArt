@@ -26,9 +26,7 @@ struct TabFindDefaultButtons: View {
       appState.picdef.iterationsMax = 10000.0
       appState.picdef.scale = 360.0
       appState.picdef.rSqLimit = 64.0
-    }
-
-    else {
+    } else {
       appState.picdef.imageWidth = 1100
       appState.picdef.imageHeight = 1000
       appState.picdef.xCenter = 0.0

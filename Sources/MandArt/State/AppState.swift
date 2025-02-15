@@ -31,7 +31,7 @@ class AppState: ObservableObject {
 
   // MARK: - Pending Actions
 
-  @Published var pendingReplacement: (() -> Void)? = nil
+  @Published var pendingReplacement: (() -> Void)?
 
   // MARK: - Initializer
 

@@ -8,8 +8,7 @@ extension AppState {
       let url = URL(fileURLWithPath: lastOpenedPath)
 
       if let data = try? Data(contentsOf: url),
-         let loadedPicdef = try? JSONDecoder().decode(PictureDefinition.self, from: data)
-      {
+         let loadedPicdef = try? JSONDecoder().decode(PictureDefinition.self, from: data) {
         print("Loaded last opened MandArt from: \(url.path)")
         picdef = loadedPicdef
         currentFileURL = url
