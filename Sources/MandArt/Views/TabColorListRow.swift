@@ -20,7 +20,12 @@ struct TabColorListRow: View {
                 ColorPicker(
                     "",
                     selection: Binding<Color>(
-                        get: { appState.picdef.hues[index].color },
+                        get: {
+                            guard appState.picdef.isHueIndexValid(index) else {
+                                return Color.black // Fallback color in case index is invalid
+                            }
+                            return appState.picdef.hues[index].color
+                        },
                         set: { newColor in
                             appState.picdef.updateHueWithColorPick(index: index, newColorPick: newColor, undoManager: appState.undoManager)
                         }

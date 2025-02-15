@@ -52,3 +52,21 @@ final class Hue: Identifiable, Codable, Equatable {
     
 
 }
+
+
+/// Extension to extract RGB components from `Color`
+extension Color {
+    /// Extracts RGB components safely
+    var uiColorComponents: (red: Double, green: Double, blue: Double)? {
+#if canImport(UIKit)
+        guard let cgColor = self.cgColor else { return nil }
+        let components = cgColor.components ?? []
+        let red = components.count > 0 ? Double(components[0]) : 0.0
+        let green = components.count > 1 ? Double(components[1]) : 0.0
+        let blue = components.count > 2 ? Double(components[2]) : 0.0
+        return (red, green, blue)
+#else
+        return nil
+#endif
+    }
+}

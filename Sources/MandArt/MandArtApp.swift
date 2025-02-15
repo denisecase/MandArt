@@ -66,6 +66,4 @@ struct MandArtApp: App {
         screenSize.height * 0.9
     }
     
-    
-   
 }

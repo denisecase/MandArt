@@ -216,24 +216,39 @@ final class PictureDefinition: Codable, ObservableObject {
     /// Adds a hue (without undo tracking)
     @MainActor
     func addHue(_ hue: Hue) {
-        hues.append(hue)
-        encodeHues()
+        var huesList = hues //mutable
+        huesList.append(hue)
+        hues = huesList
+        updatePicdef()
     }
     
     /// Removes a hue at a given index (without undo tracking)
     @MainActor
     func removeHue(at index: Int) {
         guard hues.indices.contains(index) else { return }
-        hues.remove(at: index)
-        encodeHues()
+        // Make a mutable copy, remove the hue, then replace the array
+        var huesList = hues
+        huesList.remove(at: index)
+        hues = huesList // trigger didSet -> encodeHues()
+        updatePicdef()
     }
     
     /// Updates a hue at a given index (without undo tracking)
     @MainActor
     func updateHue(at index: Int, with hue: Hue) {
         guard hues.indices.contains(index) else { return }
-        hues[index] = hue
-        encodeHues()
+        var huesList  = hues // mutable
+        huesList[index] = hue
+        hues = huesList
+        updatePicdef()
+    }
+    
+    @MainActor
+    func updatePicdef() {
+        objectWillChange.send()  // 🔹 Explicitly notify SwiftUI of a change
+        encodeHues()             // 🔹 Ensure huesData is updated
+        saveToSwiftData()        // 🔹 Save the new hues state
+        print("picdef updated: \(self)")
     }
 
     // MARK: - Codable Implementation
