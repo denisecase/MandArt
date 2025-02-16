@@ -249,12 +249,11 @@ final class PictureDefinition: Codable, ObservableObject {
     print("picdef updated: \(self)")
   }
 
-  // MARK: - Codable Implementation
+  // MARK: - Codable Implementation - Keys Match JSON
 
   enum CodingKeys: String, CodingKey {
     case id, xCenter, yCenter, scale, iterationsMax, rSqLimit, imageWidth, imageHeight, nBlocks,
-         spacingColorFar, spacingColorNear, yY, theta, nImage, dFIterMin, leftNumber, huesData, mandColorData,
-         mandPowerReal
+         spacingColorFar, spacingColorNear, yY, theta, nImage, dFIterMin, leftNumber,mandPowerReal,hues, mandColor
   }
 
   /// **Custom Encoder** (for JSON Saving)
@@ -276,14 +275,16 @@ final class PictureDefinition: Codable, ObservableObject {
     try container.encode(nImage, forKey: .nImage)
     try container.encode(dFIterMin, forKey: .dFIterMin)
     try container.encode(leftNumber, forKey: .leftNumber)
-    try container.encode(huesData, forKey: .huesData)
-    try container.encode(mandColorData, forKey: .mandColorData)
     try container.encode(mandPowerReal, forKey: .mandPowerReal)
+    try container.encode(hues, forKey: .hues)
+    try container.encode(mandColor, forKey: .mandColor)
+
   }
 
   /// **Custom Decoder** (for JSON Loading)
   convenience init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
+      
     let id = try container.decode(UUID.self, forKey: .id)
     let xCenter = try container.decode(Double.self, forKey: .xCenter)
     let yCenter = try container.decode(Double.self, forKey: .yCenter)
@@ -300,13 +301,16 @@ final class PictureDefinition: Codable, ObservableObject {
     let nImage = try container.decode(Int.self, forKey: .nImage)
     let dFIterMin = try container.decode(Double.self, forKey: .dFIterMin)
     let leftNumber = try container.decode(Int.self, forKey: .leftNumber)
-    let huesData = try container.decode(Data.self, forKey: .huesData)
-    let mandColorData = try container.decode(Data.self, forKey: .mandColorData)
-    let mandPowerReal = try container.decode(Int.self, forKey: .mandPowerReal)
 
-    let hues = (try? JSONDecoder().decode([Hue].self, from: huesData)) ?? []
-    let mandColor = (try? JSONDecoder().decode(Hue.self, from: mandColorData)) ?? Hue.defaultHue
+      // may not exist in a file, but if it does, use it
+    let mandPowerReal = try container.decodeIfPresent(Int.self, forKey: .mandPowerReal) ?? 2
 
+      // read huesData from hues (file)
+      let hues = try container.decode([Hue].self, forKey: .hues)
+
+      // read mandColorData from mandColor (file) - if it exists
+      let mandColor = try container.decodeIfPresent(Hue.self, forKey: .mandColor) ?? Hue.defaultHue
+      
     self.init(hues: hues, mandColor: mandColor, mandPowerReal: mandPowerReal)
     self.id = id
     self.xCenter = xCenter
@@ -324,5 +328,7 @@ final class PictureDefinition: Codable, ObservableObject {
     self.nImage = nImage
     self.dFIterMin = dFIterMin
     self.leftNumber = leftNumber
+      self.huesData = (try? JSONEncoder().encode(hues)) ?? Data()
+      self.mandColorData = (try? JSONEncoder().encode(mandColor)) ?? Data()
   }
 }

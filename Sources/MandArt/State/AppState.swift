@@ -34,6 +34,9 @@ class AppState: ObservableObject {
   @Published var pendingReplacement: (() -> Void)?
 
   // MARK: - Initializer
+    
+    let exampleURL = "https://raw.githubusercontent.com/denisecase/MandArt-Discoveries/refs/heads/main/brucehjohnson/MAPPED/Dd01/Frame54.mandart"
+
 
   init() {
     print("Initializing app state....")
