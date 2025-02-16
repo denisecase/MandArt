@@ -8,11 +8,10 @@ extension PictureDefinition {
     let encoder = JSONEncoder()
     encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
 
-    // Save only if a file was previously opened, otherwise require Save As
     let saveURL = url ?? appState.currentFileURL
 
     guard let saveURL = saveURL else {
-      print("WARNING: No previously opened file. Please use 'Save As' first.")
+      showSaveAlert(title: "Save Failed", message: "No previously opened file. Please use 'Save As' first.")
       return
     }
 
@@ -21,10 +20,25 @@ extension PictureDefinition {
       try data.write(to: saveURL)
       print("SUCCESS: MandArt saved to: \(saveURL.path)")
 
-      // Update the file reference so future "Save" calls use this file
       appState.updateCurrentFile(url: saveURL)
+
+      showSaveAlert(title: "Save Successful", message: "MandArt saved successfully to:\n\(saveURL.path)")
     } catch {
       print("ERROR saving MandArt: \(error.localizedDescription)")
+
+      showSaveAlert(title: "Save Failed", message: "Error saving file:\n\(error.localizedDescription)")
+    }
+  }
+
+  /// **Displays a save confirmation or error alert**
+  private func showSaveAlert(title: String, message: String) {
+    DispatchQueue.main.async {
+      let alert = NSAlert()
+      alert.messageText = title
+      alert.informativeText = message
+      alert.alertStyle = title == "Save Successful" ? .informational : .critical
+      alert.addButton(withTitle: "OK")
+      alert.runModal()
     }
   }
 

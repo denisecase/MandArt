@@ -25,6 +25,8 @@ extension AppState {
     do {
       try context.save()
       picdef = newPicdef
+      activeFileName = "DefaultMandArt.mandart"
+      currentFileURL = nil // Ensures "Save" prompts for a location
       print("Saved new default MandArt: \(newPicdef.id)")
     } catch {
       print("ERROR saving new default MandArt: \(error)")

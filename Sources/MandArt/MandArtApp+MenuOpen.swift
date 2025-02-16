@@ -47,7 +47,7 @@ extension MandArtApp {
               let newPicdef = try await loadMandArt(from: selectedURL)
               await MainActor.run {
                 appState.picdef = newPicdef
-                appState.activeFileName = url.lastPathComponent // Store file name
+                appState.activeFileName = selectedURL.lastPathComponent // Store file name
                 updateWindowTitle(appState: appState) // Update window title
               }
             } catch {

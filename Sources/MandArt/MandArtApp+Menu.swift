@@ -24,6 +24,7 @@ extension MandArtApp {
       CommandGroup(before: CommandGroupPlacement.saveItem) {
         Button("Reset MandArt") {
           confirmResetMandArt(appState: appState)
+          updateWindowTitle(appState: appState)
         }
         .keyboardShortcut("r", modifiers: [.command])
 
@@ -50,13 +51,12 @@ extension MandArtApp {
       // Insert custom Save/Export commands after the native Save items.
       CommandGroup(after: CommandGroupPlacement.saveItem) {
         Button("Save MandArt") {
-          if appState.activeFileName == nil || appState.activeFileName!.isEmpty {
-            appState.picdef.saveMandArtImageInputsAs(appState: appState)
+          if let saveURL = appState.currentFileURL {
+            appState.picdef.saveMandArtImageInputs(to: saveURL, appState: appState)
           } else {
-            appState.picdef.saveMandArtImageInputs(appState: appState)
+            appState.picdef.saveMandArtImageInputsAs(appState: appState)
           }
         }
-
         .keyboardShortcut("s", modifiers: [.command])
 
         Button("Save MandArt As…") {
@@ -64,7 +64,7 @@ extension MandArtApp {
         }
         .keyboardShortcut("s", modifiers: [.command, .shift])
 
-        Button("Export as PNG") {
+        Button("Export as PNG (🚧)") {
           if let image = appState.generateNSImage() {
             appState.picdef.saveMandArtImageAsPNG(image: image)
           }
