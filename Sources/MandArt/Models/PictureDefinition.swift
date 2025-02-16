@@ -253,7 +253,7 @@ final class PictureDefinition: Codable, ObservableObject {
 
   enum CodingKeys: String, CodingKey {
     case id, xCenter, yCenter, scale, iterationsMax, rSqLimit, imageWidth, imageHeight, nBlocks,
-         spacingColorFar, spacingColorNear, yY, theta, nImage, dFIterMin, leftNumber,mandPowerReal,hues, mandColor
+         spacingColorFar, spacingColorNear, yY, theta, nImage, dFIterMin, leftNumber, mandPowerReal, hues, mandColor
   }
 
   /// **Custom Encoder** (for JSON Saving)
@@ -278,13 +278,12 @@ final class PictureDefinition: Codable, ObservableObject {
     try container.encode(mandPowerReal, forKey: .mandPowerReal)
     try container.encode(hues, forKey: .hues)
     try container.encode(mandColor, forKey: .mandColor)
-
   }
 
   /// **Custom Decoder** (for JSON Loading)
   convenience init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-      
+
     let id = try container.decode(UUID.self, forKey: .id)
     let xCenter = try container.decode(Double.self, forKey: .xCenter)
     let yCenter = try container.decode(Double.self, forKey: .yCenter)
@@ -302,15 +301,15 @@ final class PictureDefinition: Codable, ObservableObject {
     let dFIterMin = try container.decode(Double.self, forKey: .dFIterMin)
     let leftNumber = try container.decode(Int.self, forKey: .leftNumber)
 
-      // may not exist in a file, but if it does, use it
+    // may not exist in a file, but if it does, use it
     let mandPowerReal = try container.decodeIfPresent(Int.self, forKey: .mandPowerReal) ?? 2
 
-      // read huesData from hues (file)
-      let hues = try container.decode([Hue].self, forKey: .hues)
+    // read huesData from hues (file)
+    let hues = try container.decode([Hue].self, forKey: .hues)
 
-      // read mandColorData from mandColor (file) - if it exists
-      let mandColor = try container.decodeIfPresent(Hue.self, forKey: .mandColor) ?? Hue.defaultHue
-      
+    // read mandColorData from mandColor (file) - if it exists
+    let mandColor = try container.decodeIfPresent(Hue.self, forKey: .mandColor) ?? Hue.defaultHue
+
     self.init(hues: hues, mandColor: mandColor, mandPowerReal: mandPowerReal)
     self.id = id
     self.xCenter = xCenter
@@ -328,7 +327,7 @@ final class PictureDefinition: Codable, ObservableObject {
     self.nImage = nImage
     self.dFIterMin = dFIterMin
     self.leftNumber = leftNumber
-      self.huesData = (try? JSONEncoder().encode(hues)) ?? Data()
-      self.mandColorData = (try? JSONEncoder().encode(mandColor)) ?? Data()
+    huesData = (try? JSONEncoder().encode(hues)) ?? Data()
+    mandColorData = (try? JSONEncoder().encode(mandColor)) ?? Data()
   }
 }

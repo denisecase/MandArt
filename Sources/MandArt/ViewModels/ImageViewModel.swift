@@ -77,8 +77,10 @@ class ImageViewModel: ObservableObject {
   /// - Returns: An optional `CGImage` representing the current image.
   func getImage() -> CGImage? {
     if appState.showGradient && getLeftGradientIsValid() {
+      print("getting gradient image")
       return getGradientImage()
     }
+    print("getting art image")
     return cachedArtImage
   }
 

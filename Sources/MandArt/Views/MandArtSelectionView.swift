@@ -1,21 +1,20 @@
 import SwiftUI
 
-
 struct MandArtSelectionView: View {
   @Environment(\.presentationMode) var presentationMode
   let discoveries: [MandArtDiscovery]
   let onSelect: (MandArtDiscovery) -> Void
-  
+
   let columns = [
-    GridItem(.adaptive(minimum: 100)) // Adaptive grid layout
+    GridItem(.adaptive(minimum: 100)), // Adaptive grid layout
   ]
-  
+
   var body: some View {
     VStack {
       Text("Select MandArt")
         .font(.title)
         .padding()
-      
+
       ScrollView {
         LazyVGrid(columns: columns, spacing: 20) {
           ForEach(discoveries) { discovery in
@@ -38,7 +37,7 @@ struct MandArtSelectionView: View {
                   .foregroundColor(.red)
                   .frame(width: 100, height: 100)
               }
-              
+
               Text(discovery.name)
                 .font(.caption)
                 .multilineTextAlignment(.center)
@@ -47,7 +46,7 @@ struct MandArtSelectionView: View {
         }
         .padding()
       }
-      
+
       Button("Cancel") {
         presentationMode.wrappedValue.dismiss()
       }

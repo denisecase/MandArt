@@ -72,6 +72,9 @@
 		9A351E4D2D6161F60070ED7D /* mandart_discoveries.json in Resources */ = {isa = PBXBuildFile; fileRef = 9A351E4C2D6161F60070ED7D /* mandart_discoveries.json */; };
 		9A351F8A2D616B650070ED7D /* MandArtSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A351F892D616B5F0070ED7D /* MandArtSelectionView.swift */; };
 		9A351F8C2D61717E0070ED7D /* MandArt_Catalog in Resources */ = {isa = PBXBuildFile; fileRef = 9A351F8B2D61717E0070ED7D /* MandArt_Catalog */; };
+		9A351F8E2D617F600070ED7D /* MandArtApp+MenuAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A351F8D2D617F510070ED7D /* MandArtApp+MenuAlerts.swift */; };
+		9A351F902D61805D0070ED7D /* MandArtApp+WindowManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A351F8F2D61804F0070ED7D /* MandArtApp+WindowManagement.swift */; };
+		9A351F922D6180BC0070ED7D /* MandArtApp+MenuOpen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A351F912D6180AF0070ED7D /* MandArtApp+MenuOpen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -458,6 +461,9 @@
 		9A351F872D616B060070ED7D /* Top1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Top1.png; sourceTree = "<group>"; };
 		9A351F892D616B5F0070ED7D /* MandArtSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MandArtSelectionView.swift; sourceTree = "<group>"; };
 		9A351F8B2D61717E0070ED7D /* MandArt_Catalog */ = {isa = PBXFileReference; lastKnownFileType = folder; name = MandArt_Catalog; path = Resources/MandArt_Catalog; sourceTree = "<group>"; };
+		9A351F8D2D617F510070ED7D /* MandArtApp+MenuAlerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MandArtApp+MenuAlerts.swift"; sourceTree = "<group>"; };
+		9A351F8F2D61804F0070ED7D /* MandArtApp+WindowManagement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MandArtApp+WindowManagement.swift"; sourceTree = "<group>"; };
+		9A351F912D6180AF0070ED7D /* MandArtApp+MenuOpen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MandArtApp+MenuOpen.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -511,11 +517,14 @@
 		88A1716729913A1E00A85AED /* MandArt */ = {
 			isa = PBXGroup;
 			children = (
+				88EF98262AC0D37D005A3ABC /* Extensions */,
 				8806E113293A5011005F5CB4 /* MandArtApp.swift */,
 				88A271B62A979A0E00766654 /* MandArtApp+Menu.swift */,
-				9A351DAB2D5F8FBA0070ED7D /* State */,
-				88EF98262AC0D37D005A3ABC /* Extensions */,
+				9A351F8D2D617F510070ED7D /* MandArtApp+MenuAlerts.swift */,
+				9A351F912D6180AF0070ED7D /* MandArtApp+MenuOpen.swift */,
+				9A351F8F2D61804F0070ED7D /* MandArtApp+WindowManagement.swift */,
 				88A271962A967E6400766654 /* Models */,
+				9A351DAB2D5F8FBA0070ED7D /* State */,
 				88A271942A967DF200766654 /* Utilities */,
 				88C3580C2A97EB55007E7A92 /* ViewModels */,
 				88A271932A967DEA00766654 /* Views */,
@@ -1033,6 +1042,7 @@
 				88C3580B2A97E9F9007E7A92 /* TabSavePopup.swift in Sources */,
 				88EF98402AC133D5005A3ABC /* MandArtError.swift in Sources */,
 				880250EB2AA2050A0076E001 /* PopupColorSlice.swift in Sources */,
+				9A351F922D6180BC0070ED7D /* MandArtApp+MenuOpen.swift in Sources */,
 				88EF982C2AC0D78E005A3ABC /* String+Subscripting.swift in Sources */,
 				88EF982E2AC0D7F3005A3ABC /* UTType+mandart.swift in Sources */,
 				88A271A82A971C1C00766654 /* MAFormatters.swift in Sources */,
@@ -1060,9 +1070,11 @@
 				88C358052A97D7A0007E7A92 /* TabTune.swift in Sources */,
 				883C1A732BA775C500BFBC5C /* TabFindImagePower.swift in Sources */,
 				880250DF2A9D1FA10076E001 /* ContentViewPopups.swift in Sources */,
+				9A351F8E2D617F600070ED7D /* MandArtApp+MenuAlerts.swift in Sources */,
 				88A271AA2A977AF300766654 /* ContentView+GestureCalculations.swift in Sources */,
 				88ADC6912B2FA7B1006CD099 /* Double+CustomDecimalFormat.swift in Sources */,
 				883C1A752BA7992500BFBC5C /* TabFindDefaultButtons.swift in Sources */,
+				9A351F902D61805D0070ED7D /* MandArtApp+WindowManagement.swift in Sources */,
 				88EF98282AC0D3DC005A3ABC /* Color+Components.swift in Sources */,
 				882BAED3293409FE003ACB0B /* PictureDefinition.swift in Sources */,
 				88C03C7E2B1556A700D4A79B /* TabFindScale.swift in Sources */,
