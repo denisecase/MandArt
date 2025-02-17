@@ -22,25 +22,25 @@ extension MandArtApp {
 
       // Insert custom Open commands after the native Open items.
       CommandGroup(before: CommandGroupPlacement.saveItem) {
-        Button("Reset MandArt") {
+        Button("Reset MandArt to Default Drawing") {
           confirmResetMandArt(appState: appState)
           updateWindowTitle(appState: appState)
         }
         .keyboardShortcut("r", modifiers: [.command])
 
-        Button("Open MandArt from List…") {
+        Button("Open MandArt from Catalog List…") {
           openMandArtFromList(appState: appState)
         }
         .keyboardShortcut("o", modifiers: [.command, .shift])
 
-        Button("Open MandArt from URL…") {
+        Button("Open MandArt from Web Address URL…") {
           confirmReplaceMandArt(fromSource: "a URL", appState: appState) {
             openMandArtFromURL(appState: appState)
           }
         }
         .keyboardShortcut("o", modifiers: [.command, .shift])
 
-        Button("Open MandArt from Machine…") {
+        Button("Open MandArt from Local Machine…") {
           confirmReplaceMandArt(fromSource: "a file", appState: appState) {
             openMandArtFromFile(appState: appState)
           }

@@ -29,7 +29,10 @@ extension MandArtApp {
       }
     }
 
-    let deduplicatedDiscoveries = Array(uniqueDiscoveries.values)
+    // Convert dictionary values back to an array and sort again to ensure consistent order
+    let deduplicatedDiscoveries = Array(uniqueDiscoveries.values).sorted {
+      $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+    }
 
     confirmReplaceMandArt(fromSource: "a list of discovered options", appState: appState) {
       DispatchQueue.main.async {

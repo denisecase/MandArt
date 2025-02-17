@@ -50,7 +50,7 @@ struct ContentView: View {
       .padding(.leading, 0)
       .alert(isPresented: $appState.showResetAlert) {
         Alert(
-          title: Text("Reset MandArt"),
+          title: Text("Reset MandArt to Default Drawing?"),
           message: Text(
             "This will delete your changes and reset to the default MandArt example. Are you sure you want to continue?"
           ),

@@ -2,10 +2,18 @@ import AppKit
 import SwiftData
 import SwiftUI
 import UniformTypeIdentifiers
+import Foundation
 
 @main
 struct MandArtApp: App {
   @StateObject var appState = AppState()
+  
+  init(){
+    // Run the script
+    ArtImage.makeGrids()
+  }
+
+
 
   var body: some Scene {
     WindowGroup {

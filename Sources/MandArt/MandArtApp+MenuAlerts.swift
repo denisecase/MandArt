@@ -5,8 +5,8 @@ extension MandArtApp {
 
   func confirmResetMandArt(appState: AppState) {
     let alert = NSAlert()
-    alert.messageText = "Reset MandArt?"
-    alert.informativeText = "Are you sure you want to reset MandArt? This will clear the current artwork."
+    alert.messageText = "Reset MandArt to Default Drawing?"
+    alert.informativeText = "Are you sure you want to reset MandArt?\n\nCAUTION: Be sure to save your work if desired, as this will replace your current artwork."
     alert.alertStyle = .warning
     alert.addButton(withTitle: "Reset")
     alert.addButton(withTitle: "Cancel")
@@ -20,7 +20,7 @@ extension MandArtApp {
   func confirmReplaceMandArt(fromSource source: String, appState _: AppState, action: @escaping () -> Void) {
     let alert = NSAlert()
     alert.messageText = "Replace Current MandArt?"
-    alert.informativeText = "Are you sure you want to replace the current MandArt with one from \(source)?"
+    alert.informativeText = "Are you sure you want to replace the current MandArt with one from \(source)?\n\nBe sure to save your work if desired, as this will replace your current artwork."
     alert.alertStyle = .warning
     alert.addButton(withTitle: "Replace")
     alert.addButton(withTitle: "Cancel")
