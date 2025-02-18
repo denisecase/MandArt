@@ -38,8 +38,8 @@ struct ArtImage {
   let shapeInputs: ArtImageShapeInputs
   let colorInputs: ArtImageColorInputs
   let powerInputs: ArtImagePowerInputs
-  
-  init(picdef: PictureDefinition) {
+
+  init(picdef: PictureDefinition  ) {
     shapeInputs = ArtImageShapeInputs(
       imageHeight: picdef.imageHeight,
       imageWidth: picdef.imageWidth,
@@ -51,18 +51,20 @@ struct ArtImage {
       dFIterMin: picdef.dFIterMin,
       rSqLimit: picdef.rSqLimit
     )
+    
     colorInputs = ArtImageColorInputs(
       nBlocks: picdef.nBlocks,
-      //nColors: picdef.hues.count, // only num > 0
-      nColors: picdef.hues.filter { $0.num > 0 }.count,
+      nColors: picdef.hues.count, // only num > 0
       spacingColorFar: picdef.spacingColorFar,
       spacingColorNear: picdef.spacingColorNear,
       yY_input: picdef.yY,
       mandColor: picdef.mandColor
     )
+
     powerInputs = ArtImagePowerInputs(
       mandPowerReal: picdef.mandPowerReal
     )
+
   }
   
   /** Function to set a pixel to the color of the Mandelbrot set. */
@@ -118,6 +120,7 @@ struct ArtImage {
    - Returns: optional CGImage with the bitmap or nil
    */
   func getGrandArtFullPictureImage(colors: inout [[Double]]) -> CGImage? {
+
     let imageWidth = shapeInputs.imageWidth
     let imageHeight = shapeInputs.imageHeight
     
@@ -179,7 +182,7 @@ struct ArtImage {
     //   print(sqrt(rSqLimit))
     //   rSqMax = (rSqLimit + 2) * (rSqLimit + 2) * (rSqLimit + 2) // mandart3
     rSqMax = (pow(sqrt(rSqLimit), Double(N)) + 2) * (pow(sqrt(rSqLimit), Double(N)) + 2)
-    print(rSqMax)
+    print("rSqMax=\(rSqMax)")
     // rSqMax = 1.01 * (rSqLimit + 2) * (rSqLimit + 2)
     gGML = log(log(rSqMax)) - log(log(rSqLimit))
     gGL = log(log(rSqLimit))
@@ -341,6 +344,7 @@ struct ArtImage {
     var block1 = 0
     
     let nBlocks = colorInputs.nBlocks
+    let nColors = colorInputs.nColors
     let spacingColorFar = colorInputs.spacingColorFar
     let spacingColorNear = colorInputs.spacingColorNear
     
@@ -446,9 +450,6 @@ struct ArtImage {
               }
               
               xX = (h - blockBound[block]) / (blockBound[block + 1] - blockBound[block])
-              
-             
-              let nColors = colorInputs.nColors
 
               while block0 > nColors - 1 {
                 block0 = block0 - nColors
@@ -488,13 +489,11 @@ struct ArtImage {
   
   /**
    Function to create and return a user-colored GrandArt bitmap
-   
-   - Parameters:
-   - colors: array of colors
-   
    - Returns: optional CGImage with the colored bitmap or nil
    */
+  //func getNewlyColoredImage() -> CGImage? {
   func getNewlyColoredImage(colors: inout [[Double]]) -> CGImage? {
+
     if fIterGlobal.isEmpty {
       print("Error: fIterGlobal is empty")
       return nil
@@ -537,10 +536,10 @@ struct ArtImage {
     var fIterMin = 0.0
     
     for u in 0 ... imageWidth - 1 {
-      // fIterBottom[u] = fIterGlobal[u][0] //  Incorrect - treating width as rows
-      // fIterTop[u] = fIterGlobal[u][imageHeight - 1] //  Incorrect - treating height as columns
-      fIterBottom[u] = fIterGlobal[imageHeight - 1][u]  // Last row (bottom)
-      fIterTop[u] = fIterGlobal[0][u]  // First row (top)
+      // fIterBottom[u] = fIterGlobal[u][0] //  Incorrect - treating width as rows DMC
+      // fIterTop[u] = fIterGlobal[u][imageHeight - 1] //  Incorrect - treating height as columns DMC
+      fIterBottom[u] = fIterGlobal[imageHeight - 1][u]  // Last row (bottom) DMC
+      fIterTop[u] = fIterGlobal[0][u]  // First row (top) DMC
     } // end second for u
     
     fIterMinLeft = fIterGlobal[0].min()!
@@ -726,97 +725,100 @@ struct ArtImage {
   ///   saveFIterGlobalToCSV(filename: "Frame23")   // Saves as "Frame23.csv"
   ///   saveFIterGlobalToCSV(filename: "Drawing.mandart") // Saves as "Drawing.csv"
   ///   ```
-  static func saveFIterGlobalToCSV(filename: String) {
-    print("Saving grid for \(filename).")
-    
-    var cleanFilename = filename
-    if filename.hasSuffix(".mandart") {
-      cleanFilename = String(filename.dropLast(8)) // Remove ".mandart"
-    }
-    
-    let csvFilename = "\(cleanFilename).csv"
-    
-    let fileManager = FileManager.default
-    let currentPath = URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-    let savePath = currentPath.appendingPathComponent("Resources/MandArt_Catalog").appendingPathComponent(csvFilename).standardized.path
-    
-    print("📂 Saving grid as \(csvFilename) to \(savePath).")
-    
-    let csvString = fIterGlobal.map { row in
-      row.map { String($0) }.joined(separator: ",")
-    }.joined(separator: "\n")
-    
-    do {
-      try csvString.write(to: URL(fileURLWithPath: savePath), atomically: true, encoding: .utf8)
-      print("✅ CSV saved successfully at \(savePath)")
-    } catch {
-      print("❌ Error saving CSV: \(error)")
-    }
-  }
+//  static func saveFIterGlobalToCSV(filename: String) {
+//    print("Saving grid for \(filename).")
+//    
+//    var cleanFilename = filename
+//    if filename.hasSuffix(".mandart") {
+//      cleanFilename = String(filename.dropLast(8)) // Remove ".mandart"
+//    }
+//    
+//    let csvFilename = "\(cleanFilename).csv"
+//    
+//    let fileManager = FileManager.default
+//    let currentPath = URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+//    let saveDirectory = currentPath
+//      .appendingPathComponent("Resources/MandArt_Catalog", isDirectory: true)
+//    
+//    // Ensure the directory exists (even though we assume it does)
+//    guard fileManager.fileExists(atPath: saveDirectory.path) else {
+//      print("Error: Directory does not exist at \(saveDirectory.path)")
+//      return
+//    }
+//    
+//    let saveFileURL = saveDirectory.appendingPathComponent(csvFilename, isDirectory: false) // Ensure it's a file, not a directory
+//    print("📂 Saving grid as \(csvFilename) to \(saveFileURL.path).")
+//
+//    let csvString = fIterGlobal.map { row in
+//      row.map { String($0) }.joined(separator: ",")
+//    }.joined(separator: "\n")
+//    
+//    do {
+//      try csvString.write(to: saveFileURL, atomically: true, encoding: .utf8)
+//      print("CSV saved successfully as \(saveFileURL)")
+//    } catch {
+//      print("Error saving CSV: \(error)")
+//    }
+//  }
 
   
   
+//  /// Scans the directory for all `.mandart` files and processes them
+//  /// TEMPORARY - run only as needed
+//  public static func makeGrids() {
+//    print("Running Make Grids Utility program to generate CSVs")
+//    let fileManager = FileManager.default
+//    let currentPath = URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+//    let resourcesPath = currentPath.appendingPathComponent("../Resources/MandArt_Catalog").standardized.path
+//    
+//    do {
+//      let files = try fileManager.contentsOfDirectory(atPath: resourcesPath)
+//      var mandartFiles = files.filter { $0.hasSuffix(".mandart") }
+//      print("🔍 Found \(mandartFiles.count) .mandart files to process.")
+//      mandartFiles.sort()
+//      for mandartFile in mandartFiles {
+//        let baseFilename = mandartFile.replacingOccurrences(of: ".mandart", with: "")
+//        print("Processing \(mandartFile)...")
+//        
+//        // Load and process the MandArt file
+//        if loadMandArtFromFile(named: mandartFile, in: resourcesPath) {
+//          saveFIterGlobalToCSV(filename: baseFilename)
+//        } else {
+//          print("Warning: Failed to load \(mandartFile)")
+//        }
+//      }
+//    } catch {
+//      print("Error reading directory \(resourcesPath): \(error)")
+//    }
+//  }
   
-  /// Scans the directory for all `.mandart` files and processes them
-  /// TEMPORARY - run only as needed
-  public static func makeGrids() {
-    print("Running Make Grids Utility program to generate CSVs")
-    let fileManager = FileManager.default
-    let currentPath = URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-    let resourcesPath = currentPath.appendingPathComponent("../Resources/MandArt_Catalog").standardized.path
-    
-    do {
-      let files = try fileManager.contentsOfDirectory(atPath: resourcesPath)
-      var mandartFiles = files.filter { $0.hasSuffix(".mandart") }
-      print("🔍 Found \(mandartFiles.count) .mandart files to process.")
-      mandartFiles.sort()
-      for mandartFile in mandartFiles {
-        let baseFilename = mandartFile.replacingOccurrences(of: ".mandart", with: "")
-        print("🖼 Processing \(mandartFile)...")
-        
-        // Load and process the MandArt file
-        if loadMandArtFromFile(named: mandartFile, in: resourcesPath) {
-          saveFIterGlobalToCSV(filename: baseFilename)
-        } else {
-          print("⚠️ Warning: Failed to load \(mandartFile)")
-        }
-      }
-    } catch {
-      print("❌ Error reading directory \(resourcesPath): \(error)")
-    }
-  }
   
-  
-  /// Loads a `.mandart` file, initializes the ArtImage, and computes the Mandelbrot grid.
-  static func loadMandArtFromFile(named filename: String, in directory: String) -> Bool {
-    print("📂 Loading \(filename)...")
-    
-    let mandArtFileURL = URL(fileURLWithPath: directory).appendingPathComponent(filename).standardizedFileURL
-    
-    // Ensure the file exists before trying to load it
-    guard FileManager.default.fileExists(atPath: mandArtFileURL.path) else {
-      print("❌ Error: File does not exist at \(mandArtFileURL.path)")
-      return false
-    }
-    
-    // Attempt to load the actual `.mandart` JSON file
-    guard let picdef = PictureDefinition.loadMandArtFile(from: mandArtFileURL) else {
-      print("❌ Error: Could not load picture definition from \(mandArtFileURL.path)")
-      return false
-    }
-    
-    // 2️⃣ Initialize ArtImage and Generate Grid
-    let artImage = ArtImage(picdef: picdef)
-    var colors = [[Double]]()  // Placeholder for colors
-    let _ = artImage.getGrandArtFullPictureImage(colors: &colors)
-    
-    // 3️⃣ Confirm fIterGlobal was populated
-    if fIterGlobal.isEmpty {
-      print("⚠️ Error: `fIterGlobal` is empty after computing Mandelbrot set.")
-      return false
-    }
-    
-    print("✅ Successfully loaded \(filename) and computed Mandelbrot set.")
-    return true
-  }
+//  /// Loads a `.mandart` file, initializes the ArtImage, and computes the Mandelbrot grid.
+//  static func loadMandArtFromFile(named filename: String, in directory: String) -> Bool {
+//    print("Loading \(filename)...")
+//    
+//    let mandArtFileURL = URL(fileURLWithPath: directory).appendingPathComponent(filename).standardizedFileURL
+//    
+//    // Ensure the file exists before trying to load it
+//    guard FileManager.default.fileExists(atPath: mandArtFileURL.path) else {
+//      print("Error: File does not exist at \(mandArtFileURL.path)")
+//      return false
+//    }
+//    
+//    // Attempt to load the actual `.mandart` JSON file
+//    guard let picdef = PictureDefinition.loadMandArtFile(from: mandArtFileURL) else {
+//      print("Error: Could not load picture definition from \(mandArtFileURL.path)")
+//      return false
+//    }
+//    let art = ArtImage(picdef: picdef)
+//    let _ = art.getGrandArtFullPictureImage()
+//    
+//    if fIterGlobal.isEmpty {
+//      print("Error: `fIterGlobal` is empty after computing Mandelbrot set.")
+//      return false
+//    }
+//    
+//    print("Successfully loaded \(filename) and computed Mandelbrot set.")
+//    return true
+//  }
 }

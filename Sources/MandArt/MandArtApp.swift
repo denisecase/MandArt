@@ -10,7 +10,7 @@ struct MandArtApp: App {
   
   init(){
     // Run the script
-    ArtImage.makeGrids()
+   // ArtImage.makeGrids()
   }
 
 
